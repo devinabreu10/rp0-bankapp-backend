@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+
+	<Appenders>
+	
+       <Console name="Console" target="SYSTEM_OUT">
+           <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level - %msg%n"/>
+       </Console>
+       
+       <File name="bankAppRemakeLog" fileName="/logs/bankAppRemake.log" append="true">
+           <PatternLayout>
+               <Pattern>%d{HH:mm:ss.SSS} [%t] %-5level - %msg%n</Pattern>
+           </PatternLayout>
+       </File>
+       
+   </Appenders>
+    
+   <Loggers>
+   
+       <Logger name="com.sematext.blog" level="info" additivity="true">
+           <AppenderRef ref="Console"/>
+       </Logger>
+       
+       <Root level="info">
+           <AppenderRef ref="bankAppRemakeLog"/>
+       </Root>
+       
+   </Loggers>
+    
+</Configuration>
