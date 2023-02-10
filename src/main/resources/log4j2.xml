@@ -1,28 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="WARN">
+<Configuration>
+
+	<Properties>
+		<Property name="LOG_PATTERN">%d [%level] - %m%n</Property>
+		<!-- <Property name="LOG_PATTERN">%d{HH:mm:ss.SSS} %-5level - %msg%n</Property>  -->
+		<Property name="MAX_ROLLOVER">1</Property>
+		<Property name="FILE_SIZE">10MB</Property>
+		<Property name="LOG_ROOT">./logs</Property>
+		<Property name="LOG_LEVEL">INFO</Property>
+		<Property name="DEPENDENCY_LOG_LVL">ERROR</Property>
+	</Properties>
 
 	<Appenders>
 	
        <Console name="Console" target="SYSTEM_OUT">
-           <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level - %msg%n"/>
+           <PatternLayout pattern="${LOG_PATTERN}"/>
        </Console>
        
-       <File name="bankAppRemakeLog" fileName="/logs/bankAppRemake.log" append="true">
-           <PatternLayout>
-               <Pattern>%d{HH:mm:ss.SSS} [%t] %-5level - %msg%n</Pattern>
-           </PatternLayout>
-       </File>
+       <RollingFile name="bankAppRemakeLog" fileName="${LOG_ROOT}/bankAppRemake.log" filePattern="${LOG_ROOT}/bankAppRemake-%d{yyyy-MM-dd}-%i.log">
+           <PatternLayout pattern="${LOG_PATTERN}"/>
+		   <Policies>
+				<SizeBasedTriggeringPolicy size="${FILE_SIZE}"/>
+		   </Policies>
+		   <DefaultRolloverStrategy max="${MAX_ROLLOVER}"/>
+       </RollingFile>
        
    </Appenders>
     
-   <Loggers>
-   
-       <Logger name="com.sematext.blog" level="info" additivity="true">
-           <AppenderRef ref="Console"/>
+   <Loggers> <!-- If I want a log file that shows more detailed messages like DEBUG and ERROR I can make a new Appender -->
+       
+       <Logger name="dev.abreu.bankapp" level="${LOG_LEVEL}" additivity="false">
+       		<AppenderRef ref="bankAppRemakeLog"/>
+       		<AppenderRef ref="Console"/>
        </Logger>
        
-       <Root level="info">
-           <AppenderRef ref="bankAppRemakeLog"/>
+       <Root level="${LOG_LEVEL}">
+       		<AppenderRef ref="Console"/>
+       		<!-- <AppenderRef ref="bankAppRemakeLog"/> -->
        </Root>
        
    </Loggers>
