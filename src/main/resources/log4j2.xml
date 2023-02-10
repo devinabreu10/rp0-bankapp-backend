@@ -2,7 +2,7 @@
 <Configuration>
 
 	<Properties>
-		<Property name="LOG_PATTERN">%d [%level] - %m%n</Property>
+		<Property name="LOG_PATTERN">%d [%level] - %m%n</Property> <!-- %C for dev.abreu.bankapp.classname -->
 		<!-- <Property name="LOG_PATTERN">%d{HH:mm:ss.SSS} %-5level - %msg%n</Property>  -->
 		<Property name="MAX_ROLLOVER">1</Property>
 		<Property name="FILE_SIZE">10MB</Property>
@@ -27,7 +27,7 @@
        
    </Appenders>
     
-   <Loggers> <!-- If I want a log file that shows more detailed messages like DEBUG and ERROR I can make a new Appender -->
+   <Loggers> <!-- If I want a log file that shows more detailed messages like DEBUG I can make a new Appender -->
        
        <Logger name="dev.abreu.bankapp" level="${LOG_LEVEL}" additivity="false">
        		<AppenderRef ref="bankAppRemakeLog"/>
