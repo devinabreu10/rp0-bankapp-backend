@@ -24,8 +24,6 @@ public class Customer {
 	// private Account account;
 	// List<Account> accounts = new ArrayList<>();
 	
-	// constructors
-	
 	// instantiates an empty Customer
 	public Customer() {
 		this.id = 0L;

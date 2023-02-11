@@ -1,8 +1,61 @@
 package dev.abreu.bankapp.model;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.jdbc.core.mapping.AggregateReference;
 import org.springframework.data.relational.core.mapping.Table;
 
 @Table(name = "ACCOUNTS")
 public class Account {
+
+	private @Id Long accountNumber;
+	private String accountType; //Checkings, Savings
+	private double accountBalance;
+	AggregateReference<Customer, Long> customerId;
+	
+	public Account() {
+		
+	}
+	
+	public Account(String accountType, double initialDeposit, AggregateReference<Customer, Long> customerId) {
+		this.accountType = accountType;
+		this.accountBalance = initialDeposit;
+		this.customerId = customerId;
+	}
+	
+	public Account(Long accountNumber, String accountType, double initialDeposit) {
+		this.accountNumber = accountNumber;
+		this.accountType = accountType;
+		this.accountBalance = initialDeposit;
+	}
+
+	public Long getAccountNumber() {
+		return accountNumber;
+	}
+
+	public void setAccountNumber(Long accountNumber) {
+		this.accountNumber = accountNumber;
+	}
+
+	public String getAccountType() {
+		return accountType;
+	}
+
+	public void setAccountType(String accountType) {
+		this.accountType = accountType;
+	}
+
+	public double getAccountBalance() {
+		return accountBalance;
+	}
+
+	public void setAccountBalance(double accountBalance) {
+		this.accountBalance = accountBalance;
+	}
+
+	@Override
+	public String toString() {
+		return "Account [accountNumber=" + accountNumber + ", accountType=" + accountType + ", accountBalance="
+				+ accountBalance + ", customerId=" + customerId + "]";
+	}
 
 }

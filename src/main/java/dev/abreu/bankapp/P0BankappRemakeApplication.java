@@ -6,12 +6,17 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.jdbc.core.mapping.AggregateReference;
 
 import dev.abreu.bankapp.model.Account;
+import dev.abreu.bankapp.model.Credit;
 import dev.abreu.bankapp.model.Customer;
+import dev.abreu.bankapp.model.Loan;
 import dev.abreu.bankapp.model.Transaction;
 import dev.abreu.bankapp.repository.AccountRepository;
+import dev.abreu.bankapp.repository.CreditRepository;
 import dev.abreu.bankapp.repository.CustomerRepository;
+import dev.abreu.bankapp.repository.LoanRepository;
 import dev.abreu.bankapp.repository.TransactionRepository;
 
 @SpringBootApplication
@@ -27,17 +32,24 @@ public class P0BankappRemakeApplication {
 	}
 	
 	@Bean
-	CommandLineRunner commandLineRunner(CustomerRepository customer, AccountRepository accounts, TransactionRepository transactions) {
+	CommandLineRunner commandLineRunner(CustomerRepository customer, AccountRepository accounts, LoanRepository loan, 
+										CreditRepository credit, TransactionRepository transactions) {
 		return args -> {
 			// When id is not null it treats it as an update as opposed to inserting a new record
-			customer.save(new Customer(null, "Bobby", "Abreu", "12345 MLB Dr.", "bobby123", "password"));
-			log.info("New CUSTOMER successfully saved!");
+//			customer.save(new Customer(null, "Bobby", "Abreu", "12345 MLB Dr.", "bobby123", "password"));
+//			log.info("New CUSTOMER successfully saved!");
 			
-//			accounts.save(new Account());
-//			log.info("New ACCOUNT successfully saved!");
+			AggregateReference<Customer, Long> bobby = AggregateReference.to(customer.save(new Customer(null, "Bobby", "Account", "12345 MLB Dr.", "bobby123", "password")).getId());
+			accounts.save(new Account("Checking", 100.00, bobby));
 			
-//			transactions.save(new Transaction());
-//			log.info("New TRANSACTION successfully saved!");
+			AggregateReference<Customer, Long> bobbyLoan = AggregateReference.to(customer.save(new Customer(null, "Bobby", "Loan", "12345 MLB Dr.", "bobby123", "password")).getId());
+			loan.save(new Loan(5000.00, 60, 0.06, bobbyLoan));
+			
+			AggregateReference<Customer, Long> bobbyCredit = AggregateReference.to(customer.save(new Customer(null, "Bobby", "Credit", "12345 MLB Dr.", "bobby123", "password")).getId());
+			credit.save(new Credit(0.00, 2000, bobbyCredit));
+			
+			
+			transactions.save(new Transaction()); // should customer id be linked to transaction?
 			
 		};
 	}
@@ -45,8 +57,14 @@ public class P0BankappRemakeApplication {
 	// Accidentally messed up my old project and had to restart it. I need to be mindful about pushing my code to github
 	
 	//Plan out things to accomplish after finishing everything above this
-	// TODO 1. Create Account and Transaction models (test saving through command runner)
-	// TODO 2. Populate Customer/Account/Transaction DAOs w/ CRUD operations using JDBC API (don't do impl yet)
-	// TODO 3. Link all 3 models using AggregateReference<> from Spring Data JDBC (test saving through command runner)
+	// DONE 1. Create Account and Transaction models AND/OR a possible 4th model
+	// DONE 2. Link all models using AggregateReference<> from Spring Data JDBC (Transaction is left to figure out)
+	// TODO 3. Create Service Layer for models using Spring Data JDBC
+	// TODO 4. Populate Customer/Account/Transaction DAOs w/ CRUD operations using JDBC API (don't do impl yet)
+	// TODO 5. Create DTO classes for models to be used in HTTP Requests
+	// TODO 6. Create Controller classes for models to configure API endpoints
+	
+	//Project Breakdown
+	//	API Endpoint (Postman) <---> Controller <-- Service <-- Dao (First need to establish db relationships and finalize models to finish Dao)
 	
 }
