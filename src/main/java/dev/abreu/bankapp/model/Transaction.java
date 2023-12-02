@@ -3,10 +3,9 @@ package dev.abreu.bankapp.model;
 import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.jdbc.core.mapping.AggregateReference;
 import org.springframework.data.relational.core.mapping.Table;
 
-@Table(name = "TRANSACTIONS")
+@Table(name = "transactions")
 public class Transaction {
 
 	private @Id Long transactionId;
@@ -14,19 +13,28 @@ public class Transaction {
 	private double transactionAmount;
 	private String transactionNotes;
 	private LocalDateTime transactionDate;
-	AggregateReference<Account, Long> accountId;
-	//AggregateReference<Loan, Long> loanId;
-	//AggregateReference<Credit, Long> creditId;
+	private Long accountId;
+//	AggregateReference<Account, Long> accountId;
+//	AggregateReference<Loan, Long> loanId;
+//	AggregateReference<Credit, Long> creditId;
 
 	public Transaction() {
 		
 	}
 	
-	public Transaction(String type, double amount, String notes, AggregateReference<Account, Long> accountId) {
+	public Transaction(String type, double amount, String notes, Long accountId/*AggregateReference<Account, Long> accountId*/) {
 		this.transactionType = type;
 		this.transactionAmount = amount;
 		this.transactionNotes = notes;
 		this.transactionDate = LocalDateTime.now();
+		this.accountId = accountId;
+	}
+
+	public Long getAccountId() {
+		return accountId;
+	}
+
+	public void setAccountId(Long accountId) {
 		this.accountId = accountId;
 	}
 

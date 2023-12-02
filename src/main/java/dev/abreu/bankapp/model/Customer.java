@@ -1,7 +1,5 @@
 package dev.abreu.bankapp.model;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
@@ -9,15 +7,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @Table(name = "customers")
 public class Customer {
 	
-	// variables/logger
-	
-	private static final Logger log = LogManager.getLogger(Customer.class); // probably don't need logger in this class
-	
-	static {
-		log.info("Testing log in Customer.class");
-	}
-	
-	private @Column(value="customer_id") @Id Long id; //Oracle seems to be somewhat case-sensitive
+	private @Column(value="customer_id") @Id Long id;
 	private String firstName;
 	private String lastName;
 	private String address;
