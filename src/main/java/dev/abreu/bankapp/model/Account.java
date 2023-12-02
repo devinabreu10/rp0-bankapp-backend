@@ -1,7 +1,6 @@
 package dev.abreu.bankapp.model;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.jdbc.core.mapping.AggregateReference;
 import org.springframework.data.relational.core.mapping.Table;
 
 @Table(name = "accounts")
@@ -10,13 +9,14 @@ public class Account {
 	private @Id Long accountNumber;
 	private String accountType; //Checkings, Savings
 	private double accountBalance;
-	AggregateReference<Customer, Long> customerId;
+	private Long customerId;
+//	AggregateReference<Customer, Long> customerId;
 	
 	public Account() {
 		
 	}
 	
-	public Account(String accountType, double initialDeposit, AggregateReference<Customer, Long> customerId) {
+	public Account(String accountType, double initialDeposit, Long customerId/*AggregateReference<Customer, Long> customerId*/) {
 		this.accountType = accountType;
 		this.accountBalance = initialDeposit;
 		this.customerId = customerId;
@@ -26,6 +26,16 @@ public class Account {
 		this.accountNumber = accountNumber;
 		this.accountType = accountType;
 		this.accountBalance = initialDeposit;
+	}
+	
+	
+
+	public Long getCustomerId() {
+		return customerId;
+	}
+
+	public void setCustomerId(Long customerId) {
+		this.customerId = customerId;
 	}
 
 	public Long getAccountNumber() {
