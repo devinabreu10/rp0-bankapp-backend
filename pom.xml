@@ -11,7 +11,7 @@
 	<groupId>dev.abreu</groupId>
 	<artifactId>p0-bankapp-remake</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>RESTful Bank Application</name>
+	<name>RP0 Bank Application</name>
 	<description>Remake of original Revature p0 Banking Application</description>
 	<properties>
 		<java.version>11</java.version>
@@ -61,8 +61,8 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.oracle.database.jdbc</groupId>
-			<artifactId>ojdbc8</artifactId>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		

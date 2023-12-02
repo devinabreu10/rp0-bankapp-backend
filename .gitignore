@@ -5,6 +5,8 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+application.properties
+
 # Compiled class file
 *.class
 
