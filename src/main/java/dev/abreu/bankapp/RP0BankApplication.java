@@ -17,12 +17,12 @@ import dev.abreu.bankapp.repository.LoanRepository;
 import dev.abreu.bankapp.repository.TransactionRepository;
 
 @SpringBootApplication
-public class P0BankappRemakeApplication {
+public class RP0BankApplication {
 	
-	private static final Logger log = LogManager.getLogger(P0BankappRemakeApplication.class);
+	private static final Logger log = LogManager.getLogger(RP0BankApplication.class);
 
 	public static void main(String[] args) {
-		SpringApplication.run(P0BankappRemakeApplication.class, args);
+		SpringApplication.run(RP0BankApplication.class, args);
 		System.out.println("\nRP0 Bank Application has STARTED...");
 		//log.info("INFO Testing log in P0 Bankapp Remake");
 		//log.debug("DEBUG Testing log in P0 Bankapp Remake");
