@@ -9,10 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.jdbc.core.mapping.AggregateReference;
 
 import dev.abreu.bankapp.model.Account;
-import dev.abreu.bankapp.model.Credit;
 import dev.abreu.bankapp.model.Customer;
-import dev.abreu.bankapp.model.Loan;
-import dev.abreu.bankapp.model.Transaction;
 import dev.abreu.bankapp.repository.AccountRepository;
 import dev.abreu.bankapp.repository.CreditRepository;
 import dev.abreu.bankapp.repository.CustomerRepository;
@@ -26,7 +23,7 @@ public class P0BankappRemakeApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(P0BankappRemakeApplication.class, args);
-		System.out.println("\nP0 Bankapp Remake Application has STARTED...");
+		System.out.println("\nRP0 Bank Application has STARTED...");
 		//log.info("INFO Testing log in P0 Bankapp Remake");
 		//log.debug("DEBUG Testing log in P0 Bankapp Remake");
 	}
@@ -37,19 +34,19 @@ public class P0BankappRemakeApplication {
 		return args -> {
 			// When id is not null it treats it as an update as opposed to inserting a new record
 //			customer.save(new Customer(null, "Bobby", "Abreu", "12345 MLB Dr.", "bobby123", "password"));
-//			log.info("New CUSTOMER successfully saved!");
+			log.info("New CUSTOMER successfully saved!");
 			
 			AggregateReference<Customer, Long> bobby = AggregateReference.to(customer.save(new Customer(null, "Bobby", "Account", "12345 MLB Dr.", "bobby123", "password")).getId());
 			accounts.save(new Account("Checking", 100.00, bobby));
 			
-			AggregateReference<Customer, Long> bobbyLoan = AggregateReference.to(customer.save(new Customer(null, "Bobby", "Loan", "12345 MLB Dr.", "bobby123", "password")).getId());
-			loan.save(new Loan(5000.00, 60, 0.06, bobbyLoan));
-			
-			AggregateReference<Customer, Long> bobbyCredit = AggregateReference.to(customer.save(new Customer(null, "Bobby", "Credit", "12345 MLB Dr.", "bobby123", "password")).getId());
-			credit.save(new Credit(0.00, 2000, bobbyCredit));
-			
-			
-			transactions.save(new Transaction()); // should customer id be linked to transaction?
+//			AggregateReference<Customer, Long> bobbyLoan = AggregateReference.to(customer.save(new Customer(null, "Bobby", "Loan", "12345 MLB Dr.", "bobby123", "password")).getId());
+//			loan.save(new Loan(5000.00, 60, 0.06, bobbyLoan));
+//			
+//			AggregateReference<Customer, Long> bobbyCredit = AggregateReference.to(customer.save(new Customer(null, "Bobby", "Credit", "12345 MLB Dr.", "bobby123", "password")).getId());
+//			credit.save(new Credit(0.00, 2000, bobbyCredit));
+//			
+//			
+//			transactions.save(new Transaction()); // should customer id be linked to transaction?
 			
 		};
 	}

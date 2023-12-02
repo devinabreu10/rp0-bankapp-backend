@@ -4,7 +4,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
+@Table(name = "customers")
 public class Customer {
 	
 	// variables/logger
@@ -15,12 +17,12 @@ public class Customer {
 		log.info("Testing log in Customer.class");
 	}
 	
-	private @Column(value="CUSTOMER_ID") @Id Long id; //Oracle seems to be somewhat case-sensitive
+	private @Column(value="customer_id") @Id Long id; //Oracle seems to be somewhat case-sensitive
 	private String firstName;
 	private String lastName;
 	private String address;
 	private String username;
-	private @Column(value="PASSWRD") String password;
+	private @Column(value="passwrd") String password;
 	// private Account account;
 	// List<Account> accounts = new ArrayList<>();
 	

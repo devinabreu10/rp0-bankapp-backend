@@ -4,7 +4,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.jdbc.core.mapping.AggregateReference;
 import org.springframework.data.relational.core.mapping.Table;
 
-@Table(name = "ACCOUNTS")
+@Table(name = "accounts")
 public class Account {
 
 	private @Id Long accountNumber;
