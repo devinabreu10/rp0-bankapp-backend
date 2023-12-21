@@ -1,5 +1,7 @@
 package dev.abreu.bankapp.dao;
 
+import org.springframework.stereotype.Repository;
+
 import dev.abreu.bankapp.model.Customer;
 
 /**
@@ -9,6 +11,7 @@ import dev.abreu.bankapp.model.Customer;
  * @author Devin Abreu
  *
  */
+@Repository
 public interface CustomerDao {
 	
 	/**
@@ -17,12 +20,12 @@ public interface CustomerDao {
 	 * @param username being searched
 	 * @return Customer associated with username
 	 */
-	public Customer findByUsername(String username);
+	Customer findByUsername(String username);
 	
-	public Customer saveCustomer(Customer customer);
+	void saveCustomer(Customer customer);
 	
-	public Customer updateCustomer(Customer customer);
+	void updateCustomer(Customer customer);
 	
-	public Customer deleteCustomer(Customer customer);
-	
+	void deleteCustomer(Long customerId);
+
 }
