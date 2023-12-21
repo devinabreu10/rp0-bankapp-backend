@@ -5,10 +5,15 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import dev.abreu.bankapp.dao.CustomerDao;
+import dev.abreu.bankapp.dao.impl.CustomerDaoImpl;
+
 @SpringBootApplication
 public class RP0BankApplication {
 	
 	private static final Logger log = LogManager.getLogger(RP0BankApplication.class);
+	
+	public static CustomerDao customerDao = new CustomerDaoImpl();
 
 	public static void main(String[] args) {
 		SpringApplication.run(RP0BankApplication.class, args);
@@ -16,6 +21,7 @@ public class RP0BankApplication {
 		log.info("INFO Testing log in P0 Bankapp Remake");
 //		log.debug("DEBUG Testing log in P0 Bankapp Remake");
 //		log.error("ERROR Testing log in P0 Bankapp Remake");
+		
 	}
 	
 //	@Bean
@@ -44,9 +50,10 @@ public class RP0BankApplication {
 	//Plan out things to accomplish after finishing everything above this
 	// DONE 1. Create Account and Transaction models AND/OR a possible 4th model
 	// DONE 2a. Link all models using AggregateReference<> from Spring Data JDBC (Transaction is left to figure out)
-	// TODO 2b. Create Dao layer for DB transactions between Customers, Accounts, and Transactions
+	// DONE 2b. Create Dao layer for DB transactions between Customers, Accounts, and Transactions
+	// DONE 2c. Tested Dao layer for DB transactions between Customers
 	// TODO 3. Create Service Layer for models using Spring JDBC Dao Methods
-	// TODO 4. Populate Customer/Account/Transaction DAOs w/ CRUD operations using JDBC API (don't do impl yet)
+	// TODO 4. Populate Customer/Account/Transaction DAOs w/ CRUD operations using JDBC API
 	// TODO 5. Create DTO classes for models to be used in HTTP Requests
 	// TODO 6. Create Controller classes for models to configure API endpoints
 	
