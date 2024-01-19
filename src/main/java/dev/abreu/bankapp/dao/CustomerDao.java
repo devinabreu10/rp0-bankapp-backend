@@ -1,17 +1,16 @@
 package dev.abreu.bankapp.dao;
 
-import org.springframework.stereotype.Repository;
+import java.util.List;
 
 import dev.abreu.bankapp.model.Customer;
 
 /**
- * Along with using Spring Data JDBC I will also be using the JDBC API
- * for extra practice with both methods
+ * This interface provides the basic CRUD operations for
+ * the Customer model
  * 
  * @author Devin Abreu
  *
  */
-@Repository
 public interface CustomerDao {
 	
 	/**
@@ -22,9 +21,13 @@ public interface CustomerDao {
 	 */
 	Customer findByUsername(String username);
 	
-	void saveCustomer(Customer customer);
+	List<Customer> findAllCustomers();
 	
-	void updateCustomer(Customer customer);
+	boolean existsByUsername(String username);
+	
+	Customer saveCustomer(Customer customer);
+	
+	Customer updateCustomer(Customer customer);
 	
 	void deleteCustomer(Long customerId);
 
