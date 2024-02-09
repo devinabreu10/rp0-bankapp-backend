@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import dev.abreu.bankapp.exception.UsernameTakenException;
 import dev.abreu.bankapp.model.Customer;
 import dev.abreu.bankapp.service.CustomerService;
+import io.micrometer.common.util.StringUtils;
 
 @RestController
 @RequestMapping(path = "/customer")
@@ -43,11 +44,13 @@ public class CustomerController {
 		
 		Customer customer = customerService.getCustomerByUsername(username);
 		
-		if(customer != null) {
-			log.info("The following customer was successfully retrieved: {}", customer);
+		if(StringUtils.isNotBlank(customer.getUsername())) {
+			log.info("The customer was successfully retrieved...");
+//			CustomerDTO dto = mapper.toDto(customer);
 			return ResponseEntity.ok(customer); //sends 200 status
 		} else {
-			log.info("Customer with the following username: {}, does not exist", username);
+			log.error("Customer with the following username does not exist: {}", username);
+			//TODO I want some message to be shown in response body instead of nothing
 			return ResponseEntity.notFound().build(); //sends 404 status
 		}
 	}
@@ -74,6 +77,9 @@ public class CustomerController {
 	public ResponseEntity<Customer> saveCustomer(@RequestBody Customer customer) {
 		log.info("Performing POST method to save new Customer: {}", customer);
 		
+		//make sure that both DTO and domain don't need to know about each other by using a mapper class
+//		Customer customer = mapper.toCustomer(customerDTO);
+		
 		try {
 			customer = customerService.registerNewCustomer(customer);
 		} catch(UsernameTakenException e) {
@@ -86,7 +92,6 @@ public class CustomerController {
 	
 	/**
 	 * Update customer details by id
-	 * (TODO: Finish this method)
 	 * 
 	 * @param id
 	 * @param customer
@@ -96,26 +101,55 @@ public class CustomerController {
 	public ResponseEntity<Customer> updateCustomer(@PathVariable("id") long id, @RequestBody Customer customer) {
 		log.info("Performing PUT method to update details for customer with id: {}", id);
 		
-		return null;
+		if(customer.getId() != id) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).build();
+		}
+		
+		customer = customerService.updateCustomerDetails(customer);
+		
+		if(customer != null) {
+			return ResponseEntity.ok(customer);
+		} else {
+			return ResponseEntity.badRequest().build();
+		}
+
+	}
+	
+	/**
+	 * Remove customer from database by username
+	 * 
+	 * @param username
+	 */
+	@DeleteMapping(path = "/delete/user/{username}")
+	public ResponseEntity<String> deleteCustomerByUsername(@PathVariable("username") String username) {
+		log.info("Performing DELETE method for customer with username: {}", username);
+		
+		boolean success = customerService.deleteCustomerByUsername(username);
+		
+		if(Boolean.TRUE.equals(success)) {
+			return new ResponseEntity<>("Customer successfully deleted...", HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>("Customer could not be deleted, please check backend...", HttpStatus.CONFLICT);
+		}
 	}
 	
 
 	/**
 	 * Remove customer from database by id 
-	 * (TODO: Finish this method)
 	 * 
 	 * @param id
 	 */
-	@DeleteMapping(path = "/delete/{id}")
-	public void deleteCustomer(@PathVariable("id") long id) {
+	@DeleteMapping(path = "/delete/id/{id}")
+	public ResponseEntity<String> deleteCustomerById(@PathVariable("id") Long id) {
 		log.info("Performing DELETE method for customer with id: {}", id);
 		
-		customerService.deleteCustomer(id);
+		boolean success = customerService.deleteCustomerById(id);
 		
+		if(Boolean.TRUE.equals(success)) {
+			return new ResponseEntity<>("Customer successfully deleted...", HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>("Customer could not be deleted, please check backend...", HttpStatus.CONFLICT);
+		}
 	}
-	
-	
-	
-	
 	
 }

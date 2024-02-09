@@ -32,7 +32,7 @@ public class RP0BankApplication {
 			customerDao.saveCustomer(new Customer(null, "Jolene", "FitzGilbert", "4 Sycamore Circle", "jfitzgilbert0", "bP6>#)NTV?qgg"));
 			customerDao.saveCustomer(new Customer(null, "Josefa", "Merwood", "23569 Bultman Drive", "jmerwood1", "pK9%b?igvw"));
 			customerDao.saveCustomer(new Customer(null, "Ronnie", "Voak", "7 Ridge Oak Terrace", "rvoak3", "pN9,Z7#mC"));
-			log.info("New customers created!");
+			log.info("Adding customers if they don't already exist...");
 		};
 	}
 

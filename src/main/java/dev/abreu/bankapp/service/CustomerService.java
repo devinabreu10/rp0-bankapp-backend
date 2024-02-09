@@ -28,6 +28,14 @@ public interface CustomerService {
 	 */
 	Customer getCustomerByUsername(String username);
 	
+	/**
+	 * Retrieve existing Customer based on customerId
+	 * 
+	 * @param customerId
+	 * @return Customer
+	 */
+	Customer getCustomerById(Long customerId);
+	
 	
 	/**
 	 * Retrieve a list of all customers present in database
@@ -44,13 +52,21 @@ public interface CustomerService {
 	 */
 	Customer updateCustomerDetails(Customer customer);
 	
+	/**
+	 * remove Customer based on username
+	 * 
+	 * @param customerId
+	 * @return boolean
+	 */
+	boolean deleteCustomerByUsername(String username);
 	
 	/**
 	 * remove Customer based on id
 	 * 
 	 * @param customerId
+	 * @return boolean
 	 */
-	void deleteCustomer(long customerId);
+	boolean deleteCustomerById(Long customerId);
 	
 	
 	/**

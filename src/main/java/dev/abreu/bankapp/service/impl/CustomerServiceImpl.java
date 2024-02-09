@@ -45,6 +45,12 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 	
 	@Override
+	public Customer getCustomerById(Long customerId) {
+		log.info("Fetching customer with ID: {}", customerId);
+		return customerDao.findById(customerId);
+	}
+	
+	@Override
 	public List<Customer> getAllCustomers() {
 		log.info("Fetching all customers...");
 		return customerDao.findAllCustomers();
@@ -55,11 +61,31 @@ public class CustomerServiceImpl implements CustomerService {
 		log.info("Updating customer details for username: {}", customer.getUsername());
 		return customerDao.updateCustomer(customer);
 	}
+	
+	@Override
+	public boolean deleteCustomerByUsername(String username) {
+		log.info("Deleting customer with username: {}", username);
+		
+		boolean success = false;
+		
+		if(customerDao.existsByUsername(username)) {
+			success = customerDao.deleteCustomerByUsername(username);
+		}
+		
+		return success;
+	}
 
 	@Override
-	public void deleteCustomer(long customerId) {
+	public boolean deleteCustomerById(Long customerId) {
 		log.info("Deleting customer with id: {}", customerId);
-		customerDao.deleteCustomer(customerId);
+		
+		boolean success = false;
+		
+		if(customerDao.findById(customerId).getId() != 0) {
+			success = customerDao.deleteCustomerById(customerId);
+		}
+		
+		return success;
 	}
 
 	@Override
