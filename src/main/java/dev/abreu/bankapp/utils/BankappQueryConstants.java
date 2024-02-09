@@ -10,7 +10,9 @@ public class BankappQueryConstants {
 	
 	private BankappQueryConstants() {}
 	
-	public static final String SELECT_CUSTOMERS_QUERY = "SELECT customer_id,first_name,last_name,address,username,passwrd FROM customers WHERE username=?";
+	public static final String SELECT_CUSTOMERS_BY_USERNAME_QUERY = "SELECT customer_id,first_name,last_name,address,username,passwrd FROM customers WHERE username=?";
+	
+	public static final String SELECT_CUSTOMERS_BY_ID_QUERY = "SELECT customer_id,first_name,last_name,address,username,passwrd FROM customers WHERE customer_id=?";
 	
 	public static final String SELECT_ALL_CUSTOMERS_QUERY = "SELECT * FROM customers";
 	
@@ -18,5 +20,7 @@ public class BankappQueryConstants {
 
 	public static final String UPDATE_CUSTOMER_QUERY = "UPDATE customers SET first_name=?,last_name=?,address=?,username=?,passwrd=? WHERE customer_id=?";
 
-	public static final String DELETE_CUSTOMER_QUERY = "DELETE from customers WHERE customer_id=?";
+	public static final String DELETE_CUSTOMER_BY_USERNAME_QUERY = "DELETE from customers WHERE username=?";
+	
+	public static final String DELETE_CUSTOMER_BY_ID_QUERY = "DELETE from customers WHERE customer_id=?";
 }

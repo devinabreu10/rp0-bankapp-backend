@@ -21,6 +21,8 @@ public interface CustomerDao {
 	 */
 	Customer findByUsername(String username);
 	
+	Customer findById(Long customerId);
+	
 	List<Customer> findAllCustomers();
 	
 	boolean existsByUsername(String username);
@@ -29,6 +31,8 @@ public interface CustomerDao {
 	
 	Customer updateCustomer(Customer customer);
 	
-	void deleteCustomer(Long customerId);
+	boolean deleteCustomerByUsername(String username);
+	
+	boolean deleteCustomerById(Long customerId);
 
 }

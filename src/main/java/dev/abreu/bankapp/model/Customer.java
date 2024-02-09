@@ -1,5 +1,8 @@
 package dev.abreu.bankapp.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
@@ -13,8 +16,7 @@ public class Customer {
 	private String address;
 	private String username;
 	private @Column(value="passwrd") String password;
-	// private Account account;
-	// List<Account> accounts = new ArrayList<>();
+	private List<Account> accounts;
 	
 	// instantiates an empty Customer
 	public Customer() {
@@ -24,7 +26,7 @@ public class Customer {
 		this.address = "";
 		this.username = "";
 		this.password = "";
-		//this.setAccount(account);
+		this.accounts = new ArrayList<>();
 	}
 	
 	public Customer(Long id, String firstName, String lastName, String address, String username, String password) {
@@ -34,7 +36,16 @@ public class Customer {
 		this.address = address;
 		this.username = username;
 		this.password = password;
-		//this.setAccount(account) // initial account associated with Customer
+	}
+	
+	public Customer(Long id, String firstName, String lastName, String address, String username, String password, List<Account> accounts) {
+		this.id = id;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.address = address;
+		this.username = username;
+		this.password = password;
+		this.accounts = accounts; // initial account associated with Customer
 	}
 	
 	public Customer(String username, String password) {
@@ -89,11 +100,19 @@ public class Customer {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+	
+	public List<Account> getAccounts() {
+		return accounts;
+	}
+
+	public void setAccounts(List<Account> accounts) {
+		this.accounts = accounts;
+	}
 
 	@Override
 	public String toString() {
 		return "Customer [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", address=" + address
-				+ ", username=" + username + ", password=" + password + "]";
+				+ ", username=" + username + ", password=" + password + ", accounts=" + accounts + "]";
 	}
 
 }

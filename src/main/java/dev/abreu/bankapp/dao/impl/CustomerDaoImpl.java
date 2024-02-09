@@ -29,9 +29,36 @@ public class CustomerDaoImpl implements CustomerDao {
 		Customer customer = new Customer();
 		
 		try(Connection conn = connUtil.getConnection(); 
-				PreparedStatement stmt = conn.prepareStatement(BankappQueryConstants.SELECT_CUSTOMERS_QUERY);) {
+				PreparedStatement stmt = conn.prepareStatement(BankappQueryConstants.SELECT_CUSTOMERS_BY_USERNAME_QUERY);) {
 			
 			stmt.setString(1, username);
+			
+			ResultSet resultSet = stmt.executeQuery();
+			
+			if(resultSet.next()) {
+				customer.setId(resultSet.getLong("customer_id"));
+				customer.setFirstName(resultSet.getString("first_name"));
+				customer.setLastName(resultSet.getString("last_name"));
+				customer.setUsername(resultSet.getString("username"));
+				customer.setPassword(resultSet.getString("passwrd"));
+				customer.setAddress(resultSet.getString("address"));
+			}
+			
+		} catch (SQLException e) {
+			log.error("SQLException Thrown: {}", e.getMessage());
+		}
+		
+		return customer;
+	}
+	
+	@Override
+	public Customer findById(Long customerId) {
+		Customer customer = new Customer();
+		
+		try(Connection conn = connUtil.getConnection(); 
+				PreparedStatement stmt = conn.prepareStatement(BankappQueryConstants.SELECT_CUSTOMERS_BY_ID_QUERY);) {
+			
+			stmt.setLong(1, customerId);
 			
 			ResultSet resultSet = stmt.executeQuery();
 			
@@ -82,10 +109,16 @@ public class CustomerDaoImpl implements CustomerDao {
 		boolean usernameExists = false;
 		
 		try(Connection conn = connUtil.getConnection(); 
-				PreparedStatement prepStmt = conn.prepareStatement(BankappQueryConstants.SELECT_CUSTOMERS_QUERY)) {
+				PreparedStatement prepStmt = conn.prepareStatement(BankappQueryConstants.SELECT_CUSTOMERS_BY_USERNAME_QUERY)) {
 			
 			prepStmt.setString(1, username);
-			usernameExists = prepStmt.execute();
+			
+			ResultSet resultSet = prepStmt.executeQuery();
+			
+			if(resultSet.isBeforeFirst()) {
+				usernameExists = true;
+			}
+			
 			
 		} catch (SQLException e) {
 			log.error("SQLException Thrown: {}", e.getMessage());
@@ -144,29 +177,67 @@ public class CustomerDaoImpl implements CustomerDao {
 
 		return customer;
 	}
-
+	
 	@Override
-	public void deleteCustomer(Long customerId) {
+	public boolean deleteCustomerByUsername(String username) {
+		log.info("Entering deleteCustomerByUsername method...");
 		
-		log.info("Entering deleteCustomer method...");
+		boolean success = false;
 		
 		try(Connection conn = connUtil.getConnection(); 
-				PreparedStatement stmt = conn.prepareStatement(BankappQueryConstants.DELETE_CUSTOMER_QUERY);) {
+				PreparedStatement stmt = conn.prepareStatement(BankappQueryConstants.DELETE_CUSTOMER_BY_USERNAME_QUERY);) {
 			conn.setAutoCommit(false);
 			
-			stmt.setLong(1, customerId);
+			stmt.setString(1, username);
 
-			log.info("Delete Customer Query String: {}", BankappQueryConstants.DELETE_CUSTOMER_QUERY);
+			log.info("Delete Customer Query String: {}", BankappQueryConstants.DELETE_CUSTOMER_BY_USERNAME_QUERY);
 			int deleteStatus = stmt.executeUpdate();
-			if(deleteStatus<=1)
+			
+			if(deleteStatus <= 1) {
 				conn.commit();
-			else
+				log.info("{} Row(s) Deleted", deleteStatus);
+				success = true;
+			} else {
 				conn.rollback();
-			log.info("{} Row(s) Deleted", deleteStatus);
+				log.info("There was an issue with deleteCustomer, rolling back changes...");
+			}
 			
 		} catch (SQLException e) {
 			log.error("SQLException Caught: {}", e.getMessage());
 		}
+		
+		return success;
+	}
+
+	@Override
+	public boolean deleteCustomerById(Long customerId) {
+		log.info("Entering deleteCustomer method...");
+		
+		boolean success = false;
+		
+		try(Connection conn = connUtil.getConnection(); 
+				PreparedStatement stmt = conn.prepareStatement(BankappQueryConstants.DELETE_CUSTOMER_BY_ID_QUERY);) {
+			conn.setAutoCommit(false);
+			
+			stmt.setLong(1, customerId);
+
+			log.info("Delete Customer Query String: {}", BankappQueryConstants.DELETE_CUSTOMER_BY_ID_QUERY);
+			int deleteStatus = stmt.executeUpdate();
+			
+			if(deleteStatus <= 1) {
+				conn.commit();
+				log.info("{} Row(s) Deleted", deleteStatus);
+				success = true;
+			} else {
+				conn.rollback();
+				log.info("There was an issue with deleteCustomer, rolling back changes...");
+			}
+			
+		} catch (SQLException e) {
+			log.error("SQLException Caught: {}", e.getMessage());
+		}
+		
+		return success;
 	}
 
 }
