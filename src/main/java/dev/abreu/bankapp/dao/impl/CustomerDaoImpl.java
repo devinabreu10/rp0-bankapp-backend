@@ -1,5 +1,13 @@
 package dev.abreu.bankapp.dao.impl;
 
+import static dev.abreu.bankapp.utils.BankappQueryConstants.CREATE_CUSTOMER_QUERY;
+import static dev.abreu.bankapp.utils.BankappQueryConstants.DELETE_CUSTOMER_BY_ID_QUERY;
+import static dev.abreu.bankapp.utils.BankappQueryConstants.DELETE_CUSTOMER_BY_USERNAME_QUERY;
+import static dev.abreu.bankapp.utils.BankappQueryConstants.SELECT_ALL_CUSTOMERS_QUERY;
+import static dev.abreu.bankapp.utils.BankappQueryConstants.SELECT_CUSTOMERS_BY_ID_QUERY;
+import static dev.abreu.bankapp.utils.BankappQueryConstants.SELECT_CUSTOMERS_BY_USERNAME_QUERY;
+import static dev.abreu.bankapp.utils.BankappQueryConstants.UPDATE_CUSTOMER_QUERY;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,7 +22,6 @@ import org.springframework.stereotype.Repository;
 
 import dev.abreu.bankapp.dao.CustomerDao;
 import dev.abreu.bankapp.model.Customer;
-import dev.abreu.bankapp.utils.BankappQueryConstants;
 import dev.abreu.bankapp.utils.ConnectionUtil;
 
 @Repository
@@ -29,7 +36,7 @@ public class CustomerDaoImpl implements CustomerDao {
 		Customer customer = new Customer();
 		
 		try(Connection conn = connUtil.getConnection(); 
-				PreparedStatement stmt = conn.prepareStatement(BankappQueryConstants.SELECT_CUSTOMERS_BY_USERNAME_QUERY);) {
+				PreparedStatement stmt = conn.prepareStatement(SELECT_CUSTOMERS_BY_USERNAME_QUERY);) {
 			
 			stmt.setString(1, username);
 			
@@ -56,7 +63,7 @@ public class CustomerDaoImpl implements CustomerDao {
 		Customer customer = new Customer();
 		
 		try(Connection conn = connUtil.getConnection(); 
-				PreparedStatement stmt = conn.prepareStatement(BankappQueryConstants.SELECT_CUSTOMERS_BY_ID_QUERY);) {
+				PreparedStatement stmt = conn.prepareStatement(SELECT_CUSTOMERS_BY_ID_QUERY);) {
 			
 			stmt.setLong(1, customerId);
 			
@@ -84,7 +91,7 @@ public class CustomerDaoImpl implements CustomerDao {
 		
 		try(Connection conn = connUtil.getConnection(); Statement stmt = conn.createStatement();) {
 
-			ResultSet resultSet = stmt.executeQuery(BankappQueryConstants.SELECT_ALL_CUSTOMERS_QUERY);
+			ResultSet resultSet = stmt.executeQuery(SELECT_ALL_CUSTOMERS_QUERY);
 			
 			while(resultSet.next()) {
 				Customer customer = new Customer();
@@ -109,7 +116,7 @@ public class CustomerDaoImpl implements CustomerDao {
 		boolean usernameExists = false;
 		
 		try(Connection conn = connUtil.getConnection(); 
-				PreparedStatement prepStmt = conn.prepareStatement(BankappQueryConstants.SELECT_CUSTOMERS_BY_USERNAME_QUERY)) {
+				PreparedStatement prepStmt = conn.prepareStatement(SELECT_CUSTOMERS_BY_USERNAME_QUERY)) {
 			
 			prepStmt.setString(1, username);
 			
@@ -133,7 +140,7 @@ public class CustomerDaoImpl implements CustomerDao {
 		log.info("Entering saveCustomer method...");
 		
 		try(Connection conn = connUtil.getConnection(); 
-				PreparedStatement stmt = conn.prepareStatement(BankappQueryConstants.CREATE_CUSTOMER_QUERY);) {
+				PreparedStatement stmt = conn.prepareStatement(CREATE_CUSTOMER_QUERY);) {
 			
 			stmt.setString(1, customer.getFirstName());
 			stmt.setString(2, customer.getLastName());
@@ -141,7 +148,7 @@ public class CustomerDaoImpl implements CustomerDao {
 			stmt.setString(4, customer.getUsername());
 			stmt.setString(5, customer.getPassword());
 			
-			log.info("Create Customer Query String: {}", BankappQueryConstants.CREATE_CUSTOMER_QUERY);
+			log.info("Create Customer Query String: {}", CREATE_CUSTOMER_QUERY);
 			int rowsAffected = stmt.executeUpdate();
 			log.info("{} Row(s) Affected", rowsAffected);
 			
@@ -158,7 +165,7 @@ public class CustomerDaoImpl implements CustomerDao {
 		log.info("Entering updateCustomer method...");
 		
 		try(Connection conn = connUtil.getConnection(); 
-				PreparedStatement stmt = conn.prepareStatement(BankappQueryConstants.UPDATE_CUSTOMER_QUERY);) {
+				PreparedStatement stmt = conn.prepareStatement(UPDATE_CUSTOMER_QUERY);) {
 			
 			stmt.setLong(6, customer.getId());
 			stmt.setString(1, customer.getFirstName());
@@ -167,7 +174,7 @@ public class CustomerDaoImpl implements CustomerDao {
 			stmt.setString(4, customer.getUsername());
 			stmt.setString(5, customer.getPassword());
 			
-			log.info("Update Customer Query String: {}", BankappQueryConstants.UPDATE_CUSTOMER_QUERY);
+			log.info("Update Customer Query String: {}", UPDATE_CUSTOMER_QUERY);
 			int updateStatus = stmt.executeUpdate();
 			log.info("{} Row(s) Updated", updateStatus);
 			
@@ -185,12 +192,12 @@ public class CustomerDaoImpl implements CustomerDao {
 		boolean success = false;
 		
 		try(Connection conn = connUtil.getConnection(); 
-				PreparedStatement stmt = conn.prepareStatement(BankappQueryConstants.DELETE_CUSTOMER_BY_USERNAME_QUERY);) {
+				PreparedStatement stmt = conn.prepareStatement(DELETE_CUSTOMER_BY_USERNAME_QUERY);) {
 			conn.setAutoCommit(false);
 			
 			stmt.setString(1, username);
 
-			log.info("Delete Customer Query String: {}", BankappQueryConstants.DELETE_CUSTOMER_BY_USERNAME_QUERY);
+			log.info("Delete Customer Query String: {}", DELETE_CUSTOMER_BY_USERNAME_QUERY);
 			int deleteStatus = stmt.executeUpdate();
 			
 			if(deleteStatus <= 1) {
@@ -216,12 +223,12 @@ public class CustomerDaoImpl implements CustomerDao {
 		boolean success = false;
 		
 		try(Connection conn = connUtil.getConnection(); 
-				PreparedStatement stmt = conn.prepareStatement(BankappQueryConstants.DELETE_CUSTOMER_BY_ID_QUERY);) {
+				PreparedStatement stmt = conn.prepareStatement(DELETE_CUSTOMER_BY_ID_QUERY);) {
 			conn.setAutoCommit(false);
 			
 			stmt.setLong(1, customerId);
 
-			log.info("Delete Customer Query String: {}", BankappQueryConstants.DELETE_CUSTOMER_BY_ID_QUERY);
+			log.info("Delete Customer Query String: {}", DELETE_CUSTOMER_BY_ID_QUERY);
 			int deleteStatus = stmt.executeUpdate();
 			
 			if(deleteStatus <= 1) {

@@ -38,7 +38,7 @@ public class CustomerController {
 	 * @param username
 	 * @return customer
 	 */
-	@GetMapping(path = "/get/{username}")
+	@GetMapping(path = "/get/user/{username}")
 	public ResponseEntity<Customer> getCustomerByUsername(@PathVariable("username") String username) {
 		log.info("Performing GET method from inside getCustomerByUsername()");
 		
@@ -52,6 +52,28 @@ public class CustomerController {
 			log.error("Customer with the following username does not exist: {}", username);
 			//TODO I want some message to be shown in response body instead of nothing
 			return ResponseEntity.notFound().build(); //sends 404 status
+		}
+	}
+	
+	
+	/**
+	 * Retrieves a Customer based on their id
+	 * 
+	 * @param id
+	 * @return Customer
+	 */
+	@GetMapping("/get/id/{id}")
+	public ResponseEntity<Customer> getCustomerById(@PathVariable("id") Long id) {
+		log.info("Performing GET method from inside getCustomerById()...");
+		
+		Customer customer = customerService.getCustomerById(id);
+		
+		if(customer.getId() != 0) {
+			log.info("Customer with id {} was successfully retrieved...", id);
+			return ResponseEntity.ok(customer);
+		} else {
+			log.error("Customer with id {} does not exist...", id);
+			return ResponseEntity.notFound().build();
 		}
 	}
 	
@@ -98,7 +120,7 @@ public class CustomerController {
 	 * @return customer
 	 */
 	@PutMapping(path = "/update/{id}")
-	public ResponseEntity<Customer> updateCustomer(@PathVariable("id") long id, @RequestBody Customer customer) {
+	public ResponseEntity<Customer> updateCustomer(@PathVariable("id") Long id, @RequestBody Customer customer) {
 		log.info("Performing PUT method to update details for customer with id: {}", id);
 		
 		if(customer.getId() != id) {

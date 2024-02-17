@@ -10,9 +10,11 @@ public class BankappConstants {
 	
 	private BankappConstants() {}
 	
+	private static final String CHECKING_ACCOUNT = "Checking";
+	private static final String SAVINGS_ACCOUNT = "Savings";
 	private static final String ACCOUNT_DEPOSIT = "Account Deposit";
 	private static final String ACCOUNT_WITHDRAW = "Account Withdraw";
-	private static final String LOAN_PAYMENT = "Loan Payment";
-	private static final String CREDIT_PAYMENT = "Credit Card Payment";
+//	private static final String LOAN_PAYMENT = "Loan Payment";
+//	private static final String CREDIT_PAYMENT = "Credit Card Payment";
 
 }
