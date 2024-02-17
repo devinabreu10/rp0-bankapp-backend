@@ -23,4 +23,8 @@ public class BankappQueryConstants {
 	public static final String DELETE_CUSTOMER_BY_USERNAME_QUERY = "DELETE from customers WHERE username=?";
 	
 	public static final String DELETE_CUSTOMER_BY_ID_QUERY = "DELETE from customers WHERE customer_id=?";
+	
+	public static final String QUERY = "";
+	
+	public static final String SELECT_ACCOUNTS_BY_ACCTNO_QUERY = "SELECT * FROM accounts WHERE account_number=?";
 }

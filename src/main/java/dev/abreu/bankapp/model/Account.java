@@ -22,10 +22,11 @@ public class Account {
 		this.customerId = customerId;
 	}
 	
-	public Account(Long accountNumber, String accountType, double initialDeposit) {
+	public Account(Long accountNumber, String accountType, double initialDeposit, Long customerId) {
 		this.accountNumber = accountNumber;
 		this.accountType = accountType;
 		this.accountBalance = initialDeposit;
+		this.customerId = customerId;
 	}
 	
 	

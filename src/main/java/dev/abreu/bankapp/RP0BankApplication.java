@@ -7,7 +7,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import dev.abreu.bankapp.dao.CustomerDao;
+import dev.abreu.bankapp.dao.AccountDao;
+import dev.abreu.bankapp.dao.impl.AccountDaoImpl;
 import dev.abreu.bankapp.dao.impl.CustomerDaoImpl;
+import dev.abreu.bankapp.model.Account;
 import dev.abreu.bankapp.model.Customer;
 
 @SpringBootApplication
@@ -16,6 +19,7 @@ public class RP0BankApplication {
 	private static final Logger log = LogManager.getLogger(RP0BankApplication.class);
 	
 	public static CustomerDao customerDao = new CustomerDaoImpl();
+	public static AccountDao accountDao = new AccountDaoImpl();
 
 	public static void main(String[] args) {
 		SpringApplication.run(RP0BankApplication.class, args);
@@ -33,6 +37,9 @@ public class RP0BankApplication {
 			customerDao.saveCustomer(new Customer(null, "Josefa", "Merwood", "23569 Bultman Drive", "jmerwood1", "pK9%b?igvw"));
 			customerDao.saveCustomer(new Customer(null, "Ronnie", "Voak", "7 Ridge Oak Terrace", "rvoak3", "pN9,Z7#mC"));
 			log.info("Adding customers if they don't already exist...");
+			
+			Account account = accountDao.findAccountByAcctNo(2L);
+			log.info("findAccountByAcctNo: {}", account);
 		};
 	}
 
