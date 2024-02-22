@@ -1,11 +1,14 @@
 package dev.abreu.bankapp.dao.impl;
 
+import static dev.abreu.bankapp.utils.BankappQueryConstants.CREATE_NEW_ACCOUNT_QUERY;
 import static dev.abreu.bankapp.utils.BankappQueryConstants.SELECT_ACCOUNTS_BY_ACCTNO_QUERY;
+import static dev.abreu.bankapp.utils.BankappQueryConstants.SELECT_ALL_ACCOUNTS_BY_USERNAME_QUERY;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -50,14 +53,55 @@ public class AccountDaoImpl implements AccountDao {
 
 	@Override
 	public List<Account> findAllAccountsByUsername(String username) {
-		// TODO Auto-generated method stub
-		return null;
+		List<Account> accountsList = new ArrayList<>();
+		Account account;
+		
+		try(Connection conn = connUtil.getConnection(); 
+				PreparedStatement prepStmt = conn.prepareStatement(SELECT_ALL_ACCOUNTS_BY_USERNAME_QUERY)) {
+			
+			prepStmt.setString(1, username);
+			
+			ResultSet rs = prepStmt.executeQuery();
+			
+			while (rs.next()) {
+				account = new Account();
+				account.setAccountNumber(rs.getLong("acc_no"));
+				account.setAccountType(rs.getString("acc_typ"));
+				account.setAccountBalance(rs.getDouble("acc_bal"));
+				account.setCustomerId(rs.getLong("cust_id"));
+				
+				accountsList.add(account);
+			}
+			
+		} catch(SQLException e) {
+			log.error("SQLException caught: {}", e.getMessage());		
+		}
+		
+		
+		return accountsList;
 	}
 
 	@Override
 	public Account saveAccount(Account account) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		log.info("Entering saveAccount method...");
+		
+		try(Connection conn = connUtil.getConnection(); 
+				PreparedStatement stmt = conn.prepareStatement(CREATE_NEW_ACCOUNT_QUERY);) {
+			
+			stmt.setString(1, account.getAccountType());
+			stmt.setDouble(2, account.getAccountBalance());
+			stmt.setLong(3, account.getCustomerId());
+			
+			log.info("Create Account Query String: {}", CREATE_NEW_ACCOUNT_QUERY);
+			int rowsAffected = stmt.executeUpdate();
+			log.info("{} Row(s) Affected", rowsAffected);
+			
+		} catch (SQLException e) {
+			log.error("SQLException Caught: {}", e.getMessage());
+		}
+		
+		return account;
 	}
 
 	@Override
