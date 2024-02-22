@@ -30,7 +30,6 @@ public class Account {
 	}
 	
 	
-
 	public Long getCustomerId() {
 		return customerId;
 	}
@@ -61,6 +60,14 @@ public class Account {
 
 	public void setAccountBalance(double accountBalance) {
 		this.accountBalance = accountBalance;
+	}
+	
+	public void incrementBalance(double amount) {
+		this.accountBalance += amount;
+	}
+	
+	public void decrementBalance(double amount) {
+		this.accountBalance -= amount;
 	}
 
 	@Override

@@ -27,4 +27,9 @@ public class BankappQueryConstants {
 	public static final String QUERY = "";
 	
 	public static final String SELECT_ACCOUNTS_BY_ACCTNO_QUERY = "SELECT * FROM accounts WHERE account_number=?";
+	
+	public static final String SELECT_ALL_ACCOUNTS_BY_USERNAME_QUERY = "SELECT b.username,a.customer_id as cust_id,a.account_number as acc_no,a.account_type as acc_typ,a.account_balance as acc_bal "
+						+ "FROM accounts a JOIN customers b ON a.customer_id = b.customer_id WHERE b.username=?";
+
+	public static final String CREATE_NEW_ACCOUNT_QUERY = "INSERT into accounts (account_number,account_type,account_balance,customer_id) VALUES (default,?,?,?)";
 }
