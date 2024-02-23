@@ -1,0 +1,20 @@
+package dev.abreu.bankapp.exception;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+import dev.abreu.bankapp.utils.ResourceType;
+
+@ResponseStatus(value = HttpStatus.NOT_FOUND)
+public class ResourceNotFoundException extends RuntimeException {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 9177986844664132597L;
+	
+	public ResourceNotFoundException(ResourceType resourceType, Object identifier) {
+		super(resourceType.getResourceName() + " not found with identifier: " + identifier);
+	}
+
+}

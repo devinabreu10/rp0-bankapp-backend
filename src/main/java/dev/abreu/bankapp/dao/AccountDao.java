@@ -1,6 +1,7 @@
 package dev.abreu.bankapp.dao;
 
 import java.util.List;
+import java.util.Optional;
 
 import dev.abreu.bankapp.model.Account;
 
@@ -13,7 +14,7 @@ import dev.abreu.bankapp.model.Account;
  */
 public interface AccountDao {
 	
-	Account findAccountByAcctNo(Long acctNo);
+	Optional<Account> findAccountByAcctNo(Long acctNo);
 	
 	List<Account> findAllAccountsByUsername(String username);
 	

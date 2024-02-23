@@ -1,7 +1,6 @@
 package dev.abreu.bankapp.service;
 
 import java.util.List;
-
 import dev.abreu.bankapp.model.Account;
 
 public interface AccountService {
