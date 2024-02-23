@@ -32,4 +32,8 @@ public class BankappQueryConstants {
 						+ "FROM accounts a JOIN customers b ON a.customer_id = b.customer_id WHERE b.username=?";
 
 	public static final String CREATE_NEW_ACCOUNT_QUERY = "INSERT into accounts (account_number,account_type,account_balance,customer_id) VALUES (default,?,?,?)";
+
+	public static final String UPDATE_ACCOUNT_QUERY = "UPDATE accounts SET account_type=?,account_balance=? WHERE account_number=?";
+
+	public static final String DELETE_ACCOUNT_BY_ACCTNO_QUERY = "DELETE from accounts WHERE account_number=?";
 }

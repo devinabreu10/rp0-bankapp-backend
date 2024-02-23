@@ -1,6 +1,7 @@
 package dev.abreu.bankapp.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -9,8 +10,10 @@ import org.springframework.stereotype.Service;
 import dev.abreu.bankapp.dao.AccountDao;
 import dev.abreu.bankapp.dao.CustomerDao;
 import dev.abreu.bankapp.exception.InsufficientFundsException;
+import dev.abreu.bankapp.exception.ResourceNotFoundException;
 import dev.abreu.bankapp.model.Account;
 import dev.abreu.bankapp.service.AccountService;
+import dev.abreu.bankapp.utils.ResourceType;
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -28,8 +31,9 @@ public class AccountServiceImpl implements AccountService {
 
 	@Override
 	public Account getAccountByAcctNo(Long acctNo) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return accountDao.findAccountByAcctNo(acctNo)
+				.orElseThrow(() -> new ResourceNotFoundException(ResourceType.ACCOUNT, acctNo));
 	}
 
 	@Override
@@ -57,16 +61,18 @@ public class AccountServiceImpl implements AccountService {
 	}
 	
 	public void transferFundsBetweenAccounts(Long sourceAccNo, Long targetAccNo, double amount) throws InsufficientFundsException {
-		Account source = accountDao.findAccountByAcctNo(sourceAccNo);
-		Account target = accountDao.findAccountByAcctNo(targetAccNo);
+		Optional<Account> source = accountDao.findAccountByAcctNo(sourceAccNo);
+		Optional<Account> target = accountDao.findAccountByAcctNo(targetAccNo);
 		
-		if(Double.compare(source.getAccountBalance(), amount) < 0) {
+		if(Double.compare(source.orElseThrow().getAccountBalance(), amount) < 0) {
 			throw new InsufficientFundsException();
 		}
 		
-		source.decrementBalance(amount);
-		target.incrementBalance(amount);
+		source.orElseThrow().decrementBalance(amount);
+		target.orElseThrow().incrementBalance(amount);
 		//transactionDao.saveTransaction();
+		
+		log.info("Transfer successfully completed!");
 	}
 
 }
