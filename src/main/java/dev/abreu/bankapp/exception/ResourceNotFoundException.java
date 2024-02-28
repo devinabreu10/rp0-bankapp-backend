@@ -9,12 +9,17 @@ import dev.abreu.bankapp.utils.ResourceType;
 public class ResourceNotFoundException extends RuntimeException {
 
 	/**
+	 * throws exception if a resource being accessed through a request is not found
 	 * 
 	 */
 	private static final long serialVersionUID = 9177986844664132597L;
 	
 	public ResourceNotFoundException(ResourceType resourceType, Object identifier) {
 		super(resourceType.getResourceName() + " not found with identifier: " + identifier);
+	}
+
+	public ResourceNotFoundException(String message) {
+		super(message);
 	}
 
 }

@@ -10,6 +10,7 @@ public interface AccountService {
 	 * 
 	 * @param acctNo
 	 * @return Account
+	 * @throws ResourceNotFoundException if Account with acctNo is not found
 	 */
 	Account getAccountByAcctNo(Long acctNo);
 	

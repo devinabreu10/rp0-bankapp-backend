@@ -1,6 +1,7 @@
 package dev.abreu.bankapp.dao;
 
 import java.util.List;
+import java.util.Optional;
 
 import dev.abreu.bankapp.model.Customer;
 
@@ -12,16 +13,10 @@ import dev.abreu.bankapp.model.Customer;
  *
  */
 public interface CustomerDao {
+
+	Optional<Customer> findByUsername(String username);
 	
-	/**
-	 * Retrieves customer associated with provided username if valid
-	 * 
-	 * @param username being searched
-	 * @return Customer associated with username
-	 */
-	Customer findByUsername(String username);
-	
-	Customer findById(Long customerId);
+	Optional<Customer> findById(Long customerId);
 	
 	List<Customer> findAllCustomers();
 	

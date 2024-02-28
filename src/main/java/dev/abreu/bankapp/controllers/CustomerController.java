@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import dev.abreu.bankapp.exception.UsernameTakenException;
 import dev.abreu.bankapp.model.Customer;
 import dev.abreu.bankapp.service.CustomerService;
-import io.micrometer.common.util.StringUtils;
 
 @RestController
 @RequestMapping(path = "/customer")
@@ -40,19 +39,13 @@ public class CustomerController {
 	 */
 	@GetMapping(path = "/get/user/{username}")
 	public ResponseEntity<Customer> getCustomerByUsername(@PathVariable("username") String username) {
-		log.info("Performing GET method from inside getCustomerByUsername()");
+		log.info("Performing GET method from inside getCustomerByUsername in CustomerController");
 		
 		Customer customer = customerService.getCustomerByUsername(username);
 		
-		if(StringUtils.isNotBlank(customer.getUsername())) {
-			log.info("The customer was successfully retrieved...");
-//			CustomerDTO dto = mapper.toDto(customer);
-			return ResponseEntity.ok(customer); //sends 200 status
-		} else {
-			log.error("Customer with the following username does not exist: {}", username);
-			//TODO I want some message to be shown in response body instead of nothing
-			return ResponseEntity.notFound().build(); //sends 404 status
-		}
+		log.info("Customer with username {} was successfully retrieved...", username);
+//		CustomerDTO dto = mapper.toDto(customer);
+		return ResponseEntity.ok(customer); //sends 200 status
 	}
 	
 	
@@ -64,17 +57,12 @@ public class CustomerController {
 	 */
 	@GetMapping("/get/id/{id}")
 	public ResponseEntity<Customer> getCustomerById(@PathVariable("id") Long id) {
-		log.info("Performing GET method from inside getCustomerById()...");
+		log.info("Performing GET method from inside getCustomerById in CustomerController");
 		
 		Customer customer = customerService.getCustomerById(id);
 		
-		if(customer.getId() != 0) {
-			log.info("Customer with id {} was successfully retrieved...", id);
-			return ResponseEntity.ok(customer);
-		} else {
-			log.error("Customer with id {} does not exist...", id);
-			return ResponseEntity.notFound().build();
-		}
+		log.info("Customer with id {} was successfully retrieved...", id);
+		return ResponseEntity.ok(customer);
 	}
 	
 	/**
@@ -94,20 +82,16 @@ public class CustomerController {
 	 * 
 	 * @param customer
 	 * @return customer
+	 * @throws UsernameTakenException 
 	 */
 	@PostMapping(path = "/save")
-	public ResponseEntity<Customer> saveCustomer(@RequestBody Customer customer) {
-		log.info("Performing POST method to save new Customer: {}", customer);
+	public ResponseEntity<Customer> saveCustomer(@RequestBody Customer customer) throws UsernameTakenException {
+		log.info("Performing POST method to save new Customer");
 		
 		//make sure that both DTO and domain don't need to know about each other by using a mapper class
 //		Customer customer = mapper.toCustomer(customerDTO);
-		
-		try {
-			customer = customerService.registerNewCustomer(customer);
-		} catch(UsernameTakenException e) {
-			log.error("Username already exists...", e);
-			return ResponseEntity.status(HttpStatus.CONFLICT).build();
-		}
+
+		customer = customerService.registerNewCustomer(customer);
 		
 		return ResponseEntity.status(HttpStatus.CREATED).body(customer);
 	}

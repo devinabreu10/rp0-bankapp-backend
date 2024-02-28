@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,7 +33,7 @@ public class CustomerDaoImpl implements CustomerDao {
 	private ConnectionUtil connUtil = ConnectionUtil.getConnectionUtil();
 
 	@Override
-	public Customer findByUsername(String username) {
+	public Optional<Customer> findByUsername(String username) {
 		Customer customer = new Customer();
 		
 		try(Connection conn = connUtil.getConnection(); 
@@ -49,17 +50,19 @@ public class CustomerDaoImpl implements CustomerDao {
 				customer.setUsername(resultSet.getString("username"));
 				customer.setPassword(resultSet.getString("passwrd"));
 				customer.setAddress(resultSet.getString("address"));
+			} else {
+				return Optional.empty();
 			}
 			
 		} catch (SQLException e) {
 			log.error("SQLException Thrown: {}", e.getMessage());
 		}
 		
-		return customer;
+		return Optional.of(customer);
 	}
 	
 	@Override
-	public Customer findById(Long customerId) {
+	public Optional<Customer> findById(Long customerId) {
 		Customer customer = new Customer();
 		
 		try(Connection conn = connUtil.getConnection(); 
@@ -76,13 +79,15 @@ public class CustomerDaoImpl implements CustomerDao {
 				customer.setUsername(resultSet.getString("username"));
 				customer.setPassword(resultSet.getString("passwrd"));
 				customer.setAddress(resultSet.getString("address"));
+			} else {
+				return Optional.empty();
 			}
 			
 		} catch (SQLException e) {
 			log.error("SQLException Thrown: {}", e.getMessage());
 		}
 		
-		return customer;
+		return Optional.of(customer);
 	}
 	
 	@Override

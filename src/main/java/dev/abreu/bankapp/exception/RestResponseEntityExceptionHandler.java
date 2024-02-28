@@ -2,6 +2,7 @@ package dev.abreu.bankapp.exception;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,9 +26,31 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 	private static final Logger log = LogManager.getLogger(RestResponseEntityExceptionHandler.class);
 	
 	@ExceptionHandler(value = { ResourceNotFoundException.class })
-	protected ResponseEntity<Object> handleNotFound(RuntimeException ex, WebRequest request) {
+	protected ResponseEntity<Object> handleResourceNotFound(RuntimeException ex, WebRequest request) {
 		
 		log.error("ResourceNotFoundException: {}", ex.getMessage());
+		
+		String bodyOfResponse = ex.getMessage();
+		
+		return handleExceptionInternal(ex, bodyOfResponse, 
+				new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+	}
+	
+	@ExceptionHandler(value = { UsernameTakenException.class })
+	protected ResponseEntity<Object> handleResourceNotFound(UsernameTakenException ex, WebRequest request) {
+		
+		log.error("UsernameTakenException: {}", ex.getMessage());
+		
+		String bodyOfResponse = ex.getMessage();
+		
+		return handleExceptionInternal(ex, bodyOfResponse, 
+				new HttpHeaders(), HttpStatus.CONFLICT, request);
+	}
+	
+	@ExceptionHandler(value = { NoSuchElementException.class })
+	protected ResponseEntity<Object> handleNoSuchElement(NoSuchElementException ex, WebRequest request) {
+		
+		log.error("NoSuchElementException: {}", ex.getMessage());
 		
 		String bodyOfResponse = ex.getMessage();
 		
