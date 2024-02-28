@@ -56,10 +56,10 @@ public class AccountController {
 	}
 	
 	@PutMapping(path = "/update/{acctNo}")
-	public ResponseEntity<Account> updateAccount(@PathVariable("id") Long acctNo, @RequestBody Account account) {
+	public ResponseEntity<Account> updateAccount(@PathVariable("acctNo") Long acctNo, @RequestBody Account account) {
 		log.info("Performing PUT method to update details for account with acctNo: {}", acctNo);
 		
-		if(account.getAccountNumber() != acctNo) {
+		if(!account.getAccountNumber().equals(acctNo)) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).build();
 		}
 		
