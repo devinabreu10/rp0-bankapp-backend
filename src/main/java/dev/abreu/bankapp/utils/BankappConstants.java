@@ -14,7 +14,8 @@ public class BankappConstants {
 	public static final String SAVINGS_ACCOUNT = "Savings";
 	public static final String ACCOUNT_DEPOSIT = "Account Deposit";
 	public static final String ACCOUNT_WITHDRAW = "Account Withdraw";
-//	public static final String LOAN_PAYMENT = "Loan Payment";
-//	public static final String CREDIT_PAYMENT = "Credit Card Payment";
+	
+	//Caught exception statements
+	public static final String SQL_EXCEPTION_CAUGHT= "SQLException Caught: {}";
 
 }

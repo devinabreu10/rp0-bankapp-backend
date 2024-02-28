@@ -9,22 +9,16 @@ import org.springframework.context.annotation.Bean;
 
 import dev.abreu.bankapp.dao.AccountDao;
 import dev.abreu.bankapp.dao.CustomerDao;
-import dev.abreu.bankapp.dao.impl.AccountDaoImpl;
-import dev.abreu.bankapp.dao.impl.CustomerDaoImpl;
 import dev.abreu.bankapp.model.Customer;
 
 @SpringBootApplication
 public class RP0BankApplication {
 	
 	private static final Logger log = LogManager.getLogger(RP0BankApplication.class);
-	
-	public static CustomerDao customerDao = new CustomerDaoImpl();
-	public static AccountDao accountDao = new AccountDaoImpl();
 
 	public static void main(String[] args) {
 		SpringApplication.run(RP0BankApplication.class, args);
-		System.out.println("\nRP0 Bank Application has STARTED...");
-		log.info("INFO Testing log in P0 Bankapp Remake");
+		log.info("\nRP0 Bank Application has STARTED...");
 		
 	}
 	
@@ -37,29 +31,7 @@ public class RP0BankApplication {
 			customerDao.saveCustomer(new Customer(null, "Jolene", "FitzGilbert", "4 Sycamore Circle", "jfitzgilbert0", "bP6>#)NTV?qgg"));
 			customerDao.saveCustomer(new Customer(null, "Josefa", "Merwood", "23569 Bultman Drive", "jmerwood1", "pK9%b?igvw"));
 			customerDao.saveCustomer(new Customer(null, "Ronnie", "Voak", "7 Ridge Oak Terrace", "rvoak3", "pN9,Z7#mC"));
-			
-//			log.info("Adding accounts if they don't already exist...");
-//			accountDao.saveAccount(new Account(null, CHECKING_ACCOUNT, 100.00, customerDao.findByUsername("bobby123").orElseThrow().getId()));
-//			accountDao.saveAccount(new Account(null, SAVINGS_ACCOUNT, 500.00, customerDao.findByUsername("bobby123").orElseThrow().getId()));
-//			accountDao.saveAccount(new Account(null, CHECKING_ACCOUNT, 105.00, customerDao.findByUsername("jfitzgilbert0").orElseThrow().getId()));
-//			accountDao.saveAccount(new Account(null, CHECKING_ACCOUNT, 110.00, customerDao.findByUsername("jmerwood1").orElseThrow().getId()));
-//			accountDao.saveAccount(new Account(null, CHECKING_ACCOUNT, 120.00, customerDao.findByUsername("rvoak3").orElseThrow().getId()));
 		};
 	}
-
-	
-/* Plan out things to accomplish after finishing everything above this */
-	// DONE 1. Create Account and Transaction models AND/OR a possible 4th model
-	// DONE 2a. Link all models using AggregateReference<> from Spring Data JDBC (Transaction is left to figure out)
-	// DONE 2b. Create Dao layer for DB transactions between Customers, Accounts, and Transactions
-	// DONE 2c. Tested Dao layer for DB transactions between Customers
-	// DONE 3. Create Service Layer for models using Spring JDBC Dao Methods
-	// TODO 3a. Create Service Layer Unit Tests for Customer/Account/Transaction
-	// TODO 4. Populate Customer/Account/Transaction DAOs w/ CRUD operations using JDBC API
-	// TODO 5. Create DTO classes for models to be used in HTTP Requests
-	// TODO 6. Create Controller classes for models to configure API endpoints
-	
-	//Project Breakdown
-	//	API Endpoint (Postman) <---> Controller <-- Service <-- Dao (First need to establish db relationships and finalize models to finish Dao)
 	
 }

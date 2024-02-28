@@ -1,5 +1,6 @@
 package dev.abreu.bankapp.dao.impl;
 
+import static dev.abreu.bankapp.utils.BankappConstants.SQL_EXCEPTION_CAUGHT;
 import static dev.abreu.bankapp.utils.BankappQueryConstants.CREATE_CUSTOMER_QUERY;
 import static dev.abreu.bankapp.utils.BankappQueryConstants.DELETE_CUSTOMER_BY_ID_QUERY;
 import static dev.abreu.bankapp.utils.BankappQueryConstants.DELETE_CUSTOMER_BY_USERNAME_QUERY;
@@ -30,6 +31,13 @@ public class CustomerDaoImpl implements CustomerDao {
 	
 	private static final Logger log = LogManager.getLogger(CustomerDaoImpl.class);
 	
+	private static final String CUSTOMER_ID = "customer_id";
+	private static final String FIRST_NAME = "first_name";
+	private static final String LAST_NAME = "last_name";
+	private static final String USERNAME = "username";
+	private static final String PASSWORD = "passwrd";
+	private static final String ADDRESS = "address";
+	
 	private ConnectionUtil connUtil = ConnectionUtil.getConnectionUtil();
 
 	@Override
@@ -44,18 +52,18 @@ public class CustomerDaoImpl implements CustomerDao {
 			ResultSet resultSet = stmt.executeQuery();
 			
 			if(resultSet.next()) {
-				customer.setId(resultSet.getLong("customer_id"));
-				customer.setFirstName(resultSet.getString("first_name"));
-				customer.setLastName(resultSet.getString("last_name"));
-				customer.setUsername(resultSet.getString("username"));
-				customer.setPassword(resultSet.getString("passwrd"));
-				customer.setAddress(resultSet.getString("address"));
+				customer.setId(resultSet.getLong(CUSTOMER_ID));
+				customer.setFirstName(resultSet.getString(FIRST_NAME));
+				customer.setLastName(resultSet.getString(LAST_NAME));
+				customer.setUsername(resultSet.getString(USERNAME));
+				customer.setPassword(resultSet.getString(PASSWORD));
+				customer.setAddress(resultSet.getString(ADDRESS));
 			} else {
 				return Optional.empty();
 			}
 			
 		} catch (SQLException e) {
-			log.error("SQLException Thrown: {}", e.getMessage());
+			log.error(SQL_EXCEPTION_CAUGHT, e.getMessage());
 		}
 		
 		return Optional.of(customer);
@@ -73,18 +81,18 @@ public class CustomerDaoImpl implements CustomerDao {
 			ResultSet resultSet = stmt.executeQuery();
 			
 			if(resultSet.next()) {
-				customer.setId(resultSet.getLong("customer_id"));
-				customer.setFirstName(resultSet.getString("first_name"));
-				customer.setLastName(resultSet.getString("last_name"));
-				customer.setUsername(resultSet.getString("username"));
-				customer.setPassword(resultSet.getString("passwrd"));
-				customer.setAddress(resultSet.getString("address"));
+				customer.setId(resultSet.getLong(CUSTOMER_ID));
+				customer.setFirstName(resultSet.getString(FIRST_NAME));
+				customer.setLastName(resultSet.getString(LAST_NAME));
+				customer.setUsername(resultSet.getString(USERNAME));
+				customer.setPassword(resultSet.getString(PASSWORD));
+				customer.setAddress(resultSet.getString(ADDRESS));
 			} else {
 				return Optional.empty();
 			}
 			
 		} catch (SQLException e) {
-			log.error("SQLException Thrown: {}", e.getMessage());
+			log.error(SQL_EXCEPTION_CAUGHT, e.getMessage());
 		}
 		
 		return Optional.of(customer);
@@ -100,17 +108,17 @@ public class CustomerDaoImpl implements CustomerDao {
 			
 			while(resultSet.next()) {
 				Customer customer = new Customer();
-				customer.setId(resultSet.getLong("customer_id"));
-				customer.setFirstName(resultSet.getString("first_name"));
-				customer.setLastName(resultSet.getString("last_name"));
-				customer.setUsername(resultSet.getString("username"));
-				customer.setPassword(resultSet.getString("passwrd"));
-				customer.setAddress(resultSet.getString("address"));
+				customer.setId(resultSet.getLong(CUSTOMER_ID));
+				customer.setFirstName(resultSet.getString(FIRST_NAME));
+				customer.setLastName(resultSet.getString(LAST_NAME));
+				customer.setUsername(resultSet.getString(USERNAME));
+				customer.setPassword(resultSet.getString(PASSWORD));
+				customer.setAddress(resultSet.getString(ADDRESS));
 				customerList.add(customer);
 			}
 			
 		} catch (SQLException e) {
-			log.error("SQLException Thrown: {}", e.getMessage());
+			log.error(SQL_EXCEPTION_CAUGHT, e.getMessage());
 		}
 		
 		return customerList;
@@ -133,7 +141,7 @@ public class CustomerDaoImpl implements CustomerDao {
 			
 			
 		} catch (SQLException e) {
-			log.error("SQLException Thrown: {}", e.getMessage());
+			log.error(SQL_EXCEPTION_CAUGHT, e.getMessage());
 		}
 
 		return usernameExists;
@@ -158,7 +166,7 @@ public class CustomerDaoImpl implements CustomerDao {
 			log.info("{} Row(s) Affected", rowsAffected);
 			
 		} catch (SQLException e) {
-			log.error("SQLException Caught: {}", e.getMessage());
+			log.error(SQL_EXCEPTION_CAUGHT, e.getMessage());
 		}
 		
 		return customer;
@@ -184,7 +192,7 @@ public class CustomerDaoImpl implements CustomerDao {
 			log.info("{} Row(s) Updated", updateStatus);
 			
 		} catch (SQLException e) {
-			log.error("SQLException Caught: {}", e.getMessage());
+			log.error(SQL_EXCEPTION_CAUGHT, e.getMessage());
 		}
 
 		return customer;
@@ -215,7 +223,7 @@ public class CustomerDaoImpl implements CustomerDao {
 			}
 			
 		} catch (SQLException e) {
-			log.error("SQLException Caught: {}", e.getMessage());
+			log.error(SQL_EXCEPTION_CAUGHT, e.getMessage());
 		}
 		
 		return success;
@@ -246,7 +254,7 @@ public class CustomerDaoImpl implements CustomerDao {
 			}
 			
 		} catch (SQLException e) {
-			log.error("SQLException Caught: {}", e.getMessage());
+			log.error(SQL_EXCEPTION_CAUGHT, e.getMessage());
 		}
 		
 		return success;

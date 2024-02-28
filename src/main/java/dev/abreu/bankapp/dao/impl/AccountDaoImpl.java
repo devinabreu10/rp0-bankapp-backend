@@ -1,5 +1,6 @@
 package dev.abreu.bankapp.dao.impl;
 
+import static dev.abreu.bankapp.utils.BankappConstants.SQL_EXCEPTION_CAUGHT;
 import static dev.abreu.bankapp.utils.BankappQueryConstants.CREATE_NEW_ACCOUNT_QUERY;
 import static dev.abreu.bankapp.utils.BankappQueryConstants.DELETE_ACCOUNT_BY_ACCTNO_QUERY;
 import static dev.abreu.bankapp.utils.BankappQueryConstants.SELECT_ACCOUNTS_BY_ACCTNO_QUERY;
@@ -78,7 +79,7 @@ public class AccountDaoImpl implements AccountDao {
 			}
 			
 		} catch(SQLException e) {
-			log.error("SQLException caught: {}", e.getMessage());		
+			log.error(SQL_EXCEPTION_CAUGHT, e.getMessage());		
 		}
 		
 		
@@ -102,7 +103,7 @@ public class AccountDaoImpl implements AccountDao {
 			log.info("{} Row(s) Affected", rowsAffected);
 			
 		} catch (SQLException e) {
-			log.error("SQLException Caught: {}", e.getMessage());
+			log.error(SQL_EXCEPTION_CAUGHT, e.getMessage());
 		}
 		
 		return account;
@@ -125,7 +126,7 @@ public class AccountDaoImpl implements AccountDao {
 			log.info("{} Row(s) Updated", updateStatus);
 			
 		} catch (SQLException e) {
-			log.error("SQLException Caught: {}", e.getMessage());
+			log.error(SQL_EXCEPTION_CAUGHT, e.getMessage());
 		}
 		
 		return null;
@@ -156,7 +157,7 @@ public class AccountDaoImpl implements AccountDao {
 			}
 			
 		} catch (SQLException e) {
-			log.error("SQLException Caught: {}", e.getMessage());
+			log.error(SQL_EXCEPTION_CAUGHT, e.getMessage());
 		}
 		
 		return success;

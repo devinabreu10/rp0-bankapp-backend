@@ -107,7 +107,7 @@ public class CustomerController {
 	public ResponseEntity<Customer> updateCustomer(@PathVariable("id") Long id, @RequestBody Customer customer) {
 		log.info("Performing PUT method to update details for customer with id: {}", id);
 		
-		if(customer.getId() != id) {
+		if(!customer.getId().equals(id)) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).build();
 		}
 		
