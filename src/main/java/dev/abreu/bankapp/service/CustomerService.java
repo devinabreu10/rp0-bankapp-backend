@@ -13,7 +13,7 @@ public interface CustomerService {
 	 * 
 	 * @param customer
 	 * @return Customer
-	 * @throws UsernameTakenException 
+	 * @throws UsernameTakenException if username is already taken
 	 */
 	Customer registerNewCustomer(Customer customer) throws UsernameTakenException;
 	
@@ -25,6 +25,7 @@ public interface CustomerService {
 	 * 
 	 * @param username
 	 * @return Customer
+	 * @throws ResourceNotFoundException if Customer with username is not found
 	 */
 	Customer getCustomerByUsername(String username);
 	
@@ -33,6 +34,7 @@ public interface CustomerService {
 	 * 
 	 * @param customerId
 	 * @return Customer
+	 * @throws ResourceNotFoundException if Customer with id is not found
 	 */
 	Customer getCustomerById(Long customerId);
 	

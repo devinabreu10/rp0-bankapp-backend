@@ -1,15 +1,18 @@
 package dev.abreu.bankapp.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import dev.abreu.bankapp.dao.CustomerDao;
+import dev.abreu.bankapp.exception.ResourceNotFoundException;
 import dev.abreu.bankapp.exception.UsernameTakenException;
 import dev.abreu.bankapp.model.Customer;
 import dev.abreu.bankapp.service.CustomerService;
+import dev.abreu.bankapp.utils.ResourceType;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
@@ -41,13 +44,15 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	public Customer getCustomerByUsername(String username) {
 		log.info("Fetching customer with username: {}", username);
-		return customerDao.findByUsername(username);
+		return customerDao.findByUsername(username)
+				.orElseThrow(() -> new ResourceNotFoundException(ResourceType.CUSTOMER, username));
 	}
 	
 	@Override
 	public Customer getCustomerById(Long customerId) {
-		log.info("Fetching customer with ID: {}", customerId);
-		return customerDao.findById(customerId);
+		log.info("Fetching customer with Id: {}", customerId);
+		return customerDao.findById(customerId)
+				.orElseThrow(() -> new ResourceNotFoundException(ResourceType.CUSTOMER, customerId));
 	}
 	
 	@Override
@@ -81,7 +86,7 @@ public class CustomerServiceImpl implements CustomerService {
 		
 		boolean success = false;
 		
-		if(customerDao.findById(customerId).getId() != 0) {
+		if(customerDao.findById(customerId).orElseThrow().getId() != 0) {
 			success = customerDao.deleteCustomerById(customerId);
 		}
 		
@@ -91,7 +96,12 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	public Customer customerLogin(String username, String password) {
 		log.info("Attempting to sign in customer with username: {}", username);
-		// TODO Auto-generated method stub
+		Optional<Customer> customer = customerDao.findByUsername(username);
+		
+		if(customer.isPresent() && (password != null && password.equals(customer.get().getPassword()))) {
+			return customer.orElseThrow();
+		}
+		
 		return null;
 	}
 

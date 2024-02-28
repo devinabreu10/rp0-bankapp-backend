@@ -31,33 +31,43 @@ public class AccountServiceImpl implements AccountService {
 
 	@Override
 	public Account getAccountByAcctNo(Long acctNo) {
-		
+		log.info("Fetching Account with AcctNo: {}", acctNo);
 		return accountDao.findAccountByAcctNo(acctNo)
 				.orElseThrow(() -> new ResourceNotFoundException(ResourceType.ACCOUNT, acctNo));
 	}
 
 	@Override
 	public List<Account> getAllAccountsByUsername(String username) {
-		// TODO Auto-generated method stub
-		return null;
+		log.info("Fetching all accounts associated with username: {}", username);
+		
+		if(customerDao.existsByUsername(username)) {
+			return accountDao.findAllAccountsByUsername(username);
+		} else {
+			throw new ResourceNotFoundException(ResourceType.ACCOUNT, username);
+		}
 	}
 
 	@Override
 	public Account saveAccount(Account account) {
-		// TODO Auto-generated method stub
-		return null;
+		log.info("Saving new account...");
+		return accountDao.saveAccount(account);
 	}
 
 	@Override
 	public Account updateAccount(Account account) {
-		// TODO Auto-generated method stub
-		return null;
+		log.info("Updating account details...");
+		return accountDao.updateAccount(account);
 	}
 
 	@Override
 	public boolean deleteAccountByAcctNo(Long acctNo) {
-		// TODO Auto-generated method stub
-		return false;
+		boolean success = false;
+		
+		if(accountDao.findAccountByAcctNo(acctNo).orElseThrow().getAccountNumber() != 0) {
+			success = accountDao.deleteAccountByAcctNo(acctNo);
+		}
+
+		return success;
 	}
 	
 	public void transferFundsBetweenAccounts(Long sourceAccNo, Long targetAccNo, double amount) throws InsufficientFundsException {
