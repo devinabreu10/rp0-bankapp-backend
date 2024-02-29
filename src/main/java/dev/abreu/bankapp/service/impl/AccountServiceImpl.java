@@ -1,5 +1,9 @@
 package dev.abreu.bankapp.service.impl;
 
+import static dev.abreu.bankapp.utils.BankappConstants.ACCOUNT_DEPOSIT;
+import static dev.abreu.bankapp.utils.BankappConstants.ACCOUNT_TRANSFER;
+import static dev.abreu.bankapp.utils.BankappConstants.ACCOUNT_WITHDRAW;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -9,9 +13,11 @@ import org.springframework.stereotype.Service;
 
 import dev.abreu.bankapp.dao.AccountDao;
 import dev.abreu.bankapp.dao.CustomerDao;
+import dev.abreu.bankapp.dao.TransactionDao;
 import dev.abreu.bankapp.exception.InsufficientFundsException;
 import dev.abreu.bankapp.exception.ResourceNotFoundException;
 import dev.abreu.bankapp.model.Account;
+import dev.abreu.bankapp.model.Transaction;
 import dev.abreu.bankapp.service.AccountService;
 import dev.abreu.bankapp.utils.ResourceType;
 
@@ -22,11 +28,12 @@ public class AccountServiceImpl implements AccountService {
 	
 	private AccountDao accountDao;
 	private CustomerDao customerDao;
-	//private TransactionDao transactionDao;
+	private TransactionDao transactionDao;
 	
-	public AccountServiceImpl(AccountDao accountDao, CustomerDao customerDao) {
+	public AccountServiceImpl(AccountDao accountDao, CustomerDao customerDao, TransactionDao transactionDao) {
 		this.accountDao = accountDao;
 		this.customerDao = customerDao;
+		this.transactionDao = transactionDao;
 	}
 
 	@Override
@@ -61,6 +68,7 @@ public class AccountServiceImpl implements AccountService {
 
 	@Override
 	public boolean deleteAccountByAcctNo(Long acctNo) {
+		log.info("Deleting account with acccount number: {}", acctNo);
 		boolean success = false;
 		
 		if(accountDao.findAccountByAcctNo(acctNo).orElseThrow().getAccountNumber() != 0) {
@@ -70,19 +78,54 @@ public class AccountServiceImpl implements AccountService {
 		return success;
 	}
 	
-	public void transferFundsBetweenAccounts(Long sourceAccNo, Long targetAccNo, double amount) throws InsufficientFundsException {
-		Optional<Account> source = accountDao.findAccountByAcctNo(sourceAccNo);
-		Optional<Account> target = accountDao.findAccountByAcctNo(targetAccNo);
+	public void transferFundsBetweenAccounts(Long sourceAcctNo, Long targetAcctNo, double amount) throws InsufficientFundsException {
+		Optional<Account> source = accountDao.findAccountByAcctNo(sourceAcctNo);
+		Optional<Account> target = accountDao.findAccountByAcctNo(targetAcctNo);
+		String notes = "Funds were transferred from account number " + sourceAcctNo + " to account number "
+						+ targetAcctNo + " to the amount of $"+ amount;
 		
 		if(Double.compare(source.orElseThrow().getAccountBalance(), amount) < 0) {
-			throw new InsufficientFundsException();
+			throw new InsufficientFundsException(
+					"Account transfer could not be completed due to insufficient funds");
 		}
 		
 		source.orElseThrow().decrementBalance(amount);
 		target.orElseThrow().incrementBalance(amount);
-		//transactionDao.saveTransaction();
+		transactionDao.saveTransaction(new Transaction(ACCOUNT_TRANSFER, amount, 
+				notes, source.orElseThrow().getAccountNumber()));
 		
 		log.info("Transfer successfully completed!");
+	}
+	
+	public void depositFundsIntoAccount(Long acctNo, double amount) {
+		Optional<Account> account = accountDao.findAccountByAcctNo(acctNo);
+		String notes = "$" + amount +" deposited intoaccount with account number " + acctNo;
+		
+		account.orElseThrow().incrementBalance(amount);
+		
+		accountDao.updateAccount(account.orElseThrow());
+		transactionDao.saveTransaction(new Transaction(ACCOUNT_DEPOSIT, amount, 
+				notes, account.orElseThrow().getAccountNumber()));
+		
+		log.info("Successfully deposited ${} into account with acctNo {}", amount, acctNo);
+	}
+	
+	public void withdrawFundsFromAccount(Long acctNo, double amount) throws InsufficientFundsException {
+		Optional<Account> account = accountDao.findAccountByAcctNo(acctNo);
+		String notes = "$" + amount +" withdrawn from account with account number " + acctNo;
+		
+		if(Double.compare(account.orElseThrow().getAccountBalance(), amount) < 0) {
+			throw new InsufficientFundsException(
+					"Account withdrawal could not be completed due to insufficient funds");
+		}
+		
+		account.orElseThrow().decrementBalance(amount);
+		
+		accountDao.updateAccount(account.orElseThrow());
+		transactionDao.saveTransaction(new Transaction(ACCOUNT_WITHDRAW, amount, 
+				notes, account.orElseThrow().getAccountNumber()));
+		
+		log.info("Successfully withdrawed ${} from account with acctNo {}", amount, acctNo);
 	}
 
 }

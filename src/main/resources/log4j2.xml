@@ -2,7 +2,7 @@
 <Configuration>
 
 	<Properties>
-		<Property name="LOG_PATTERN">%d [%level] - %m%n</Property> <!-- %C for dev.abreu.bankapp.classname -->
+		<Property name="LOG_PATTERN">%d [%level] %C{1}.%M - %m%n</Property> <!-- %C{1}.%M for classname.methodname -->
 		<Property name="MAX_ROLLOVER">1</Property>
 		<Property name="FILE_SIZE">10MB</Property>
 		<Property name="LOG_ROOT">./logs</Property>

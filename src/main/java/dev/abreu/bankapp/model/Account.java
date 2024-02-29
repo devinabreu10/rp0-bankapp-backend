@@ -7,16 +7,15 @@ import org.springframework.data.relational.core.mapping.Table;
 public class Account {
 
 	private @Id Long accountNumber;
-	private String accountType; //Checkings, Savings
+	private String accountType;
 	private double accountBalance;
 	private Long customerId;
-//	AggregateReference<Customer, Long> customerId;
 	
 	public Account() {
 		
 	}
 	
-	public Account(String accountType, double initialDeposit, Long customerId/*AggregateReference<Customer, Long> customerId*/) {
+	public Account(String accountType, double initialDeposit, Long customerId) {
 		this.accountType = accountType;
 		this.accountBalance = initialDeposit;
 		this.customerId = customerId;

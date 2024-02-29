@@ -16,10 +16,7 @@ public interface CustomerService {
 	 * @throws UsernameTakenException if username is already taken
 	 */
 	Customer registerNewCustomer(Customer customer) throws UsernameTakenException;
-	
-	//List<Account> getAllAccounts(Customer customer);
-	
-	
+
 	/**
 	 * Retrieve existing Customer based on username
 	 * 

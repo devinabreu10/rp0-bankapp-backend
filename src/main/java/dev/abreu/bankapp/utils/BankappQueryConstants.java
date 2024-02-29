@@ -36,4 +36,14 @@ public class BankappQueryConstants {
 	public static final String UPDATE_ACCOUNT_QUERY = "UPDATE accounts SET account_type=?,account_balance=? WHERE account_number=?";
 
 	public static final String DELETE_ACCOUNT_BY_ACCTNO_QUERY = "DELETE from accounts WHERE account_number=?";
+	
+	public static final String SELECT_TRANSACTIONS_BY_ID_QUERY = "SELECT * FROM transactions WHERE transaction_id=?";
+
+	public static final String SELECT_ALL_TRANSACTIONS_BY_ACCTNO_QUERY = "SELECT * FROM transactions WHERE account_number=?";
+
+	public static final String CREATE_NEW_TRANSACTION_QUERY = "INSERT into transactions (transaction_id,transaction_type,transaction_amount,transaction_notes,transaction_date,account_number) VALUES (default,?,?,?,?,?)";
+
+	public static final String UPDATE_TRANSACTION_QUERY = "UPDATE transactions SET transaction_type=?,transaction_amount=?,transaction_notes=? WHERE transaction_id=?";
+
+	public static final String DELETE_TRANSACTION_BY_ID_QUERY = "DELETE from transactions WHERE transaction_id=?";
 }

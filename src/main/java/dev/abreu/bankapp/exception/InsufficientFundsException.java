@@ -9,4 +9,9 @@ public class InsufficientFundsException extends Exception {
 	 */
 	private static final long serialVersionUID = 1577624760966623176L;
 
+	public InsufficientFundsException(String message) {
+		super(message);
+	}
+	
+
 }

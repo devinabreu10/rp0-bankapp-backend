@@ -180,12 +180,12 @@ public class CustomerDaoImpl implements CustomerDao {
 		try(Connection conn = connUtil.getConnection(); 
 				PreparedStatement stmt = conn.prepareStatement(UPDATE_CUSTOMER_QUERY);) {
 			
-			stmt.setLong(6, customer.getId());
 			stmt.setString(1, customer.getFirstName());
 			stmt.setString(2, customer.getLastName());
 			stmt.setString(3, customer.getAddress());
 			stmt.setString(4, customer.getUsername());
 			stmt.setString(5, customer.getPassword());
+			stmt.setLong(6, customer.getId());
 			
 			log.info("Update Customer Query String: {}", UPDATE_CUSTOMER_QUERY);
 			int updateStatus = stmt.executeUpdate();
