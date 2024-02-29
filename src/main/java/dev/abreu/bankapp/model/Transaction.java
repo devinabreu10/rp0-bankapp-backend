@@ -13,29 +13,26 @@ public class Transaction {
 	private double transactionAmount;
 	private String transactionNotes;
 	private LocalDateTime transactionDate;
-	private Long accountId;
-//	AggregateReference<Account, Long> accountId;
-//	AggregateReference<Loan, Long> loanId;
-//	AggregateReference<Credit, Long> creditId;
+	private Long accountNumber;
 
 	public Transaction() {
 		
 	}
 	
-	public Transaction(String type, double amount, String notes, Long accountId/*AggregateReference<Account, Long> accountId*/) {
+	public Transaction(String type, double amount, String notes, Long accountNumber) {
 		this.transactionType = type;
 		this.transactionAmount = amount;
 		this.transactionNotes = notes;
 		this.transactionDate = LocalDateTime.now();
-		this.accountId = accountId;
+		this.accountNumber = accountNumber;
 	}
 
-	public Long getAccountId() {
-		return accountId;
+	public Long getAccountNumber() {
+		return accountNumber;
 	}
 
-	public void setAccountId(Long accountId) {
-		this.accountId = accountId;
+	public void setAccountNumber(Long accountId) {
+		this.accountNumber = accountId;
 	}
 
 	public Long getTransactionId() {

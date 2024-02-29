@@ -117,9 +117,9 @@ public class AccountDaoImpl implements AccountDao {
 		try(Connection conn = connUtil.getConnection(); 
 				PreparedStatement stmt = conn.prepareStatement(UPDATE_ACCOUNT_QUERY);) {
 			
-			stmt.setLong(3, account.getAccountNumber());
 			stmt.setString(1, account.getAccountType());
 			stmt.setDouble(2, account.getAccountBalance());
+			stmt.setLong(3, account.getAccountNumber());
 			
 			log.info("Update Account Query String: {}", UPDATE_ACCOUNT_QUERY);
 			int updateStatus = stmt.executeUpdate();
@@ -129,7 +129,7 @@ public class AccountDaoImpl implements AccountDao {
 			log.error(SQL_EXCEPTION_CAUGHT, e.getMessage());
 		}
 		
-		return null;
+		return account;
 	}
 
 	@Override

@@ -42,7 +42,7 @@ public class AccountController {
 	
 	@GetMapping(path = "/get/list/{username}")
 	public ResponseEntity<List<Account>> getAllAccountsByUsername(@PathVariable("username") String username) {
-		log.info("Performing GET method to retrieve all");
+		log.info("Performing GET method to retrieve all accounts by username");
 		List<Account> accounts = accountService.getAllAccountsByUsername(username);
 		
 		return ResponseEntity.ok(accounts);

@@ -1,0 +1,51 @@
+package dev.abreu.bankapp.service;
+
+import java.util.List;
+
+import dev.abreu.bankapp.model.Transaction;
+
+public interface TransactionService {
+	
+	/**
+	 * Retrieves a Transaction from database based on transaction id
+	 * 
+	 * @param txnId
+	 * @return Transaction
+	 * @throws ResourceNotFoundException if Transaction with transaction id is not found
+	 */
+	Transaction getTransactionById(Long txnId);
+	
+	/**
+	 * Retrieves a list of all transactions tied to Account
+	 * based on the account number
+	 * 
+	 * @param acctNo
+	 * @return list of Transaction
+	 */
+	List<Transaction> getAllTransactionsByAcctNo(Long acctNo);
+	
+	/**
+	 * Saves a new Transaction in the database
+	 * 
+	 * @param txn
+	 * @return Transaction
+	 */
+	Transaction saveTransaction(Transaction txn);
+	
+	/**
+	 * Updates Transaction details
+	 * 
+	 * @param txn
+	 * @return Transaction
+	 */
+	Transaction updateTransactionDetails(Transaction txn);
+	
+	/**
+	 * Removes a Transaction from database based on transaction id
+	 * 
+	 * @param txnId
+	 * @return boolean
+	 */
+	boolean deleteTransactionById(Long txnId);
+
+}
