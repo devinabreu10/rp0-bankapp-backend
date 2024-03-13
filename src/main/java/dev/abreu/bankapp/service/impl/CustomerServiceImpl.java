@@ -86,7 +86,7 @@ public class CustomerServiceImpl implements CustomerService {
 		
 		boolean success = false;
 		
-		if(customerDao.findById(customerId).orElseThrow().getId() != 0) {
+		if(!customerDao.findById(customerId).equals(Optional.empty())) {
 			success = customerDao.deleteCustomerById(customerId);
 		}
 		
