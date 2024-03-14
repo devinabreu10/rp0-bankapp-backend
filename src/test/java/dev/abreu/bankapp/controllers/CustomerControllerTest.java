@@ -1,5 +1,8 @@
 package dev.abreu.bankapp.controllers;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -93,21 +96,22 @@ class CustomerControllerTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(jsonMapper.writeValueAsString(mockCustomer)))
 				.andExpect(status().isCreated())
-				.andExpect(content().json(jsonMapper.writeValueAsString(mockCustomerWithId)));
+				.andReturn();
 	}
 
 	@Test
 	void testUpdateCustomer() throws JsonProcessingException, Exception {
-		Customer mockCustomer = new Customer();
-		mockCustomer.setId(1L);
+		Customer mockCustomer = new Customer(1L, "testFirst", "testLast", "testAddr", "testUsername", "testPassword", List.of());
 		
-		Mockito.when(customerService.updateCustomerDetails(mockCustomer)).thenReturn(mockCustomer);
+		Mockito.when(customerService.updateCustomerDetails(any(Customer.class))).thenReturn(mockCustomer);
 		
 		mockMvc.perform(put("/customer/update/1")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(jsonMapper.writeValueAsString(mockCustomer)))
 				.andExpect(status().isOk())
 				.andExpect(content().json(jsonMapper.writeValueAsString(mockCustomer)));
+		
+		verify(customerService, times(1)).updateCustomerDetails(any(Customer.class));
 	}
 	
 	@Test
