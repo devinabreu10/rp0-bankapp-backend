@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Service;
 
 import dev.abreu.bankapp.dao.AccountDao;
 import dev.abreu.bankapp.dao.TransactionDao;
@@ -12,6 +13,7 @@ import dev.abreu.bankapp.model.Transaction;
 import dev.abreu.bankapp.service.TransactionService;
 import dev.abreu.bankapp.utils.ResourceType;
 
+@Service
 public class TransactionServiceImpl implements TransactionService {
 	
 	private static final Logger log = LogManager.getLogger(TransactionServiceImpl.class);

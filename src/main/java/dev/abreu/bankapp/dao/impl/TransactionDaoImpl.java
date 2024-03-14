@@ -19,11 +19,13 @@ import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Repository;
 
 import dev.abreu.bankapp.dao.TransactionDao;
 import dev.abreu.bankapp.model.Transaction;
 import dev.abreu.bankapp.utils.ConnectionUtil;
 
+@Repository
 public class TransactionDaoImpl implements TransactionDao {
 	
 	private static final Logger log = LogManager.getLogger(TransactionDaoImpl.class);
