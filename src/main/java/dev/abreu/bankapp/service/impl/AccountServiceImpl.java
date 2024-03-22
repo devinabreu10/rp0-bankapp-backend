@@ -71,13 +71,14 @@ public class AccountServiceImpl implements AccountService {
 		log.info("Deleting account with acccount number: {}", acctNo);
 		boolean success = false;
 		
-		if(accountDao.findAccountByAcctNo(acctNo).orElseThrow().getAccountNumber() != 0) {
+		if(!accountDao.findAccountByAcctNo(acctNo).equals(Optional.empty())) {
 			success = accountDao.deleteAccountByAcctNo(acctNo);
 		}
 
 		return success;
 	}
 	
+	@Override
 	public void transferFundsBetweenAccounts(Long sourceAcctNo, Long targetAcctNo, double amount) throws InsufficientFundsException {
 		Optional<Account> source = accountDao.findAccountByAcctNo(sourceAcctNo);
 		Optional<Account> target = accountDao.findAccountByAcctNo(targetAcctNo);
@@ -97,6 +98,7 @@ public class AccountServiceImpl implements AccountService {
 		log.info("Transfer successfully completed!");
 	}
 	
+	@Override
 	public void depositFundsIntoAccount(Long acctNo, double amount) {
 		Optional<Account> account = accountDao.findAccountByAcctNo(acctNo);
 		String notes = "$" + amount +" deposited intoaccount with account number " + acctNo;
@@ -110,6 +112,7 @@ public class AccountServiceImpl implements AccountService {
 		log.info("Successfully deposited ${} into account with acctNo {}", amount, acctNo);
 	}
 	
+	@Override
 	public void withdrawFundsFromAccount(Long acctNo, double amount) throws InsufficientFundsException {
 		Optional<Account> account = accountDao.findAccountByAcctNo(acctNo);
 		String notes = "$" + amount +" withdrawn from account with account number " + acctNo;

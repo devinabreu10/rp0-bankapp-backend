@@ -1,6 +1,8 @@
 package dev.abreu.bankapp.service;
 
 import java.util.List;
+
+import dev.abreu.bankapp.exception.InsufficientFundsException;
 import dev.abreu.bankapp.model.Account;
 
 public interface AccountService {
@@ -46,5 +48,12 @@ public interface AccountService {
 	 * @return boolean
 	 */
 	boolean deleteAccountByAcctNo(Long acctNo);
+
+	void transferFundsBetweenAccounts(Long sourceAcctNo, Long targetAcctNo, double amount)
+			throws InsufficientFundsException;
+
+	void depositFundsIntoAccount(Long acctNo, double amount);
+
+	void withdrawFundsFromAccount(Long acctNo, double amount) throws InsufficientFundsException;
 
 }
