@@ -92,6 +92,9 @@ public class AccountServiceImpl implements AccountService {
 		
 		source.orElseThrow().decrementBalance(amount);
 		target.orElseThrow().incrementBalance(amount);
+		accountDao.updateAccount(source.orElseThrow());
+		accountDao.updateAccount(target.orElseThrow());
+		
 		transactionDao.saveTransaction(new Transaction(ACCOUNT_TRANSFER, amount, 
 				notes, source.orElseThrow().getAccountNumber()));
 		
@@ -104,8 +107,8 @@ public class AccountServiceImpl implements AccountService {
 		String notes = "$" + amount +" deposited intoaccount with account number " + acctNo;
 		
 		account.orElseThrow().incrementBalance(amount);
-		
 		accountDao.updateAccount(account.orElseThrow());
+		
 		transactionDao.saveTransaction(new Transaction(ACCOUNT_DEPOSIT, amount, 
 				notes, account.orElseThrow().getAccountNumber()));
 		
@@ -123,8 +126,8 @@ public class AccountServiceImpl implements AccountService {
 		}
 		
 		account.orElseThrow().decrementBalance(amount);
-		
 		accountDao.updateAccount(account.orElseThrow());
+		
 		transactionDao.saveTransaction(new Transaction(ACCOUNT_WITHDRAW, amount, 
 				notes, account.orElseThrow().getAccountNumber()));
 		

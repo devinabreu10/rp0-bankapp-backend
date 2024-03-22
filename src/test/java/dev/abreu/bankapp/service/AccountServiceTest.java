@@ -162,6 +162,9 @@ class AccountServiceTest {
 		Mockito.when(accountDao.findAccountByAcctNo(12345L)).thenReturn(mockSourceOpt);
 		Mockito.when(accountDao.findAccountByAcctNo(45678L)).thenReturn(mockTargetOpt);
 		
+		Mockito.when(accountDao.updateAccount(mockSourceOpt.get())).thenReturn(mockSourceOpt.get());
+		Mockito.when(accountDao.updateAccount(mockTargetOpt.get())).thenReturn(mockTargetOpt.get());
+		
 		accountService.transferFundsBetweenAccounts(12345L, 45678L, 99.00);
 		
 		assertThrows(InsufficientFundsException.class, 
