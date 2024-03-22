@@ -71,13 +71,14 @@ public class AccountServiceImpl implements AccountService {
 		log.info("Deleting account with acccount number: {}", acctNo);
 		boolean success = false;
 		
-		if(accountDao.findAccountByAcctNo(acctNo).orElseThrow().getAccountNumber() != 0) {
+		if(!accountDao.findAccountByAcctNo(acctNo).equals(Optional.empty())) {
 			success = accountDao.deleteAccountByAcctNo(acctNo);
 		}
 
 		return success;
 	}
 	
+	@Override
 	public void transferFundsBetweenAccounts(Long sourceAcctNo, Long targetAcctNo, double amount) throws InsufficientFundsException {
 		Optional<Account> source = accountDao.findAccountByAcctNo(sourceAcctNo);
 		Optional<Account> target = accountDao.findAccountByAcctNo(targetAcctNo);
@@ -91,25 +92,30 @@ public class AccountServiceImpl implements AccountService {
 		
 		source.orElseThrow().decrementBalance(amount);
 		target.orElseThrow().incrementBalance(amount);
+		accountDao.updateAccount(source.orElseThrow());
+		accountDao.updateAccount(target.orElseThrow());
+		
 		transactionDao.saveTransaction(new Transaction(ACCOUNT_TRANSFER, amount, 
 				notes, source.orElseThrow().getAccountNumber()));
 		
 		log.info("Transfer successfully completed!");
 	}
 	
+	@Override
 	public void depositFundsIntoAccount(Long acctNo, double amount) {
 		Optional<Account> account = accountDao.findAccountByAcctNo(acctNo);
 		String notes = "$" + amount +" deposited intoaccount with account number " + acctNo;
 		
 		account.orElseThrow().incrementBalance(amount);
-		
 		accountDao.updateAccount(account.orElseThrow());
+		
 		transactionDao.saveTransaction(new Transaction(ACCOUNT_DEPOSIT, amount, 
 				notes, account.orElseThrow().getAccountNumber()));
 		
 		log.info("Successfully deposited ${} into account with acctNo {}", amount, acctNo);
 	}
 	
+	@Override
 	public void withdrawFundsFromAccount(Long acctNo, double amount) throws InsufficientFundsException {
 		Optional<Account> account = accountDao.findAccountByAcctNo(acctNo);
 		String notes = "$" + amount +" withdrawn from account with account number " + acctNo;
@@ -120,8 +126,8 @@ public class AccountServiceImpl implements AccountService {
 		}
 		
 		account.orElseThrow().decrementBalance(amount);
-		
 		accountDao.updateAccount(account.orElseThrow());
+		
 		transactionDao.saveTransaction(new Transaction(ACCOUNT_WITHDRAW, amount, 
 				notes, account.orElseThrow().getAccountNumber()));
 		
