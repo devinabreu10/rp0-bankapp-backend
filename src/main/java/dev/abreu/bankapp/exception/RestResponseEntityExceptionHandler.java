@@ -37,9 +37,20 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 	}
 	
 	@ExceptionHandler(value = { UsernameTakenException.class })
-	protected ResponseEntity<Object> handleResourceNotFound(UsernameTakenException ex, WebRequest request) {
+	protected ResponseEntity<Object> handleUsernameTaken(UsernameTakenException ex, WebRequest request) {
 		
 		log.error("UsernameTakenException: {}", ex.getMessage());
+		
+		String bodyOfResponse = ex.getMessage();
+		
+		return handleExceptionInternal(ex, bodyOfResponse, 
+				new HttpHeaders(), HttpStatus.CONFLICT, request);
+	}
+	
+	@ExceptionHandler(value = { InsufficientFundsException.class })
+	protected ResponseEntity<Object> handleInsufficientFundsException(InsufficientFundsException ex, WebRequest request) {
+		
+		log.error("InsufficientFundsException: {}", ex.getMessage());
 		
 		String bodyOfResponse = ex.getMessage();
 		

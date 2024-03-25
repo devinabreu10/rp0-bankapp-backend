@@ -57,7 +57,6 @@ class AccountControllerTest {
 		mockMvc.perform(get("/account/get/12345"))
 				.andExpect(status().isOk())
 				.andExpect(content().json(jsonMapper.writeValueAsString(mockAccount)));
-		
 	}
 
 	@Test
@@ -145,6 +144,29 @@ class AccountControllerTest {
 		
 		mockMvc.perform(delete("/account/delete/12345"))
 				.andExpect(status().isConflict())
+				.andDo(print());
+	}
+	
+//	@Test
+//	void testTransferFundsBetweenAccounts() {
+//		
+//	}
+	
+	@Test
+	void testDepositFundsIntoAccount() throws Exception {
+		Mockito.doNothing().when(accountService).depositFundsIntoAccount(12345L, 100.00);
+		
+		mockMvc.perform(put("/account/12345/deposit/100"))
+				.andExpect(status().isOk())
+				.andDo(print());
+	}
+	
+	@Test
+	void testWithdrawFundsFromAccount() throws Exception {
+		Mockito.doNothing().when(accountService).withdrawFundsFromAccount(12345L, 50.00);
+		
+		mockMvc.perform(put("/account/12345/withdraw/100"))
+				.andExpect(status().isOk())
 				.andDo(print());
 	}
 

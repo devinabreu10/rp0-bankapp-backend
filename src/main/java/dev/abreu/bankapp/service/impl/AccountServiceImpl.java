@@ -104,7 +104,7 @@ public class AccountServiceImpl implements AccountService {
 	@Override
 	public void depositFundsIntoAccount(Long acctNo, double amount) {
 		Optional<Account> account = accountDao.findAccountByAcctNo(acctNo);
-		String notes = "$" + amount +" deposited intoaccount with account number " + acctNo;
+		String notes = "$" + amount +" deposited into account with account number " + acctNo;
 		
 		account.orElseThrow().incrementBalance(amount);
 		accountDao.updateAccount(account.orElseThrow());
