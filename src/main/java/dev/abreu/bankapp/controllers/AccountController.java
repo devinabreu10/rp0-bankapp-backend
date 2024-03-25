@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import dev.abreu.bankapp.exception.InsufficientFundsException;
 import dev.abreu.bankapp.model.Account;
 import dev.abreu.bankapp.service.AccountService;
 
@@ -85,5 +86,36 @@ public class AccountController {
 			return new ResponseEntity<>("Account could not be deleted, please check backend...", HttpStatus.CONFLICT);
 		}
 	}
-
+	
+//	@PostMapping(path = "/transferFunds")
+//	public ResponseEntity<Account> transferFundsBetweenAccounts(@RequestBody TransferRequest transferRequest) {
+//		
+////		{
+////	      "sourceAccountNumber": "123456789",
+////		  "destinationAccountNumber": "987654321",
+////		  "amount": 100.00
+////		}
+//		
+////	       transferRequest.getSourceAccountNumber()
+////         transferRequest.getDestinationAccountNumber()
+////         transferRequest.getAmount())
+//		
+//		return null;
+//	}
+	
+	@PutMapping(path = "/{acctNo}/deposit/{amount}")
+	public ResponseEntity<String> depositFundsIntoAccount(@PathVariable("acctNo") Long acctNo, @PathVariable("amount") double amount) {
+		log.info("Performing PUT method to deposit funds into Account with acctNo: {}", acctNo);
+		accountService.depositFundsIntoAccount(acctNo, amount);
+		
+		return new ResponseEntity<>("Successfully deposited funds into account...", HttpStatus.OK);
+	}
+	
+	@PutMapping(path = "/{acctNo}/withdraw/{amount}")
+	public ResponseEntity<String> withdrawFundsFromAccount(@PathVariable("acctNo") Long acctNo, @PathVariable("amount") double amount) throws InsufficientFundsException {
+		log.info("Performing PUT method to withdraw funds from Account with acctNo: {}", acctNo);
+		accountService.withdrawFundsFromAccount(acctNo, amount);
+		
+		return new ResponseEntity<>("Successfully withdrawed funds from account...", HttpStatus.OK);
+	}
 }

@@ -1,6 +1,7 @@
 package dev.abreu.bankapp.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -61,7 +62,7 @@ public class TransactionServiceImpl implements TransactionService {
 		log.info("Deleting transaction with id: {}", txnId);
 		boolean success = false;
 		
-		if(transactionDao.findTransactionById(txnId).orElseThrow().getTransactionId() != 0) {
+		if(!transactionDao.findTransactionById(txnId).equals(Optional.empty())) {
 			success = transactionDao.deleteTransactionById(txnId);
 		}
 
