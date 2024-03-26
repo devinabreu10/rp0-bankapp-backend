@@ -29,6 +29,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.abreu.bankapp.dao.AccountDao;
 import dev.abreu.bankapp.dao.CustomerDao;
 import dev.abreu.bankapp.model.Account;
+import dev.abreu.bankapp.model.dto.TransferRequest;
 import dev.abreu.bankapp.service.AccountService;
 
 @WebMvcTest(controllers = AccountController.class)
@@ -147,10 +148,22 @@ class AccountControllerTest {
 				.andDo(print());
 	}
 	
-//	@Test
-//	void testTransferFundsBetweenAccounts() {
-//		
-//	}
+	@Test
+	void testTransferFundsBetweenAccounts() throws JsonProcessingException, Exception {
+		TransferRequest mockTransferReq = new TransferRequest();
+		mockTransferReq.setSourceAccountNumber(12345L);
+		mockTransferReq.setTargetAccountNumber(45678L);
+		mockTransferReq.setAmount(50.00);
+		
+		Mockito.doNothing().when(accountService).transferFundsBetweenAccounts(mockTransferReq.getSourceAccountNumber(), 
+				mockTransferReq.getTargetAccountNumber(), mockTransferReq.getAmount());
+		
+		mockMvc.perform(post("/account/transferFunds")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(jsonMapper.writeValueAsString(mockTransferReq)))
+				.andExpect(status().isOk())
+				.andDo(print());
+	}
 	
 	@Test
 	void testDepositFundsIntoAccount() throws Exception {
