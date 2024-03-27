@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import dev.abreu.bankapp.exception.InsufficientFundsException;
 import dev.abreu.bankapp.model.Account;
+import dev.abreu.bankapp.model.dto.TransferRequest;
 import dev.abreu.bankapp.service.AccountService;
 
 @RestController
@@ -87,21 +88,16 @@ public class AccountController {
 		}
 	}
 	
-//	@PostMapping(path = "/transferFunds")
-//	public ResponseEntity<Account> transferFundsBetweenAccounts(@RequestBody TransferRequest transferRequest) {
-//		
-////		{
-////	      "sourceAccountNumber": "123456789",
-////		  "destinationAccountNumber": "987654321",
-////		  "amount": 100.00
-////		}
-//		
-////	       transferRequest.getSourceAccountNumber()
-////         transferRequest.getDestinationAccountNumber()
-////         transferRequest.getAmount())
-//		
-//		return null;
-//	}
+	@PostMapping(path = "/transferFunds")
+	public ResponseEntity<String> transferFundsBetweenAccounts(@RequestBody TransferRequest transferRequest) throws InsufficientFundsException {
+		log.info("Performing POST method to transfer funds between Account # {} and Account # {}",
+					transferRequest.getSourceAccountNumber(), transferRequest.getTargetAccountNumber());
+		
+        accountService.transferFundsBetweenAccounts(transferRequest.getSourceAccountNumber(), 
+        		transferRequest.getTargetAccountNumber(), transferRequest.getAmount());
+		
+        return new ResponseEntity<>("Successfully transferred funds between accounts...", HttpStatus.OK);
+	}
 	
 	@PutMapping(path = "/{acctNo}/deposit/{amount}")
 	public ResponseEntity<String> depositFundsIntoAccount(@PathVariable("acctNo") Long acctNo, @PathVariable("amount") double amount) {

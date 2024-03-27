@@ -116,8 +116,8 @@ class CustomerServiceTest {
 	@Test
 	void testGetAllCustomer() {
 		List<Customer> mockCustomerList = new ArrayList<>();
-		Customer mockCustomer = new Customer(1L, "testFirst", "testLast", "testAddr", "testUsername", "testPassword");
-		Customer mockCustomerTwo = new Customer(2L, "testFirstTwo", "testLastTwo", "testAddrTwo", "testUsernameTwo", "testPasswordTwo");
+		Customer mockCustomer = new Customer(1L, "testFirst", "testLast", "testAddr", "testUsername");
+		Customer mockCustomerTwo = new Customer(2L, "testFirstTwo", "testLastTwo", "testAddrTwo", "testUsernameTwo");
 		mockCustomerList.add(mockCustomer);
 		mockCustomerList.add(mockCustomerTwo);
 		
@@ -130,8 +130,8 @@ class CustomerServiceTest {
 
 	@Test
 	void testUpdateCustomerDetails() {
-		Customer mockCustomer = new Customer(1L, "testFirst", "testLast", "testAddr", "testUsername", "testPassword");
-		Customer mockCustomerUpdate = new Customer(1L, "newTestFirst", "newTestLast", "newTestAddr", "testUsername", "newTestPassword");
+		Customer mockCustomer = new Customer(1L, "testFirst", "testLast", "testAddr", "testUsername");
+		Customer mockCustomerUpdate = new Customer(1L, "newTestFirst", "newTestLast", "newTestAddr", "testUsername");
 		
 		Mockito.when(customerDao.updateCustomer(mockCustomer)).thenReturn(mockCustomerUpdate);
 		
