@@ -1,5 +1,6 @@
 package dev.abreu.bankapp.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import dev.abreu.bankapp.exception.UsernameTakenException;
 import dev.abreu.bankapp.model.Customer;
+import dev.abreu.bankapp.model.dto.CustomerDTO;
 import dev.abreu.bankapp.service.CustomerService;
 
 @RestController
@@ -38,14 +40,15 @@ public class CustomerController {
 	 * @return customer
 	 */
 	@GetMapping(path = "/get/user/{username}")
-	public ResponseEntity<Customer> getCustomerByUsername(@PathVariable("username") String username) {
+	public ResponseEntity<CustomerDTO> getCustomerByUsername(@PathVariable("username") String username) {
 		log.info("Performing GET method from inside getCustomerByUsername in CustomerController");
 		
 		Customer customer = customerService.getCustomerByUsername(username);
 		
+		CustomerDTO customerDto = new CustomerDTO(customer);
+		
 		log.info("Customer with username {} was successfully retrieved...", username);
-//		CustomerDTO dto = mapper.toDto(customer);
-		return ResponseEntity.ok(customer); //sends 200 status
+		return ResponseEntity.ok(customerDto); //sends 200 status
 	}
 	
 	
@@ -56,13 +59,15 @@ public class CustomerController {
 	 * @return Customer
 	 */
 	@GetMapping("/get/id/{id}")
-	public ResponseEntity<Customer> getCustomerById(@PathVariable("id") Long id) {
+	public ResponseEntity<CustomerDTO> getCustomerById(@PathVariable("id") Long id) {
 		log.info("Performing GET method from inside getCustomerById in CustomerController");
 		
 		Customer customer = customerService.getCustomerById(id);
 		
+		CustomerDTO customerDto = new CustomerDTO(customer);
+		
 		log.info("Customer with id {} was successfully retrieved...", id);
-		return ResponseEntity.ok(customer);
+		return ResponseEntity.ok(customerDto);
 	}
 	
 	/**
@@ -72,9 +77,15 @@ public class CustomerController {
 	 * @return a list of customers
 	 */
 	@GetMapping()
-	public List<Customer> getAllCustomers() {
+	public ResponseEntity<List<CustomerDTO>> getAllCustomers() {
 		log.info("Performing GET method from inside getAllCustomers()");
-		return customerService.getAllCustomers();
+		
+		List<Customer> customerList = customerService.getAllCustomers();
+		
+		List<CustomerDTO> customerDtoList = new ArrayList<>();
+		customerList.stream().forEach(x -> customerDtoList.add(new CustomerDTO(x)));
+		
+		return ResponseEntity.ok(customerDtoList);
 	}
 
 	/**
@@ -85,15 +96,14 @@ public class CustomerController {
 	 * @throws UsernameTakenException 
 	 */
 	@PostMapping(path = "/save")
-	public ResponseEntity<Customer> saveCustomer(@RequestBody Customer customer) throws UsernameTakenException {
+	public ResponseEntity<CustomerDTO> saveCustomer(@RequestBody CustomerDTO customerDto) throws UsernameTakenException {
 		log.info("Performing POST method to save new Customer");
 		
-		//make sure that both DTO and domain don't need to know about each other by using a mapper class
-//		Customer customer = mapper.toCustomer(customerDTO);
+		Customer customer = customerDto.toEntity();
 
-		customer = customerService.registerNewCustomer(customer);
+		customerService.registerNewCustomer(customer);
 		
-		return ResponseEntity.status(HttpStatus.CREATED).body(customer);
+		return ResponseEntity.status(HttpStatus.CREATED).body(customerDto);
 	}
 	
 	/**
@@ -104,17 +114,19 @@ public class CustomerController {
 	 * @return customer
 	 */
 	@PutMapping(path = "/update/{id}")
-	public ResponseEntity<Customer> updateCustomer(@PathVariable("id") Long id, @RequestBody Customer customer) {
+	public ResponseEntity<CustomerDTO> updateCustomer(@PathVariable("id") Long id, @RequestBody CustomerDTO customerDto) {
 		log.info("Performing PUT method to update details for customer with id: {}", id);
 		
-		if(!customer.getId().equals(id)) {
+		if(!customerDto.getId().equals(id)) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).build();
 		}
+		
+		Customer customer = customerDto.toEntity();
 		
 		customer = customerService.updateCustomerDetails(customer);
 		
 		if(customer != null) {
-			return ResponseEntity.ok(customer);
+			return ResponseEntity.ok(customerDto);
 		} else {
 			return ResponseEntity.badRequest().build();
 		}

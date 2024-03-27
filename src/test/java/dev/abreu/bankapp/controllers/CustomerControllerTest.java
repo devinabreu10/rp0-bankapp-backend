@@ -28,6 +28,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.abreu.bankapp.dao.AccountDao;
 import dev.abreu.bankapp.dao.CustomerDao;
 import dev.abreu.bankapp.model.Customer;
+import dev.abreu.bankapp.model.dto.CustomerDTO;
 import dev.abreu.bankapp.service.CustomerService;
 
 @WebMvcTest(controllers = CustomerController.class)
@@ -49,39 +50,43 @@ class CustomerControllerTest {
 
 	@Test
 	void testGetCustomerByUsername() throws JsonProcessingException, Exception {
-		Customer mockCustomer = new Customer(1L, "testFirst", "testLast", "testAddr", "testUsername", "testPassword");
+		Customer mockCustomer = new Customer(1L, "testFirst", "testLast", "testAddr", "testUsername");
+		CustomerDTO mockCustomerDto = new CustomerDTO(mockCustomer);
 		
 		Mockito.when(customerService.getCustomerByUsername(mockCustomer.getUsername())).thenReturn(mockCustomer);
 		
 		mockMvc.perform(get("/customer/get/user/testUsername"))
 				.andExpect(status().isOk())
-				.andExpect(content().json(jsonMapper.writeValueAsString(mockCustomer)));
+				.andExpect(content().json(jsonMapper.writeValueAsString(mockCustomerDto)));
 	}
 
 	@Test
 	void testGetCustomerById() throws JsonProcessingException, Exception {
-		Customer mockCustomer = new Customer(1L, "testFirst", "testLast", "testAddr", "testUsername", "testPassword");
+		Customer mockCustomer = new Customer(1L, "testFirst", "testLast", "testAddr", "testUsername");
+		CustomerDTO mockCustomerDto = new CustomerDTO(mockCustomer);
 
 		Mockito.when(customerService.getCustomerById(mockCustomer.getId())).thenReturn(mockCustomer);
 
 		mockMvc.perform(get("/customer/get/id/1"))
 				.andExpect(status().isOk())
-				.andExpect(content().json(jsonMapper.writeValueAsString(mockCustomer)));
+				.andExpect(content().json(jsonMapper.writeValueAsString(mockCustomerDto)));
 	}
 
 	@Test
 	void testGetAllCustomers() throws JsonProcessingException, Exception {
 		List<Customer> mockCustomerList = new ArrayList<>();
-		Customer mockCustomer = new Customer(1L, "testFirst", "testLast", "testAddr", "testUsername", "testPassword");
-		Customer mockCustomerTwo = new Customer(2L, "testFirstTwo", "testLastTwo", "testAddrTwo", "testUsernameTwo",
-				"testPasswordTwo");
+		Customer mockCustomer = new Customer(1L, "testFirst", "testLast", "testAddr", "testUsername");
+		Customer mockCustomerTwo = new Customer(2L, "testFirstTwo", "testLastTwo", "testAddrTwo", "testUsernameTwo");
 		mockCustomerList.add(mockCustomer);
 		mockCustomerList.add(mockCustomerTwo);
+		
+		List<CustomerDTO> mockCustomerDtoList = new ArrayList<>();
+		mockCustomerList.stream().forEach(x -> mockCustomerDtoList.add(new CustomerDTO(x)));
 
 		Mockito.when(customerService.getAllCustomers()).thenReturn(mockCustomerList);
 
 		mockMvc.perform(get("/customer"))
-				.andExpect(content().json(jsonMapper.writeValueAsString(mockCustomerList)));
+				.andExpect(content().json(jsonMapper.writeValueAsString(mockCustomerDtoList)));
 	}
 
 	@Test
@@ -89,35 +94,39 @@ class CustomerControllerTest {
 		Customer mockCustomer = new Customer();
 		Customer mockCustomerWithId = new Customer();
 		mockCustomerWithId.setId(1L);
+		
+		CustomerDTO mockCustomerDto = new CustomerDTO();
+		mockCustomerDto.setId(1L);
 
 		Mockito.when(customerService.registerNewCustomer(mockCustomer)).thenReturn(mockCustomerWithId);
 
 		mockMvc.perform(post("/customer/save")
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(jsonMapper.writeValueAsString(mockCustomer)))
+				.content(jsonMapper.writeValueAsString(mockCustomerDto)))
 				.andExpect(status().isCreated())
 				.andReturn();
 	}
 
 	@Test
 	void testUpdateCustomer() throws JsonProcessingException, Exception {
-		Customer mockCustomer = new Customer(1L, "testFirst", "testLast", "testAddr", "testUsername", "testPassword", List.of());
+		Customer mockCustomer = new Customer(1L, "testFirst", "testLast", "testAddr", "testUsername");
+		CustomerDTO mockCustomerDto = new CustomerDTO(mockCustomer);
 		
 		Mockito.when(customerService.updateCustomerDetails(any(Customer.class))).thenReturn(mockCustomer);
 		
 		mockMvc.perform(put("/customer/update/1")
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(jsonMapper.writeValueAsString(mockCustomer)))
+				.content(jsonMapper.writeValueAsString(mockCustomerDto)))
 				.andExpect(status().isOk())
-				.andExpect(content().json(jsonMapper.writeValueAsString(mockCustomer)));
+				.andExpect(content().json(jsonMapper.writeValueAsString(mockCustomerDto)));
 		
 		verify(customerService, times(1)).updateCustomerDetails(any(Customer.class));
 	}
 	
 	@Test
 	void testUpdateCustomerConflict() throws JsonProcessingException, Exception {
-		Customer mockCustomer = new Customer(1L, "testFirst", "testLast", "testAddr", "testUsername", "testPassword");
-		Customer mockCustomerUpdate = new Customer(1L, "newTestFirst", "newTestLast", "newTestAddr", "testUsername", "newTestPassword");
+		Customer mockCustomer = new Customer(1L, "testFirst", "testLast", "testAddr", "testUsername");
+		Customer mockCustomerUpdate = new Customer(1L, "newTestFirst", "newTestLast", "newTestAddr", "testUsername");
 		
 		Mockito.when(customerService.updateCustomerDetails(mockCustomer)).thenReturn(mockCustomerUpdate);
 		
@@ -129,19 +138,20 @@ class CustomerControllerTest {
 	
 	@Test
 	void testUpdateNullCustomer() throws JsonProcessingException, Exception {
-		Customer mockCustomer = new Customer(1L, "testFirst", "testLast", "testAddr", "testUsername", "testPassword");
+		Customer mockCustomer = new Customer(1L, "testFirst", "testLast", "testAddr", "testUsername");
+		CustomerDTO mockCustomerDto = new CustomerDTO(mockCustomer);
 		
 		Mockito.when(customerService.updateCustomerDetails(mockCustomer)).thenReturn(null);
 		
 		mockMvc.perform(put("/customer/update/1")
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(jsonMapper.writeValueAsString(mockCustomer)))
+				.content(jsonMapper.writeValueAsString(mockCustomerDto)))
 				.andExpect(status().isBadRequest());
 	}
 
 	@Test
 	void testDeleteCustomerByUsername() throws JsonProcessingException, Exception {
-		Customer mockCustomer = new Customer(1L, "testFirst", "testLast", "testAddr", "testUsername", "testPassword");
+		Customer mockCustomer = new Customer(1L, "testFirst", "testLast", "testAddr", "testUsername");
 		
 		Mockito.when(customerService.deleteCustomerByUsername(mockCustomer.getUsername())).thenReturn(Boolean.TRUE);
 		
@@ -152,7 +162,7 @@ class CustomerControllerTest {
 	
 	@Test
 	void testUnsucessfulDeleteCustomerByUsername() throws JsonProcessingException, Exception {
-		Customer mockCustomer = new Customer(1L, "testFirst", "testLast", "testAddr", "testUsername", "testPassword");
+		Customer mockCustomer = new Customer(1L, "testFirst", "testLast", "testAddr", "testUsername");
 		
 		Mockito.when(customerService.deleteCustomerByUsername(mockCustomer.getUsername())).thenReturn(Boolean.FALSE);
 		
@@ -163,7 +173,7 @@ class CustomerControllerTest {
 
 	@Test
 	void testDeleteCustomerById() throws Exception {
-		Customer mockCustomer = new Customer(1L, "testFirst", "testLast", "testAddr", "testUsername", "testPassword");
+		Customer mockCustomer = new Customer(1L, "testFirst", "testLast", "testAddr", "testUsername");
 		
 		Mockito.when(customerService.deleteCustomerById(mockCustomer.getId())).thenReturn(Boolean.TRUE);
 		
@@ -174,7 +184,7 @@ class CustomerControllerTest {
 	
 	@Test
 	void testUnsucessfulDeleteCustomerById() throws Exception {
-		Customer mockCustomer = new Customer(1L, "testFirst", "testLast", "testAddr", "testUsername", "testPassword");
+		Customer mockCustomer = new Customer(1L, "testFirst", "testLast", "testAddr", "testUsername");
 		
 		Mockito.when(customerService.deleteCustomerById(mockCustomer.getId())).thenReturn(Boolean.FALSE);
 		

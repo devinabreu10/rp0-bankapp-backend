@@ -1,6 +1,5 @@
 package dev.abreu.bankapp.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
@@ -17,25 +16,15 @@ public class Customer {
 	private String username;
 	private @Column(value="passwrd") String password;
 	private List<Account> accounts;
+
+	public Customer() {}
 	
-	// instantiates an empty Customer
-	public Customer() {
-		this.id = 0L;
-		this.firstName = "";
-		this.lastName = "";
-		this.address = "";
-		this.username = "";
-		this.password = "";
-		this.accounts = new ArrayList<>();
-	}
-	
-	public Customer(Long id, String firstName, String lastName, String address, String username, String password) {
+	public Customer(Long id, String firstName, String lastName, String address, String username) {
 		this.id = id;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.address = address;
 		this.username = username;
-		this.password = password;
 	}
 	
 	public Customer(Long id, String firstName, String lastName, String address, String username, String password, List<Account> accounts) {
