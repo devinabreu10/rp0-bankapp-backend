@@ -1,13 +1,19 @@
 package dev.abreu.bankapp.model;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Table(name = "customers")
-public class Customer {
+public class Customer implements UserDetails {
+	
+	private static final long serialVersionUID = 9095963579654299833L;
 	
 	private @Column(value="customer_id") @Id Long id;
 	private String firstName;
@@ -15,7 +21,6 @@ public class Customer {
 	private String address;
 	private String username;
 	private @Column(value="passwrd") String password;
-	private List<Account> accounts;
 
 	public Customer() {}
 	
@@ -27,17 +32,10 @@ public class Customer {
 		this.username = username;
 	}
 	
-	public Customer(Long id, String firstName, String lastName, String address, String username, String password, List<Account> accounts) {
-		this.id = id;
+	public Customer(String firstName, String lastName, String address, String username, String password) {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.address = address;
-		this.username = username;
-		this.password = password;
-		this.accounts = accounts; // initial account associated with Customer
-	}
-	
-	public Customer(String username, String password) {
 		this.username = username;
 		this.password = password;
 	}
@@ -74,6 +72,7 @@ public class Customer {
 		this.address = address;
 	}
 
+	@Override
 	public String getUsername() {
 		return username;
 	}
@@ -81,7 +80,8 @@ public class Customer {
 	public void setUsername(String username) {
 		this.username = username;
 	}
-
+	
+	@Override
 	public String getPassword() {
 		return password;
 	}
@@ -89,19 +89,36 @@ public class Customer {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
-	public List<Account> getAccounts() {
-		return accounts;
-	}
-
-	public void setAccounts(List<Account> accounts) {
-		this.accounts = accounts;
-	}
 
 	@Override
 	public String toString() {
 		return "Customer [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", address=" + address
-				+ ", username=" + username + ", password=" + password + ", accounts=" + accounts + "]";
+				+ ", username=" + username + ", password=" + password + "]";
+	}
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return List.of(new SimpleGrantedAuthority("User"));
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return true;
 	}
 
 }

@@ -1,6 +1,10 @@
 package dev.abreu.bankapp.service.impl;
 
+import static dev.abreu.bankapp.utils.BankappConstants.JWT_RP0_BANKAPP_ISSUER;
+
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
@@ -8,12 +12,13 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import dev.abreu.bankapp.exception.TokenExpirationException;
+import dev.abreu.bankapp.model.Customer;
 import dev.abreu.bankapp.model.dto.CustomerDTO;
 import dev.abreu.bankapp.security.JwtConfig;
 import dev.abreu.bankapp.service.TokenService;
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 
 @Service
 public class TokenServiceImpl implements TokenService {
@@ -25,37 +30,34 @@ public class TokenServiceImpl implements TokenService {
 	public TokenServiceImpl(JwtConfig jwtConfig) {
 		this.jwtConfig = jwtConfig;
 	}
-
+	
 	@Override
-	public String createToken(CustomerDTO customer) {
-		String jws = "";
-		
-		if(customer != null && customer.getUsername() != null) {
-			
-			jws = Jwts.builder()
-					.setId(String.valueOf(customer.getId()))
-					.setSubject(customer.getUsername())
-					.claim("role", "user")
-					.setIssuer("rp0-bankapp")
-					.setIssuedAt(new Date(System.currentTimeMillis()))
-					.setExpiration(new Date(System.currentTimeMillis() + jwtConfig.getExpiration()))
-					.signWith(jwtConfig.getSigningKey())
-					.compact();
-		}
-		
-		return jws;
+	public String generateToken(Customer customer) {
+		return generateToken(new HashMap<>(), customer);
+	}
+	
+	@Override
+	public String generateToken(Map<String, Object> extraClaims, Customer customer) {
+		return Jwts.builder()
+				.setClaims(extraClaims)
+				.setSubject(customer.getUsername())
+				.setIssuer(JWT_RP0_BANKAPP_ISSUER)
+				.setIssuedAt(new Date(System.currentTimeMillis()))
+				.setExpiration(new Date(System.currentTimeMillis() + jwtConfig.getExpiration()))
+				.signWith(jwtConfig.getSigningKey(), SignatureAlgorithm.HS256)
+				.compact();
 	}
 
 	@Override
-	public Optional<CustomerDTO> validateToken(String token) throws TokenExpirationException {
+	public Optional<CustomerDTO> validateToken(String token, Customer customer) throws TokenExpirationException {
 		try {
-			Claims jwtClaims = extractAllClaims(token);
 			
-			if(jwtClaims.getExpiration().before(new Date(System.currentTimeMillis()))) {
+			if(!jwtConfig.isTokenValid(token, customer)) {
 				throw new TokenExpirationException();
 			}
 			
-			CustomerDTO customerDto = parseCustomer(jwtClaims);
+			CustomerDTO customerDto = new CustomerDTO();
+			customerDto.setUsername(jwtConfig.extractUsername(token));
 			
 			return Optional.of(customerDto);
 			
@@ -64,30 +66,6 @@ public class TokenServiceImpl implements TokenService {
 		}
 		
 		return Optional.empty();
-	}
-	
-	@Override
-	public int getDefaultExpiration() {
-		return jwtConfig.getExpiration();
-	}
-
-	private CustomerDTO parseCustomer(Claims jwtClaims) {
-		Long id = Long.parseLong(jwtClaims.getId());
-		String username = jwtClaims.getSubject();
-		
-		CustomerDTO customerDto = new CustomerDTO();
-		customerDto.setId(id);
-		customerDto.setUsername(username);
-		
-		return customerDto;
-	}
-
-	private Claims extractAllClaims(String token) {
-		return Jwts.parserBuilder()
-				.setSigningKey(jwtConfig.getSigningKey())
-				.build()
-				.parseClaimsJws(token)
-				.getBody();	
 	}
 
 }

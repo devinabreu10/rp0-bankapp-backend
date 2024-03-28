@@ -16,6 +16,8 @@ public class BankappConstants {
 	public static final String ACCOUNT_WITHDRAW = "Account Withdraw";
 	public static final String ACCOUNT_TRANSFER = "Account Transfer";
 	
+	public static final String JWT_RP0_BANKAPP_ISSUER = "rp0-bankapp";
+	
 	//Caught exception statements
 	public static final String SQL_EXCEPTION_CAUGHT= "SQLException Caught: {}";
 
