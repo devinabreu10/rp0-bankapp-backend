@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -45,6 +46,17 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 		
 		return handleExceptionInternal(ex, bodyOfResponse, 
 				new HttpHeaders(), HttpStatus.CONFLICT, request);
+	}
+	
+	@ExceptionHandler(value = { BadCredentialsException.class })
+	protected ResponseEntity<Object> handleBadCredentials(BadCredentialsException ex, WebRequest request) {
+		
+		log.error("BadCredentialsException: Invalid username or password");
+		
+		String bodyOfResponse = ex.getMessage() + ": Invalid username or password";
+		
+		return handleExceptionInternal(ex, bodyOfResponse, 
+				new HttpHeaders(), HttpStatus.UNAUTHORIZED, request);
 	}
 	
 	@ExceptionHandler(value = { InsufficientFundsException.class })
