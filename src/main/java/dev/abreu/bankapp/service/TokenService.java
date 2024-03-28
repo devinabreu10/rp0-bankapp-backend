@@ -3,9 +3,9 @@ package dev.abreu.bankapp.service;
 import java.util.Map;
 import java.util.Optional;
 
+import dev.abreu.bankapp.dto.CustomerDTO;
 import dev.abreu.bankapp.exception.TokenExpirationException;
 import dev.abreu.bankapp.model.Customer;
-import dev.abreu.bankapp.model.dto.CustomerDTO;
 
 public interface TokenService {
 	

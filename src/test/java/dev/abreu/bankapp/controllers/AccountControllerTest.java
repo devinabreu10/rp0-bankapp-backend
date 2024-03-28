@@ -28,8 +28,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dev.abreu.bankapp.dao.AccountDao;
 import dev.abreu.bankapp.dao.CustomerDao;
+import dev.abreu.bankapp.dto.TransferRequest;
 import dev.abreu.bankapp.model.Account;
-import dev.abreu.bankapp.model.dto.TransferRequest;
 import dev.abreu.bankapp.service.AccountService;
 
 @WebMvcTest(controllers = AccountController.class)

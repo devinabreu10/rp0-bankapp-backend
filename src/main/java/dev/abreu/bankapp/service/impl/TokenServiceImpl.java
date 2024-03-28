@@ -11,9 +11,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
+import dev.abreu.bankapp.dto.CustomerDTO;
 import dev.abreu.bankapp.exception.TokenExpirationException;
 import dev.abreu.bankapp.model.Customer;
-import dev.abreu.bankapp.model.dto.CustomerDTO;
 import dev.abreu.bankapp.security.JwtConfig;
 import dev.abreu.bankapp.service.TokenService;
 import io.jsonwebtoken.JwtException;

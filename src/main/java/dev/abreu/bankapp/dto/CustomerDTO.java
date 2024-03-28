@@ -1,4 +1,4 @@
-package dev.abreu.bankapp.model.dto;
+package dev.abreu.bankapp.dto;
 
 import dev.abreu.bankapp.model.Customer;
 

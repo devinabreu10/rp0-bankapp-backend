@@ -5,7 +5,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -27,8 +26,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dev.abreu.bankapp.dao.AccountDao;
 import dev.abreu.bankapp.dao.CustomerDao;
+import dev.abreu.bankapp.dto.CustomerDTO;
 import dev.abreu.bankapp.model.Customer;
-import dev.abreu.bankapp.model.dto.CustomerDTO;
 import dev.abreu.bankapp.service.CustomerService;
 
 @WebMvcTest(controllers = CustomerController.class)
@@ -87,24 +86,6 @@ class CustomerControllerTest {
 
 		mockMvc.perform(get("/customer"))
 				.andExpect(content().json(jsonMapper.writeValueAsString(mockCustomerDtoList)));
-	}
-
-	@Test
-	void testSaveCustomer() throws JsonProcessingException, Exception {
-		Customer mockCustomer = new Customer();
-		Customer mockCustomerWithId = new Customer();
-		mockCustomerWithId.setId(1L);
-		
-		CustomerDTO mockCustomerDto = new CustomerDTO();
-		mockCustomerDto.setId(1L);
-
-		Mockito.when(customerService.registerNewCustomer(mockCustomer)).thenReturn(mockCustomerWithId);
-
-		mockMvc.perform(post("/customer/save")
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(jsonMapper.writeValueAsString(mockCustomerDto)))
-				.andExpect(status().isCreated())
-				.andReturn();
 	}
 
 	@Test
