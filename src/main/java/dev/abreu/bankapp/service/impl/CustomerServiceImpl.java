@@ -94,15 +94,15 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
-	public Customer customerLogin(String username, String password) {
+	public Optional<Customer> customerLogin(String username, String password) {
 		log.info("Attempting to sign in customer with username: {}", username);
 		Optional<Customer> customer = customerDao.findByUsername(username);
 		
 		if(customer.isPresent() && (password != null && password.equals(customer.get().getPassword()))) {
-			return customer.orElseThrow();
+			return customer;
 		}
 		
-		return null;
+		return Optional.empty();
 	}
 
 }

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import dev.abreu.bankapp.exception.UsernameTakenException;
 import dev.abreu.bankapp.model.Customer;
 import dev.abreu.bankapp.model.dto.CustomerDTO;
+import dev.abreu.bankapp.model.dto.RegisterRequest;
 import dev.abreu.bankapp.service.CustomerService;
 
 @RestController
@@ -95,13 +96,20 @@ public class CustomerController {
 	 * @return customer
 	 * @throws UsernameTakenException 
 	 */
-	@PostMapping(path = "/save")
-	public ResponseEntity<CustomerDTO> saveCustomer(@RequestBody CustomerDTO customerDto) throws UsernameTakenException {
-		log.info("Performing POST method to save new Customer");
+	@PostMapping(path = "/register")
+	public ResponseEntity<CustomerDTO> registerNewCustomer(@RequestBody RegisterRequest registerRequest) throws UsernameTakenException {
+		log.info("Performing POST method to register new Customer");
 		
-		Customer customer = customerDto.toEntity();
-
-		customerService.registerNewCustomer(customer);
+		Customer customer = new Customer();
+		customer.setUsername(registerRequest.getUsername());
+		customer.setPassword(registerRequest.getPassword());
+		customer.setFirstName(registerRequest.getFirstName());
+		customer.setLastName(registerRequest.getLastName());
+		customer.setAddress(registerRequest.getAddress());
+		
+		customer = customerService.registerNewCustomer(customer);
+		
+		CustomerDTO customerDto = new CustomerDTO(customer);
 		
 		return ResponseEntity.status(HttpStatus.CREATED).body(customerDto);
 	}
