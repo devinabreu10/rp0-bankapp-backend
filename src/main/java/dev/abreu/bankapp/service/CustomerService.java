@@ -1,6 +1,7 @@
 package dev.abreu.bankapp.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import dev.abreu.bankapp.exception.UsernameTakenException;
 import dev.abreu.bankapp.model.Customer;
@@ -75,7 +76,7 @@ public interface CustomerService {
 	 * @param password
 	 * @return Customer
 	 */
-	Customer customerLogin(String username, String password);
+	Optional<Customer> customerLogin(String username, String password);
 	
 
 }
