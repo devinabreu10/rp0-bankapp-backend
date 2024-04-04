@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import dev.abreu.bankapp.dto.CustomerDTO;
+import dev.abreu.bankapp.dto.LoginRequest;
+import dev.abreu.bankapp.dto.RegisterRequest;
 import dev.abreu.bankapp.exception.UsernameTakenException;
 import dev.abreu.bankapp.model.Customer;
-import dev.abreu.bankapp.model.dto.CustomerDTO;
-import dev.abreu.bankapp.model.dto.LoginRequest;
-import dev.abreu.bankapp.model.dto.RegisterRequest;
 import dev.abreu.bankapp.service.CustomerService;
 import dev.abreu.bankapp.service.TokenService;
 
@@ -82,15 +82,13 @@ public class AuthController {
 				registerRequest.getUsername(),
 				passwordEncoder.encode(registerRequest.getPassword()));
 		
-		customer = customerService.registerNewCustomer(customer);
-		
-		CustomerDTO customerDto = new CustomerDTO(customer);
+		customerService.registerNewCustomer(customer);
 		
 		String jwt = tokenService.generateToken(customer);
 		
 		return ResponseEntity.status(HttpStatus.CREATED)
 				.header(HttpHeaders.AUTHORIZATION, jwt)
-				.body(customerDto);
+				.body(new CustomerDTO(customer));
 	}
 	
 }

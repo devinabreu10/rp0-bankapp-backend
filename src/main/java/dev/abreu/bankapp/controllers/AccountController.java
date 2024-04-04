@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import dev.abreu.bankapp.dto.TransferRequest;
 import dev.abreu.bankapp.exception.InsufficientFundsException;
 import dev.abreu.bankapp.model.Account;
-import dev.abreu.bankapp.model.dto.TransferRequest;
 import dev.abreu.bankapp.service.AccountService;
 
 @RestController

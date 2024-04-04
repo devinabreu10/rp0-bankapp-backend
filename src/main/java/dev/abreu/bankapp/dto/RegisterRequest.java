@@ -1,4 +1,4 @@
-package dev.abreu.bankapp.model.dto;
+package dev.abreu.bankapp.dto;
 
 public class RegisterRequest {
 	

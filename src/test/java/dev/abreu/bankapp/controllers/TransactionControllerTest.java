@@ -17,26 +17,38 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+
+import dev.abreu.bankapp.config.ApplicationConfig;
 import dev.abreu.bankapp.dao.AccountDao;
 import dev.abreu.bankapp.dao.CustomerDao;
 import dev.abreu.bankapp.dao.TransactionDao;
 import dev.abreu.bankapp.model.Transaction;
+import dev.abreu.bankapp.security.JwtConfig;
+import dev.abreu.bankapp.security.SecurityConfig;
+import dev.abreu.bankapp.service.CustomerService;
 import dev.abreu.bankapp.service.TransactionService;
 import dev.abreu.bankapp.utils.BankappConstants;
 
 @WebMvcTest(controllers = TransactionController.class)
+@AutoConfigureMockMvc(addFilters = false)
+@Import({SecurityConfig.class, ApplicationConfig.class})
 class TransactionControllerTest {
 	
 	@MockBean
 	TransactionService transactionService;
+	
+	@MockBean
+	private CustomerService customerService;
 	
 	@MockBean
 	private CustomerDao customerDao;
@@ -46,6 +58,9 @@ class TransactionControllerTest {
 	
 	@MockBean
 	private TransactionDao transactionDao;
+	
+	@MockBean
+	JwtConfig jwtConfig;
 
 	@Autowired
 	private MockMvc mockMvc;

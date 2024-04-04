@@ -10,16 +10,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import dev.abreu.bankapp.exception.UsernameTakenException;
+import dev.abreu.bankapp.dto.CustomerDTO;
 import dev.abreu.bankapp.model.Customer;
-import dev.abreu.bankapp.model.dto.CustomerDTO;
-import dev.abreu.bankapp.model.dto.RegisterRequest;
 import dev.abreu.bankapp.service.CustomerService;
 
 @RestController
@@ -87,31 +84,6 @@ public class CustomerController {
 		customerList.stream().forEach(x -> customerDtoList.add(new CustomerDTO(x)));
 		
 		return ResponseEntity.ok(customerDtoList);
-	}
-
-	/**
-	 * Performs POST method to register new customer
-	 * 
-	 * @param customer
-	 * @return customer
-	 * @throws UsernameTakenException 
-	 */
-	@PostMapping(path = "/register")
-	public ResponseEntity<CustomerDTO> registerNewCustomer(@RequestBody RegisterRequest registerRequest) throws UsernameTakenException {
-		log.info("Performing POST method to register new Customer");
-		
-		Customer customer = new Customer();
-		customer.setUsername(registerRequest.getUsername());
-		customer.setPassword(registerRequest.getPassword());
-		customer.setFirstName(registerRequest.getFirstName());
-		customer.setLastName(registerRequest.getLastName());
-		customer.setAddress(registerRequest.getAddress());
-		
-		customer = customerService.registerNewCustomer(customer);
-		
-		CustomerDTO customerDto = new CustomerDTO(customer);
-		
-		return ResponseEntity.status(HttpStatus.CREATED).body(customerDto);
 	}
 	
 	/**
