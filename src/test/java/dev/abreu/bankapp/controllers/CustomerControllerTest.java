@@ -16,21 +16,28 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import dev.abreu.bankapp.config.ApplicationConfig;
 import dev.abreu.bankapp.dao.AccountDao;
 import dev.abreu.bankapp.dao.CustomerDao;
 import dev.abreu.bankapp.dto.CustomerDTO;
 import dev.abreu.bankapp.model.Customer;
+import dev.abreu.bankapp.security.JwtConfig;
+import dev.abreu.bankapp.security.SecurityConfig;
 import dev.abreu.bankapp.service.CustomerService;
 
 @WebMvcTest(controllers = CustomerController.class)
+@AutoConfigureMockMvc(addFilters = false)
+@Import({SecurityConfig.class, ApplicationConfig.class})
 class CustomerControllerTest {
 	
 	@MockBean
@@ -41,6 +48,9 @@ class CustomerControllerTest {
 	
 	@MockBean
 	private AccountDao accountDao;
+	
+	@MockBean
+	JwtConfig jwtConfig;
 
 	@Autowired
 	private MockMvc mockMvc;

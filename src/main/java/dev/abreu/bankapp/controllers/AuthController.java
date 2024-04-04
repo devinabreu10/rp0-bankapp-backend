@@ -82,15 +82,13 @@ public class AuthController {
 				registerRequest.getUsername(),
 				passwordEncoder.encode(registerRequest.getPassword()));
 		
-		customer = customerService.registerNewCustomer(customer);
-		
-		CustomerDTO customerDto = new CustomerDTO(customer);
+		customerService.registerNewCustomer(customer);
 		
 		String jwt = tokenService.generateToken(customer);
 		
 		return ResponseEntity.status(HttpStatus.CREATED)
 				.header(HttpHeaders.AUTHORIZATION, jwt)
-				.body(customerDto);
+				.body(new CustomerDTO(customer));
 	}
 	
 }
