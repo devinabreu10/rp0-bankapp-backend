@@ -48,6 +48,7 @@ public class AuthController {
 	 */
 	@PostMapping(path = "/login")
 	public ResponseEntity<CustomerDTO> customerLogin(@RequestBody LoginRequest loginRequest) {
+		log.info("Performing POST method to login Customer and generate JWT token");
 		
 		authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(
