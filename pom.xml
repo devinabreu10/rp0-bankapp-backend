@@ -14,7 +14,7 @@
 	<name>RP0 Bank Application</name>
 	<description>Remake of original Revature p0 Banking Application</description>
 	<properties>
-		<java.version>11</java.version>
+		<java.version>17</java.version>
 	</properties>
 	<dependencies>
 	
