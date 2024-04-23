@@ -5,6 +5,10 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+# Env files
+.env/
+
+# Properties files
 application.properties
 
 # Compiled class file
