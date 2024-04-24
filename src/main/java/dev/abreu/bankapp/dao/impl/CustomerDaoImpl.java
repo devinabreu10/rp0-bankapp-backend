@@ -139,7 +139,6 @@ public class CustomerDaoImpl implements CustomerDao {
 				usernameExists = true;
 			}
 			
-			
 		} catch (SQLException e) {
 			log.error(SQL_EXCEPTION_CAUGHT, e.getMessage());
 		}

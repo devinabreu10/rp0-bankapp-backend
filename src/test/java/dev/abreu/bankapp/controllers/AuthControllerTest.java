@@ -85,9 +85,9 @@ class AuthControllerTest {
 
 	@Test
 	void testRegisterCustomer() throws JsonProcessingException, Exception {
-		Customer mockCustomer = new Customer("testFirst", "testLast", "testAddr", "user", "pass");
+		Customer mockCustomer = new Customer("testFirst", "testLast", "testAddr", "user", "password");
 		CustomerResponseDTO mockCustomerDto = new CustomerResponseDTO("testFirst", "testLast", "user", "testAddr");
-		RegisterRequest mockRequest = new RegisterRequest("testFirst", "testLast", "testAddr", "user", "pass");
+		RegisterRequest mockRequest = new RegisterRequest("testFirst", "testLast", "testAddr", "user", "password");
 		
 		Mockito.when(customerService.registerNewCustomer(mockCustomer)).thenReturn(mockCustomer);
 		Mockito.when(dtoMapper.toCustomer(mockRequest)).thenReturn(mockCustomer);

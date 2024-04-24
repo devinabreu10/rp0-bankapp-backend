@@ -58,7 +58,6 @@ class TransactionServiceTest {
 				() -> transactionService.getTransactionById(1L));
 	}
 
-
 	@Test
 	void testGetAllTransactionsByAcctNo() {
 		Account mockAccount = new Account(12345L, BankappConstants.CHECKING_ACCOUNT, 100.00, 1L);
