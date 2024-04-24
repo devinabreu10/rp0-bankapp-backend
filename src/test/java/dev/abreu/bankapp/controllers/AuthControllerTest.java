@@ -22,9 +22,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.abreu.bankapp.config.ApplicationConfig;
 import dev.abreu.bankapp.dao.AccountDao;
 import dev.abreu.bankapp.dao.CustomerDao;
-import dev.abreu.bankapp.dto.CustomerDTO;
+import dev.abreu.bankapp.dto.CustomerResponseDTO;
 import dev.abreu.bankapp.dto.LoginRequest;
 import dev.abreu.bankapp.dto.RegisterRequest;
+import dev.abreu.bankapp.dto.mapper.DtoMapper;
 import dev.abreu.bankapp.model.Customer;
 import dev.abreu.bankapp.security.JwtConfig;
 import dev.abreu.bankapp.security.SecurityConfig;
@@ -51,6 +52,9 @@ class AuthControllerTest {
 	JwtConfig jwtConfig;
 	
 	@MockBean
+	DtoMapper dtoMapper;
+	
+	@MockBean
 	PasswordEncoder passwordEncoder;
 	
 	@MockBean
@@ -64,12 +68,11 @@ class AuthControllerTest {
 	@Test
 	void testCustomerLogin() throws JsonProcessingException, Exception {
 		Customer mockCustomer = new Customer(1L, "testFirst", "testLast", "testAddr", "user");
-		CustomerDTO mockCustomerDto = new CustomerDTO(mockCustomer);
-		LoginRequest mockRequest = new LoginRequest();
-		mockRequest.setUsername("user");
-		mockRequest.setPassword("pass");
+		CustomerResponseDTO mockCustomerDto = new CustomerResponseDTO("testFirst", "testLast", "user", "testAddr");
+		LoginRequest mockRequest = new LoginRequest("user", "pass");
 			
 		Mockito.when(customerService.getCustomerByUsername("user")).thenReturn(mockCustomer);
+		Mockito.when(dtoMapper.toCustomerResponseDto(mockCustomer)).thenReturn(mockCustomerDto);
 		
 		Mockito.when(tokenService.generateToken(mockCustomer)).thenReturn("token");
 		
@@ -83,15 +86,12 @@ class AuthControllerTest {
 	@Test
 	void testRegisterCustomer() throws JsonProcessingException, Exception {
 		Customer mockCustomer = new Customer("testFirst", "testLast", "testAddr", "user", "pass");
-		CustomerDTO mockCustomerDto = new CustomerDTO(mockCustomer);
-		RegisterRequest mockRequest = new RegisterRequest();
-		mockRequest.setUsername("user");
-		mockRequest.setPassword("pass");
-		mockRequest.setFirstName("testFirst");
-		mockRequest.setLastName("testLast");
-		mockRequest.setAddress("testAddr");
+		CustomerResponseDTO mockCustomerDto = new CustomerResponseDTO("testFirst", "testLast", "user", "testAddr");
+		RegisterRequest mockRequest = new RegisterRequest("testFirst", "testLast", "testAddr", "user", "pass");
 		
 		Mockito.when(customerService.registerNewCustomer(mockCustomer)).thenReturn(mockCustomer);
+		Mockito.when(dtoMapper.toCustomer(mockRequest)).thenReturn(mockCustomer);
+		Mockito.when(dtoMapper.toCustomerResponseDto(mockCustomer)).thenReturn(mockCustomerDto);
 		
 		Mockito.when(tokenService.generateToken(mockCustomer)).thenReturn("token");
 		

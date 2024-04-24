@@ -1,41 +1,22 @@
 package dev.abreu.bankapp.dto;
 
-public class RegisterRequest {
-	
-	private String firstName;
-	private String lastName;
-	private String address;
-	private String username;
-	private String password;
-	
-	public String getFirstName() {
-		return firstName;
-	}
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-	public String getLastName() {
-		return lastName;
-	}
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-	public String getAddress() {
-		return address;
-	}
-	public void setAddress(String address) {
-		this.address = address;
-	}
-	public String getUsername() {
-		return username;
-	}
-	public void setUsername(String username) {
-		this.username = username;
-	}
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
-	}
-}
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
+
+/**
+ * A data transfer object (DTO) for a registration request.
+ * Records are immutable and provide a concise syntax for declaring classes 
+ * that consist only of declared final fields and a few simple methods.
+ * 
+ * @author Devin Abreu
+ * 
+ */
+public record RegisterRequest(
+		String firstName,
+		String lastName,
+		String address,
+		@NotEmpty(message = "Username cannot be null nor empty")
+		String username,
+		@Size(min = 8, message = "Password must be at least 8 characters long")
+		@NotEmpty(message = "Password cannot be null nor empty")
+		String password) {}

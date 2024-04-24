@@ -86,7 +86,7 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(@NonNull MethodArgumentNotValidException ex, @NonNull HttpHeaders headers, 
 			@NonNull HttpStatusCode status, @NonNull WebRequest request) {
 		
-		log.error("MethodArgumentNotValidException: Validation error occurred", ex);
+		log.error("MethodArgumentNotValidException: Validation error occurred: \n\t\t{}", ex.getMessage());
 		
 		List<String> errors = new ArrayList<>();
 		

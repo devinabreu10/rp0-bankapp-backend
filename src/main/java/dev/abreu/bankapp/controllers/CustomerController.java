@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import dev.abreu.bankapp.dto.CustomerDTO;
+import dev.abreu.bankapp.dto.CustomerResponseDTO;
+import dev.abreu.bankapp.dto.mapper.DtoMapper;
 import dev.abreu.bankapp.model.Customer;
 import dev.abreu.bankapp.service.CustomerService;
 
@@ -25,10 +27,12 @@ public class CustomerController {
 	
 	private static final Logger log = LogManager.getLogger(CustomerController.class);
 	
-	private CustomerService customerService;
+	private final CustomerService customerService;
+	private final DtoMapper dtoMapper;
 
-	public CustomerController(CustomerService customerService) { //dependency injection for CustomerService 
+	public CustomerController(CustomerService customerService, DtoMapper dtoMapper) { //dependency injection for CustomerService 
 		this.customerService = customerService;
+		this.dtoMapper = dtoMapper;
 	}
 
 	/**
@@ -38,15 +42,15 @@ public class CustomerController {
 	 * @return customer
 	 */
 	@GetMapping(path = "/get/user/{username}")
-	public ResponseEntity<CustomerDTO> getCustomerByUsername(@PathVariable("username") String username) {
+	public ResponseEntity<CustomerResponseDTO> getCustomerByUsername(@PathVariable("username") String username) {
 		log.info("Performing GET method from inside getCustomerByUsername in CustomerController");
 		
 		Customer customer = customerService.getCustomerByUsername(username);
 		
-		CustomerDTO customerDto = new CustomerDTO(customer);
+		CustomerResponseDTO dto = dtoMapper.toCustomerResponseDto(customer);
 		
 		log.info("Customer with username {} was successfully retrieved...", username);
-		return ResponseEntity.ok(customerDto); //sends 200 status
+		return ResponseEntity.ok(dto); //sends 200 status
 	}
 	
 	
@@ -57,15 +61,15 @@ public class CustomerController {
 	 * @return Customer
 	 */
 	@GetMapping("/get/id/{id}")
-	public ResponseEntity<CustomerDTO> getCustomerById(@PathVariable("id") Long id) {
+	public ResponseEntity<CustomerResponseDTO> getCustomerById(@PathVariable("id") Long id) {
 		log.info("Performing GET method from inside getCustomerById in CustomerController");
 		
 		Customer customer = customerService.getCustomerById(id);
 		
-		CustomerDTO customerDto = new CustomerDTO(customer);
+		CustomerResponseDTO dto = dtoMapper.toCustomerResponseDto(customer);
 		
 		log.info("Customer with id {} was successfully retrieved...", id);
-		return ResponseEntity.ok(customerDto);
+		return ResponseEntity.ok(dto);
 	}
 	
 	/**
@@ -75,15 +79,15 @@ public class CustomerController {
 	 * @return a list of customers
 	 */
 	@GetMapping()
-	public ResponseEntity<List<CustomerDTO>> getAllCustomers() {
+	public ResponseEntity<List<CustomerResponseDTO>> getAllCustomers() {
 		log.info("Performing GET method from inside getAllCustomers()");
 		
 		List<Customer> customerList = customerService.getAllCustomers();
 		
-		List<CustomerDTO> customerDtoList = new ArrayList<>();
-		customerList.stream().forEach(x -> customerDtoList.add(new CustomerDTO(x)));
+		List<CustomerResponseDTO> dtoList = new ArrayList<>();
+		customerList.stream().forEach(c -> dtoList.add(dtoMapper.toCustomerResponseDto(c)));
 		
-		return ResponseEntity.ok(customerDtoList);
+		return ResponseEntity.ok(dtoList);
 	}
 	
 	/**
@@ -97,11 +101,11 @@ public class CustomerController {
 	public ResponseEntity<CustomerDTO> updateCustomer(@PathVariable("id") Long id, @RequestBody CustomerDTO customerDto) {
 		log.info("Performing PUT method to update details for customer with id: {}", id);
 		
-		if(!customerDto.getId().equals(id)) {
+		if(!customerDto.id().equals(id)) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).build();
 		}
 		
-		Customer customer = customerDto.toEntity();
+		Customer customer = dtoMapper.toCustomer(customerDto);
 		
 		customer = customerService.updateCustomerDetails(customer);
 		

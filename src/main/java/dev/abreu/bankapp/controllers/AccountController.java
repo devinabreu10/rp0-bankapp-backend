@@ -91,10 +91,10 @@ public class AccountController {
 	@PostMapping(path = "/transferFunds")
 	public ResponseEntity<String> transferFundsBetweenAccounts(@RequestBody TransferRequest transferRequest) throws InsufficientFundsException {
 		log.info("Performing POST method to transfer funds between Account # {} and Account # {}",
-					transferRequest.getSourceAccountNumber(), transferRequest.getTargetAccountNumber());
+					transferRequest.sourceAccountNumber(), transferRequest.targetAccountNumber());
 		
-        accountService.transferFundsBetweenAccounts(transferRequest.getSourceAccountNumber(), 
-        		transferRequest.getTargetAccountNumber(), transferRequest.getAmount());
+        accountService.transferFundsBetweenAccounts(transferRequest.sourceAccountNumber(), 
+        		transferRequest.targetAccountNumber(), transferRequest.amount());
 		
         return new ResponseEntity<>("Successfully transferred funds between accounts...", HttpStatus.OK);
 	}

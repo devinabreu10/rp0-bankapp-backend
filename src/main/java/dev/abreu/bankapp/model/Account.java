@@ -3,6 +3,11 @@ package dev.abreu.bankapp.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
+/**
+ * Represents an Account entity.
+ * 
+ * @author Devin Abreu
+ */
 @Table(name = "accounts")
 public class Account {
 
