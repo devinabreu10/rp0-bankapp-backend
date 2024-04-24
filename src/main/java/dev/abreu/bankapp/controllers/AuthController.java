@@ -20,6 +20,7 @@ import dev.abreu.bankapp.exception.UsernameTakenException;
 import dev.abreu.bankapp.model.Customer;
 import dev.abreu.bankapp.service.CustomerService;
 import dev.abreu.bankapp.service.TokenService;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/auth")
@@ -47,7 +48,7 @@ public class AuthController {
 	 * @return
 	 */
 	@PostMapping(path = "/login")
-	public ResponseEntity<CustomerResponseDTO> customerLogin(@RequestBody LoginRequest loginRequest) {
+	public ResponseEntity<CustomerResponseDTO> customerLogin(@Valid @RequestBody LoginRequest loginRequest) {
 		log.info("Performing POST method to login Customer and generate JWT token");
 		
 		authenticationManager.authenticate(
@@ -72,7 +73,7 @@ public class AuthController {
 	 * @throws UsernameTakenException 
 	 */
 	@PostMapping(path = "/register")
-	public ResponseEntity<CustomerResponseDTO> registerCustomer(@RequestBody RegisterRequest registerRequest) 
+	public ResponseEntity<CustomerResponseDTO> registerCustomer(@Valid @RequestBody RegisterRequest registerRequest) 
 			throws UsernameTakenException {
 		log.info("Performing POST method to register new Customer and generate JWT token");
 		
