@@ -10,6 +10,11 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+/**
+ * Represents a Customer entity.
+ *
+ * @author Devin Abreu
+ */
 @Table(name = "customers")
 public class Customer implements UserDetails {
 	

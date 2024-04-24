@@ -164,13 +164,10 @@ class AccountControllerTest {
 	
 	@Test
 	void testTransferFundsBetweenAccounts() throws JsonProcessingException, Exception {
-		TransferRequest mockTransferReq = new TransferRequest();
-		mockTransferReq.setSourceAccountNumber(12345L);
-		mockTransferReq.setTargetAccountNumber(45678L);
-		mockTransferReq.setAmount(50.00);
+		TransferRequest mockTransferReq = new TransferRequest(12345L, 45678L, 50.00);
 		
-		Mockito.doNothing().when(accountService).transferFundsBetweenAccounts(mockTransferReq.getSourceAccountNumber(), 
-				mockTransferReq.getTargetAccountNumber(), mockTransferReq.getAmount());
+		Mockito.doNothing().when(accountService).transferFundsBetweenAccounts(mockTransferReq.sourceAccountNumber(), 
+				mockTransferReq.targetAccountNumber(), mockTransferReq.amount());
 		
 		mockMvc.perform(post("/account/transferFunds")
 				.contentType(MediaType.APPLICATION_JSON)

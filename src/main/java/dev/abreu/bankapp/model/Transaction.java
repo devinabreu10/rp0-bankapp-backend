@@ -5,6 +5,11 @@ import java.time.LocalDateTime;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
+/**
+ * Represents a Tranaction entity.
+ * 
+ * @author Devin Abreu
+ */
 @Table(name = "transactions")
 public class Transaction {
 
