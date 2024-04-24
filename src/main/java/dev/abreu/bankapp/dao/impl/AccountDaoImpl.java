@@ -82,7 +82,6 @@ public class AccountDaoImpl implements AccountDao {
 			log.error(SQL_EXCEPTION_CAUGHT, e.getMessage());		
 		}
 		
-		
 		return accountsList;
 	}
 
