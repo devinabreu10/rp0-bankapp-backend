@@ -20,6 +20,9 @@ import dev.abreu.bankapp.exception.InsufficientFundsException;
 import dev.abreu.bankapp.model.Account;
 import dev.abreu.bankapp.service.AccountService;
 
+/**
+ * Controller for handling account-related operations.
+ */
 @RestController
 @RequestMapping(path = "/account")
 public class AccountController {
@@ -32,8 +35,12 @@ public class AccountController {
 		this.accountService = accountService;
 	}
 	
-	//ResourceNotFoundException being handled by @ControllerAdvice
-	
+	/**
+	 * Retrieves an account by its account number.
+	 * 
+	 * @param acctNo the account number
+	 * @return the account with the specified account number
+	 */
 	@GetMapping(path = "/get/{acctNo}")
 	public ResponseEntity<Account> getAccountByAcctNo(@PathVariable("acctNo") Long acctNo) {
 		log.info("Performing GET method to retrieve Account by AcctNo {}", acctNo);
@@ -42,14 +49,26 @@ public class AccountController {
 		return ResponseEntity.ok(account);
 	}
 	
+	/**
+	 * Retrieves all accounts associated with a username.
+	 *
+	 * @param username the username
+	 * @return a list of accounts associated with the username
+	 */
 	@GetMapping(path = "/get/list/{username}")
 	public ResponseEntity<List<Account>> getAllAccountsByUsername(@PathVariable("username") String username) {
 		log.info("Performing GET method to retrieve all accounts by username");
 		List<Account> accounts = accountService.getAllAccountsByUsername(username);
-		
+
 		return ResponseEntity.ok(accounts);
 	}
 	
+	/**
+	 * Saves a new account.
+	 * 
+	 * @param account the account to save
+	 * @return the saved account
+	 */
 	@PostMapping(path = "/save")
 	public ResponseEntity<Account> saveAccount(@RequestBody Account account) {
 		log.info("Performing POST method to save new Account");
@@ -57,6 +76,13 @@ public class AccountController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(account);
 	}
 	
+	/**
+     * Updates an existing account.
+     *
+     * @param acctNo the account number
+     * @param account the account details to update
+     * @return the updated account
+     */
 	@PutMapping(path = "/update/{acctNo}")
 	public ResponseEntity<Account> updateAccount(@PathVariable("acctNo") Long acctNo, @RequestBody Account account) {
 		log.info("Performing PUT method to update details for account with acctNo: {}", acctNo);
@@ -75,6 +101,12 @@ public class AccountController {
 
 	}
 	
+	/**
+     * Deletes an account by its account number.
+     *
+     * @param acctNo the account number
+     * @return a response entity indicating the result of the operation
+     */
 	@DeleteMapping(path = "/delete/{acctNo}")
 	public ResponseEntity<String> deleteAccountByAcctNo(@PathVariable("acctNo") Long acctNo) {
 		log.info("Performing DELETE method for account with acctNo: {}", acctNo);
@@ -88,6 +120,13 @@ public class AccountController {
 		}
 	}
 	
+	/**
+     * Transfers funds between accounts.
+     *
+     * @param transferRequest the transfer request details
+     * @return a response entity indicating the result of the operation
+     * @throws InsufficientFundsException if there are insufficient funds in the source account
+     */
 	@PostMapping(path = "/transferFunds")
 	public ResponseEntity<String> transferFundsBetweenAccounts(@RequestBody TransferRequest transferRequest) throws InsufficientFundsException {
 		log.info("Performing POST method to transfer funds between Account # {} and Account # {}",
@@ -99,6 +138,13 @@ public class AccountController {
         return new ResponseEntity<>("Successfully transferred funds between accounts...", HttpStatus.OK);
 	}
 	
+	/**
+     * Deposits funds into an account.
+     *
+     * @param acctNo the account number
+     * @param amount the amount to deposit
+     * @return a response entity indicating the result of the operation
+     */
 	@PutMapping(path = "/{acctNo}/deposit/{amount}")
 	public ResponseEntity<String> depositFundsIntoAccount(@PathVariable("acctNo") Long acctNo, @PathVariable("amount") double amount) {
 		log.info("Performing PUT method to deposit funds into Account with acctNo: {}", acctNo);
@@ -107,6 +153,14 @@ public class AccountController {
 		return new ResponseEntity<>("Successfully deposited funds into account...", HttpStatus.OK);
 	}
 	
+	/**
+     * Withdraws funds from an account.
+     *
+     * @param acctNo the account number
+     * @param amount the amount to withdraw
+     * @return a response entity indicating the result of the operation
+     * @throws InsufficientFundsException if there are insufficient funds in the account
+     */
 	@PutMapping(path = "/{acctNo}/withdraw/{amount}")
 	public ResponseEntity<String> withdrawFundsFromAccount(@PathVariable("acctNo") Long acctNo, @PathVariable("amount") double amount) throws InsufficientFundsException {
 		log.info("Performing PUT method to withdraw funds from Account with acctNo: {}", acctNo);

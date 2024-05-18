@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 import dev.abreu.bankapp.model.Transaction;
 import dev.abreu.bankapp.service.TransactionService;
 
+/**
+ * Controller for handling transaction-related operations.
+ */
 @RestController
 @RequestMapping(path = "/transaction")
 public class TransactionController {
@@ -30,6 +33,12 @@ public class TransactionController {
 		this.transactionService = transactionService;
 	}
 	
+	/**
+     * Retrieves a transaction by its ID.
+     *
+     * @param txnId the transaction ID
+     * @return the transaction with the specified ID
+     */
 	@GetMapping(path = "/get/{id}")
 	public ResponseEntity<Transaction> getTransactionById(@PathVariable("id") Long txnId) {
 		log.info("Performing GET method to retrieve Transaction by id {}", txnId);
@@ -38,6 +47,12 @@ public class TransactionController {
 		return ResponseEntity.ok(transaction);
 	}
 	
+	/**
+     * Retrieves all transactions associated with an account number.
+     *
+     * @param acctNo the account number
+     * @return a list of transactions associated with the account number
+     */
 	@GetMapping(path = "/get/list/{acctNo}")
 	public ResponseEntity<List<Transaction>> getAllTransactionsByAcctNo(@PathVariable("acctNo") Long acctNo) {
 		log.info("Performing GET method to retrieve all transaction by account number");
@@ -46,6 +61,12 @@ public class TransactionController {
 		return ResponseEntity.ok(transactions);
 	}
 	
+	/**
+     * Saves a new transaction.
+     *
+     * @param transaction the transaction to save
+     * @return the saved transaction
+     */
 	@PostMapping(path = "/save")
 	public ResponseEntity<Transaction> saveTransaction(@RequestBody Transaction transaction) {
 		log.info("Performing POST method to save new Transaction");
@@ -53,6 +74,13 @@ public class TransactionController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(transaction);
 	}
 	
+	/**
+     * Updates an existing transaction.
+     *
+     * @param txnId the transaction ID
+     * @param transaction the transaction details to update
+     * @return the updated transaction
+     */
 	@PutMapping(path = "/update/{txnId}")
 	public ResponseEntity<Transaction> updateTransaction(@PathVariable("txnId") Long txnId, 
 			@RequestBody Transaction transaction) {
@@ -72,6 +100,12 @@ public class TransactionController {
 
 	}
 	
+	/**
+     * Deletes a transaction by its ID.
+     *
+     * @param txnId the transaction ID
+     * @return a response entity indicating the result of the operation
+     */
 	@DeleteMapping(path = "/delete/{txnId}")
 	public ResponseEntity<String> deleteTransactionById(@PathVariable("txnId") Long txnId) {
 		log.info("Performing DELETE method for transaction with id: {}", txnId);
