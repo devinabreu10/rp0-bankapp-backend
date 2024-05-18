@@ -1,0 +1,40 @@
+# running this is equivalent to running all the docker commands in the terminal separately
+# - instead of executing docker run, docker volume, and docker network separately for these
+#   two services we streamline the process by using this docker-compose.yml
+services:
+  # first service named postgres-db
+  postgres-db:
+    container_name: dockerized-postgres
+    image: postgres
+    env_file:
+      - /.env/docker.env
+    ports:
+      - 5433:5432
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    networks:
+      - rp0-bankapp-network
+    restart: unless-stopped
+  #second service named spring-rp0-bankapp
+  spring-rp0-bankapp:
+    container_name: spring-rp0-bankapp
+    image: spring-rp0-bankapp:0.0.1-SNAPSHOT
+    ports:
+      - 8088:8080
+    env_file:
+      - /.env/docker.env
+    networks:
+      - rp0-bankapp-network
+    # waits for postgres-db to start before starting spring-rp0-bankapp
+    depends_on:
+      - postgres-db
+
+# equivalent to `docker network create bridge rp0-bankapp-network`
+networks:
+  rp0-bankapp-network:
+    driver: bridge
+
+# equivalent to `docker volume create postgres`
+volumes:
+  postgres:
+    driver: local
