@@ -4,7 +4,7 @@
 services:
   # first service named postgres-db
   postgres-db:
-    container_name: dockerized-postgres
+    container_name: postgres-sql-rp0
     image: postgres
     env_file:
       - /.env/docker.env
@@ -15,19 +15,29 @@ services:
     networks:
       - rp0-bankapp-network
     restart: unless-stopped
-  #second service named spring-rp0-bankapp
-  spring-rp0-bankapp:
-    container_name: spring-rp0-bankapp
-    image: spring-rp0-bankapp:0.0.1-SNAPSHOT
+  # second service named rp0-bankapp-api
+  rp0-bankapp-api:
+    container_name: rp0-bankapp-api
+    image: rp0-bankapp-api:0.0.1-SNAPSHOT
     ports:
       - 8088:8080
     env_file:
       - /.env/docker.env
     networks:
       - rp0-bankapp-network
-    # waits for postgres-db to start before starting spring-rp0-bankapp
+    # waits for postgres-db to start before starting rp0-bankapp-api
     depends_on:
       - postgres-db
+  # third service named rp0-bankapp-ui
+  rp0-bankapp-ui:
+    container_name: rp0-bankapp-ui
+    image: rp0-bankapp-ui:0.0.0
+    ports:
+      - 80:80
+    networks:
+      - rp0-bankapp-network
+    depends_on:
+      - rp0-bankapp-api
 
 # equivalent to `docker network create bridge rp0-bankapp-network`
 networks:
