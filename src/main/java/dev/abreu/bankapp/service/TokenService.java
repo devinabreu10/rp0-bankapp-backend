@@ -23,4 +23,12 @@ public interface TokenService {
 	 * @return
 	 */
 	public String generateToken(Map<String, Object> extraClaims, Customer customer);
+	
+	/**
+	 * Extracts username from jwt token
+	 * 
+	 * @param token
+	 * @return
+	 */
+	public String extractUsername(String token);
 }

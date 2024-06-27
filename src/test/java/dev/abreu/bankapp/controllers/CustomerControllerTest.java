@@ -65,7 +65,7 @@ class CustomerControllerTest {
 	@Test
 	void testGetCustomerByUsername() throws JsonProcessingException, Exception {
 		Customer mockCustomer = new Customer(1L, "testFirst", "testLast", "testAddr", "testUsername");
-		CustomerResponseDTO mockCustomerDto = new CustomerResponseDTO("testFirst", "testLast", "testAddr", "testUsername");
+		CustomerResponseDTO mockCustomerDto = new CustomerResponseDTO("testFirst", "testLast", "testAddr", "testUsername", null);
 
 		Mockito.when(customerService.getCustomerByUsername(mockCustomer.getUsername())).thenReturn(mockCustomer);
 		Mockito.when(dtoMapper.toCustomerResponseDto(mockCustomer)).thenReturn(mockCustomerDto);
@@ -77,7 +77,7 @@ class CustomerControllerTest {
 	@Test
 	void testGetCustomerById() throws JsonProcessingException, Exception {
 		Customer mockCustomer = new Customer(1L, "testFirst", "testLast", "testAddr", "testUsername");
-		CustomerResponseDTO mockCustomerDto = new CustomerResponseDTO("testFirst", "testLast", "testAddr", "testUsername");
+		CustomerResponseDTO mockCustomerDto = new CustomerResponseDTO("testFirst", "testLast", "testAddr", "testUsername", null);
 
 		Mockito.when(customerService.getCustomerById(mockCustomer.getId())).thenReturn(mockCustomer);
 		Mockito.when(dtoMapper.toCustomerResponseDto(mockCustomer)).thenReturn(mockCustomerDto);
@@ -90,12 +90,12 @@ class CustomerControllerTest {
 	void testGetAllCustomers() throws JsonProcessingException, Exception {
 		List<Customer> mockCustomerList = new ArrayList<>();
 		Customer mockCustomer = new Customer(1L, "testFirst", "testLast", "testAddr", "testUsername");
-		CustomerResponseDTO mockCustomerDto = new CustomerResponseDTO("testFirst", "testLast", "testAddr", "testUsername");
+		CustomerResponseDTO mockCustomerDto = new CustomerResponseDTO("testFirst", "testLast", "testAddr", "testUsername", null);
 		mockCustomerList.add(mockCustomer);
 
 		List<CustomerResponseDTO> mockCustomerDtoList = new ArrayList<>();
 		mockCustomerList.stream().forEach(c -> mockCustomerDtoList
-				.add(new CustomerResponseDTO(c.getFirstName(), c.getLastName(), c.getAddress(), c.getUsername())));
+				.add(new CustomerResponseDTO(c.getFirstName(), c.getLastName(), c.getAddress(), c.getUsername(), null)));
 
 		Mockito.when(customerService.getAllCustomers()).thenReturn(mockCustomerList);
 		Mockito.when(dtoMapper.toCustomerResponseDto(mockCustomer)).thenReturn(mockCustomerDto);
