@@ -12,4 +12,5 @@ public record CustomerResponseDTO(
         String firstName,
         String lastName,
         String username,
-        String address) {}
+        String address,
+        String token) {}

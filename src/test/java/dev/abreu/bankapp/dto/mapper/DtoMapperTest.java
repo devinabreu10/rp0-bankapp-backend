@@ -44,7 +44,7 @@ class DtoMapperTest {
 		customer.setUsername("johndoe");
 		customer.setAddress("123 Main St");
 
-		CustomerResponseDTO expectedDTO = new CustomerResponseDTO("John", "Doe", "johndoe", "123 Main St");
+		CustomerResponseDTO expectedDTO = new CustomerResponseDTO("John", "Doe", "johndoe", "123 Main St", null);
 		assertEquals(expectedDTO, dtoMapper.toCustomerResponseDto(customer));
 	}
 

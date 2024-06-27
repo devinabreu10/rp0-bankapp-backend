@@ -7,8 +7,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,6 +26,7 @@ import dev.abreu.bankapp.service.TokenService;
 import jakarta.validation.Valid;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/auth")
 public class AuthController {
 	
@@ -39,6 +43,32 @@ public class AuthController {
 		this.tokenService = tokenService;
 		this.authenticationManager = authenticationManager;
 		this.dtoMapper = dtoMapper;
+	}
+	
+	/**
+	 * returns current authenticated Customer
+	 * 
+	 * @param authorizationHeader
+	 * @return
+	 */
+	@GetMapping(path = "/user")
+	public ResponseEntity<CustomerResponseDTO> getAuthenticatedCustomer(
+			@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+		log.info("Performing GET method for current authenticated Customer");
+
+		String jwt = null;
+		if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+			jwt = authorizationHeader.substring(7);
+		}
+
+		String username = tokenService.extractUsername(jwt);
+
+		log.info("Authenticated Customer: {}", username);
+
+		var customer = customerService.getCustomerByUsername(username);
+
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(dtoMapper.toCustomerResponseDto(customer, jwt));
 	}
 
 	/**
@@ -62,7 +92,7 @@ public class AuthController {
 		
 		return ResponseEntity.status(HttpStatus.OK)
 				.header(HttpHeaders.AUTHORIZATION, jwt)
-				.body(dtoMapper.toCustomerResponseDto(customer));
+				.body(dtoMapper.toCustomerResponseDto(customer, jwt));
 	}
 	
 	/**
@@ -85,7 +115,7 @@ public class AuthController {
 		
 		return ResponseEntity.status(HttpStatus.CREATED)
 				.header(HttpHeaders.AUTHORIZATION, jwt)
-				.body(dtoMapper.toCustomerResponseDto(customer));
+				.body(dtoMapper.toCustomerResponseDto(customer, jwt));
 	}
 	
 }

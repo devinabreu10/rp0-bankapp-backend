@@ -42,7 +42,19 @@ public class DtoMapper {
      */
     public CustomerResponseDTO toCustomerResponseDto(@NonNull Customer customer) {
         return new CustomerResponseDTO(customer.getFirstName(), customer.getLastName(), customer.getUsername(),
-                customer.getAddress());
+                customer.getAddress(), null);
+    }
+    
+    /**
+     * Maps a Customer object to a CustomerResponseDTO object with Jwt token.
+     *
+     * @param customer The customer object to be mapped.
+     * @param token The JWT token.
+     * @return The mapped CustomerResponseDTO object.
+     */
+    public CustomerResponseDTO toCustomerResponseDto(@NonNull Customer customer, String token) {
+        return new CustomerResponseDTO(customer.getFirstName(), customer.getLastName(), customer.getUsername(),
+                customer.getAddress(), token);
     }
 
     /**

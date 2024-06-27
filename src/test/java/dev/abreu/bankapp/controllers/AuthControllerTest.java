@@ -1,5 +1,6 @@
 package dev.abreu.bankapp.controllers;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
@@ -16,7 +17,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dev.abreu.bankapp.config.ApplicationConfig;
@@ -64,36 +64,54 @@ class AuthControllerTest {
 	private MockMvc mockMvc;
 	
 	private ObjectMapper jsonMapper = new ObjectMapper();
+	
+	@Test
+	void testGetAuthCustomer() throws Exception {
+		String mockToken = "token";
+		Customer mockCustomer = new Customer(1L, "testFirst", "testLast", "testAddr", "user");
+		CustomerResponseDTO mockCustomerDto = new CustomerResponseDTO("testFirst", "testLast", "user", "testAddr", mockToken);
+		
+		Mockito.when(customerService.getCustomerByUsername("user")).thenReturn(mockCustomer);
+		Mockito.when(dtoMapper.toCustomerResponseDto(mockCustomer, mockToken)).thenReturn(mockCustomerDto);
+		Mockito.when(tokenService.extractUsername(mockToken)).thenReturn(mockCustomer.getUsername());
+		
+		mockMvc.perform(get("/auth/user").contentType(MediaType.APPLICATION_JSON)
+				.header(HttpHeaders.AUTHORIZATION, "Bearer token"))
+				.andExpect(status().isOk())
+				.andExpect(content().json(jsonMapper.writeValueAsString(mockCustomerDto)));
+	}
 
 	@Test
-	void testCustomerLogin() throws JsonProcessingException, Exception {
+	void testCustomerLogin() throws Exception {
+		String mockToken = "token";
 		Customer mockCustomer = new Customer(1L, "testFirst", "testLast", "testAddr", "user");
-		CustomerResponseDTO mockCustomerDto = new CustomerResponseDTO("testFirst", "testLast", "user", "testAddr");
+		CustomerResponseDTO mockCustomerDto = new CustomerResponseDTO("testFirst", "testLast", "user", "testAddr", mockToken);
 		LoginRequest mockRequest = new LoginRequest("user", "pass");
 			
 		Mockito.when(customerService.getCustomerByUsername("user")).thenReturn(mockCustomer);
-		Mockito.when(dtoMapper.toCustomerResponseDto(mockCustomer)).thenReturn(mockCustomerDto);
+		Mockito.when(dtoMapper.toCustomerResponseDto(mockCustomer, mockToken)).thenReturn(mockCustomerDto);
 		
-		Mockito.when(tokenService.generateToken(mockCustomer)).thenReturn("token");
+		Mockito.when(tokenService.generateToken(mockCustomer)).thenReturn(mockToken);
 		
 		mockMvc.perform(post("/auth/login").contentType(MediaType.APPLICATION_JSON)
 				 .content(jsonMapper.writeValueAsString(mockRequest)))
                 .andExpect(status().isOk())
-                .andExpect(header().string(HttpHeaders.AUTHORIZATION, "token"))
+                .andExpect(header().string(HttpHeaders.AUTHORIZATION, mockToken))
                 .andExpect(content().json(jsonMapper.writeValueAsString(mockCustomerDto)));
 	}
 
 	@Test
-	void testRegisterCustomer() throws JsonProcessingException, Exception {
+	void testRegisterCustomer() throws Exception {
+		String mockToken = "token";
 		Customer mockCustomer = new Customer("testFirst", "testLast", "testAddr", "user", "password");
-		CustomerResponseDTO mockCustomerDto = new CustomerResponseDTO("testFirst", "testLast", "user", "testAddr");
+		CustomerResponseDTO mockCustomerDto = new CustomerResponseDTO("testFirst", "testLast", "user", "testAddr", mockToken);
 		RegisterRequest mockRequest = new RegisterRequest("testFirst", "testLast", "testAddr", "user", "password");
 		
 		Mockito.when(customerService.registerNewCustomer(mockCustomer)).thenReturn(mockCustomer);
 		Mockito.when(dtoMapper.toCustomer(mockRequest)).thenReturn(mockCustomer);
-		Mockito.when(dtoMapper.toCustomerResponseDto(mockCustomer)).thenReturn(mockCustomerDto);
+		Mockito.when(dtoMapper.toCustomerResponseDto(mockCustomer, mockToken)).thenReturn(mockCustomerDto);
 		
-		Mockito.when(tokenService.generateToken(mockCustomer)).thenReturn("token");
+		Mockito.when(tokenService.generateToken(mockCustomer)).thenReturn(mockToken);
 		
 		mockMvc.perform(post("/auth/register").contentType(MediaType.APPLICATION_JSON)
 				 .content(jsonMapper.writeValueAsString(mockRequest)))

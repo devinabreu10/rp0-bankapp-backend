@@ -44,4 +44,9 @@ public class TokenServiceImpl implements TokenService {
 				.compact();
 	}
 
+	@Override
+	public String extractUsername(String token) {
+		return jwtConfig.extractUsername(token);
+	}
+
 }
