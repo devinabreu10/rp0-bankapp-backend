@@ -26,9 +26,9 @@ public class AccountServiceImpl implements AccountService {
 	
 	private static final Logger log = LogManager.getLogger(AccountServiceImpl.class);
 	
-	private AccountDao accountDao;
-	private CustomerDao customerDao;
-	private TransactionDao transactionDao;
+	private final AccountDao accountDao;
+	private final CustomerDao customerDao;
+	private final TransactionDao transactionDao;
 	
 	public AccountServiceImpl(AccountDao accountDao, CustomerDao customerDao, TransactionDao transactionDao) {
 		this.accountDao = accountDao;
@@ -46,12 +46,17 @@ public class AccountServiceImpl implements AccountService {
 	@Override
 	public List<Account> getAllAccountsByUsername(String username) {
 		log.info("Fetching all accounts associated with username: {}", username);
+
+		return Optional.of(username)
+				.filter(customerDao::existsByUsername)
+				.map(accountDao::findAllAccountsByUsername)
+				.orElseThrow(() -> new ResourceNotFoundException(ResourceType.ACCOUNT, username));
 		
-		if(customerDao.existsByUsername(username)) {
-			return accountDao.findAllAccountsByUsername(username);
-		} else {
-			throw new ResourceNotFoundException(ResourceType.ACCOUNT, username);
-		}
+//		if(customerDao.existsByUsername(username)) {
+//			return accountDao.findAllAccountsByUsername(username);
+//		} else {
+//			throw new ResourceNotFoundException(ResourceType.ACCOUNT, username);
+//		}
 	}
 
 	@Override
@@ -68,14 +73,19 @@ public class AccountServiceImpl implements AccountService {
 
 	@Override
 	public boolean deleteAccountByAcctNo(Long acctNo) {
-		log.info("Deleting account with acccount number: {}", acctNo);
-		boolean success = false;
-		
-		if(!accountDao.findAccountByAcctNo(acctNo).equals(Optional.empty())) {
-			success = accountDao.deleteAccountByAcctNo(acctNo);
-		}
+		log.info("Deleting account with account number: {}", acctNo);
 
-		return success;
+		return accountDao.findAccountByAcctNo(acctNo)
+				.map(a -> accountDao.deleteAccountByAcctNo(acctNo))
+				.orElse(false);
+
+//		boolean success = false;
+//
+//		if(!accountDao.findAccountByAcctNo(acctNo).equals(Optional.empty())) {
+//			success = accountDao.deleteAccountByAcctNo(acctNo);
+//		}
+//
+//		return success;
 	}
 	
 	@Override
@@ -89,6 +99,10 @@ public class AccountServiceImpl implements AccountService {
 			throw new InsufficientFundsException(
 					"Account transfer could not be completed due to insufficient funds");
 		}
+		
+		// consider making the Account update and Transaction save in a single Transaction
+		// This ensures atomicity and consistency in case of any failures.
+		// This would involve an Account_Transaction junction table in the database.
 		
 		source.orElseThrow().decrementBalance(amount);
 		target.orElseThrow().incrementBalance(amount);
@@ -131,7 +145,7 @@ public class AccountServiceImpl implements AccountService {
 		transactionDao.saveTransaction(new Transaction(ACCOUNT_WITHDRAW, amount, 
 				notes, account.orElseThrow().getAccountNumber()));
 		
-		log.info("Successfully withdrawed ${} from account with acctNo {}", amount, acctNo);
+		log.info("Successfully withdrew ${} from account with acctNo {}", amount, acctNo);
 	}
 
 }
