@@ -129,9 +129,6 @@ class AccountServiceTest {
 	
 	@Test
 	void testDeleteAccountByAcctNoNotFound() {
-		Account mockAccount = new Account();
-		mockAccount.setAccountNumber(12345L);
-		
 		Mockito.when(accountDao.findAccountByAcctNo(12345L)).thenReturn(Optional.empty());
 		
 		Mockito.when(accountDao.deleteAccountByAcctNo(12345L)).thenReturn(Boolean.FALSE);
@@ -200,7 +197,7 @@ class AccountServiceTest {
 	}
 	
 	@Test
-	void testWithdrawFundsFromAccountWithInsufficientFunds() throws InsufficientFundsException {
+	void testWithdrawFundsFromAccountWithInsufficientFunds() {
 		Optional<Account> mockAccountOpt = Optional.of(new Account(12345L, CHECKING_ACCOUNT, 100.00, 1L));
 		
 		Mockito.when(accountDao.findAccountByAcctNo(12345L)).thenReturn(mockAccountOpt);
