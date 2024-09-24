@@ -60,7 +60,7 @@ class CustomerControllerTest {
 	@Autowired
 	private MockMvc mockMvc;
 
-	private ObjectMapper jsonMapper = new ObjectMapper();
+	private final ObjectMapper jsonMapper = new ObjectMapper();
 
 	@Test
 	void testGetCustomerByUsername() throws JsonProcessingException, Exception {
@@ -87,24 +87,25 @@ class CustomerControllerTest {
 	}
 
 	@Test
-	void testGetAllCustomers() throws JsonProcessingException, Exception {
+	void testGetAllCustomers() throws Exception {
 		List<Customer> mockCustomerList = new ArrayList<>();
 		Customer mockCustomer = new Customer(1L, "testFirst", "testLast", "testAddr", "testUsername");
 		CustomerResponseDTO mockCustomerDto = new CustomerResponseDTO("testFirst", "testLast", "testAddr", "testUsername", null);
 		mockCustomerList.add(mockCustomer);
 
 		List<CustomerResponseDTO> mockCustomerDtoList = new ArrayList<>();
-		mockCustomerList.stream().forEach(c -> mockCustomerDtoList
+		mockCustomerList.forEach(c -> mockCustomerDtoList
 				.add(new CustomerResponseDTO(c.getFirstName(), c.getLastName(), c.getAddress(), c.getUsername(), null)));
 
 		Mockito.when(customerService.getAllCustomers()).thenReturn(mockCustomerList);
 		Mockito.when(dtoMapper.toCustomerResponseDto(mockCustomer)).thenReturn(mockCustomerDto);
 
-		mockMvc.perform(get("/customer")).andExpect(content().json(jsonMapper.writeValueAsString(mockCustomerDtoList)));
+		mockMvc.perform(get("/customer"))
+				.andExpect(content().json(jsonMapper.writeValueAsString(mockCustomerDtoList)));
 	}
 
 	@Test
-	void testUpdateCustomer() throws JsonProcessingException, Exception {
+	void testUpdateCustomer() throws Exception {
 		Customer mockCustomer = new Customer(1L, "testFirst", "testLast", "testAddr", "testUsername");
 		CustomerDTO mockCustomerDto = new CustomerDTO(1L, "testFirst", "testLast", "testAddr", "testUsername");
 

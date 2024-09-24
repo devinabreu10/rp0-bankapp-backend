@@ -11,8 +11,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
+import dev.abreu.bankapp.dto.TransactionDTO;
+import dev.abreu.bankapp.dto.TransactionResponseDTO;
+import dev.abreu.bankapp.dto.mapper.DtoMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -62,10 +67,13 @@ class TransactionControllerTest {
 	@MockBean
 	JwtConfig jwtConfig;
 
+	@MockBean
+	DtoMapper dtoMapper;
+
 	@Autowired
 	private MockMvc mockMvc;
 	
-	private ObjectMapper jsonMapper = new ObjectMapper();
+	private final ObjectMapper jsonMapper = new ObjectMapper();
 	
 	@BeforeEach
 	void setup() {
@@ -74,64 +82,78 @@ class TransactionControllerTest {
 	}
 
 	@Test
-	void testGetTransactionById() throws JsonProcessingException, Exception {
+	void testGetTransactionById() throws Exception {
 		Transaction mockTxn = new Transaction(BankappConstants.ACCOUNT_DEPOSIT, 100.00, "Deposited $100.00", 12345L);
+		TransactionResponseDTO mockDto = new TransactionResponseDTO(1L, BankappConstants.ACCOUNT_DEPOSIT, 100.00, "Deposited $100.00", mockTxn.getTransactionDate());
 		
 		Mockito.when(transactionService.getTransactionById(1L)).thenReturn(mockTxn);
+		Mockito.when(dtoMapper.toTransactionResponseDto(mockTxn)).thenReturn(mockDto);
 
 		mockMvc.perform(get("/transaction/get/1"))
 				.andExpect(status().isOk())
-				.andExpect(content().json(jsonMapper.writeValueAsString(mockTxn)));
+				.andExpect(content().json(jsonMapper.writeValueAsString(mockDto)));
 	}
 
 	@Test
-	void testGetAllTransactionsByAcctNo() throws JsonProcessingException, Exception {
+	void testGetAllTransactionsByAcctNo() throws Exception {
 		List<Transaction> txnList = List.of(
 				new Transaction(BankappConstants.ACCOUNT_DEPOSIT, 100.00, "Deposited $100.00", 12345L),
-				new Transaction(BankappConstants.ACCOUNT_WITHDRAW, 50.00, "Withdrawed $50.00", 12345L));
+				new Transaction(BankappConstants.ACCOUNT_WITHDRAW, 50.00, "Withdraw $50.00", 12345L));
+
+		List<TransactionResponseDTO> mockDtoList = new ArrayList<>();
+		txnList.forEach(t -> mockDtoList
+				.add(new TransactionResponseDTO(1L, t.getTransactionType(), t.getTransactionAmount(), t.getTransactionNotes(), t.getTransactionDate())));
 		
 		Mockito.when(transactionService.getAllTransactionsByAcctNo(12345L)).thenReturn(txnList);
+		Mockito.when(dtoMapper.toTransactionResponseDto(txnList.get(0))).thenReturn(mockDtoList.get(0));
+		Mockito.when(dtoMapper.toTransactionResponseDto(txnList.get(1))).thenReturn(mockDtoList.get(1));
 		
 		mockMvc.perform(get("/transaction/get/list/12345"))
 				.andExpect(status().isOk())
-				.andExpect(content().json(jsonMapper.writeValueAsString(txnList)));
+				.andExpect(content().json(jsonMapper.writeValueAsString(mockDtoList)));
 	}
 
 	@Test
-	void testSaveTransaction() throws JsonProcessingException, Exception {
+	void testSaveTransaction() throws Exception {
 		Transaction mockTxn = new Transaction(BankappConstants.ACCOUNT_DEPOSIT, 100.00, "Deposited $100.00", 12345L);
+		TransactionResponseDTO mockDto = new TransactionResponseDTO(1L, BankappConstants.ACCOUNT_DEPOSIT, 100.00, "Deposited $100.00", mockTxn.getTransactionDate());
 		
 		Mockito.when(transactionService.saveTransaction(mockTxn)).thenReturn(mockTxn);
+		Mockito.when(dtoMapper.toTransactionResponseDto(mockTxn)).thenReturn(mockDto);
 		
 		mockMvc.perform(post("/transaction/save")
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(jsonMapper.writeValueAsString(mockTxn)))
+				.content(jsonMapper.writeValueAsString(mockDto)))
 				.andExpect(status().isCreated())
 				.andReturn();
 	}
 
 	@Test
-	void testUpdateTransaction() throws JsonProcessingException, Exception {
+	void testUpdateTransaction() throws Exception {
 		Transaction mockTxn = new Transaction(BankappConstants.ACCOUNT_DEPOSIT, 100.00, "Deposited $100.00", 12345L);
+		TransactionDTO mockDto = new TransactionDTO(1L, BankappConstants.ACCOUNT_DEPOSIT, 100.00, "Deposited $100.00", mockTxn.getTransactionDate(), 12345L);
 		mockTxn.setTransactionId(1L);
 		
 		Mockito.when(transactionService.updateTransactionDetails(any(Transaction.class))).thenReturn(mockTxn);
+		Mockito.when(dtoMapper.toTransaction(mockDto)).thenReturn(mockTxn);
 
 		mockMvc.perform(put("/transaction/update/1")
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(jsonMapper.writeValueAsString(mockTxn)))
+				.content(jsonMapper.writeValueAsString(mockDto)))
 				.andExpect(status().isOk())
-				.andExpect(content().json(jsonMapper.writeValueAsString(mockTxn)));
+				.andExpect(content().json(jsonMapper.writeValueAsString(mockDto)));
 		
 		verify(transactionService, times(1)).updateTransactionDetails(any(Transaction.class));
 	}
 	
 	@Test
-	void testUpdateTransactionConflict() throws JsonProcessingException, Exception {
+	void testUpdateTransactionConflict() throws Exception {
 		Transaction mockTxn = new Transaction(BankappConstants.ACCOUNT_DEPOSIT, 100.00, "Deposited $100.00", 12345L);
+		TransactionDTO mockDto = new TransactionDTO(1L, BankappConstants.ACCOUNT_DEPOSIT, 100.00, "Deposited $100.00", mockTxn.getTransactionDate(), 12345L);
 		mockTxn.setTransactionId(1L);
 		
 		Mockito.when(transactionService.updateTransactionDetails(any(Transaction.class))).thenReturn(mockTxn);
+		Mockito.when(dtoMapper.toTransaction(mockDto)).thenReturn(mockTxn);
 
 		mockMvc.perform(put("/transaction/update/2")
 				.contentType(MediaType.APPLICATION_JSON)
@@ -142,9 +164,11 @@ class TransactionControllerTest {
 	@Test
 	void testUpdateTransactionBadRequest() throws JsonProcessingException, Exception {
 		Transaction mockTxn = new Transaction(BankappConstants.ACCOUNT_DEPOSIT, 100.00, "Deposited $100.00", 12345L);
+		TransactionDTO mockDto = new TransactionDTO(1L, BankappConstants.ACCOUNT_DEPOSIT, 100.00, "Deposited $100.00", mockTxn.getTransactionDate(), 12345L);
 		mockTxn.setTransactionId(1L);
 		
 		Mockito.when(transactionService.updateTransactionDetails(any(Transaction.class))).thenReturn(null);
+		Mockito.when(dtoMapper.toTransaction(mockDto)).thenReturn(mockTxn);
 
 		mockMvc.perform(put("/transaction/update/1")
 				.contentType(MediaType.APPLICATION_JSON)
