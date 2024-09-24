@@ -1,0 +1,18 @@
+package dev.abreu.bankapp.dto;
+
+import java.time.LocalDateTime;
+
+/**
+ * Transaction DTO (Data Transfer Object) to prepare Transaction object to be sent in HTTP
+ * request and received in a response
+ *
+ * @author Devin Abreu
+ */
+public record TransactionDTO(
+        Long transactionId,
+        String transactionType,
+        double transactionAmount,
+        String transactionNotes,
+        LocalDateTime transactionDate,
+        Long accountNumber) {
+}

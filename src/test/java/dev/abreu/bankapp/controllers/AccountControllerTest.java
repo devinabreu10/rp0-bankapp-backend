@@ -15,6 +15,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.ArrayList;
 import java.util.List;
 
+import dev.abreu.bankapp.dto.AccountDTO;
+import dev.abreu.bankapp.dto.AccountResponseDTO;
+import dev.abreu.bankapp.dto.mapper.DtoMapper;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,85 +61,104 @@ class AccountControllerTest {
 	@MockBean
 	JwtConfig jwtConfig;
 
+	@MockBean
+	DtoMapper dtoMapper;
+
 	@Autowired
 	private MockMvc mockMvc;
 	
-	private ObjectMapper jsonMapper = new ObjectMapper();
+	private final ObjectMapper jsonMapper = new ObjectMapper();
 
 	@Test
-	void testGetAccountByAcctNo() throws JsonProcessingException, Exception {
+	void testGetAccountByAcctNo() throws Exception {
 		Account mockAccount = new Account(12345L, CHECKING_ACCOUNT, 100.00, 1L);
+		AccountResponseDTO mockDto = new AccountResponseDTO(12345L, CHECKING_ACCOUNT, 100.00);
 		
 		Mockito.when(accountService.getAccountByAcctNo(12345L)).thenReturn(mockAccount);
+		Mockito.when(dtoMapper.toAccountResponseDto(mockAccount)).thenReturn(mockDto);
 		
 		mockMvc.perform(get("/account/get/12345"))
 				.andExpect(status().isOk())
-				.andExpect(content().json(jsonMapper.writeValueAsString(mockAccount)));
+				.andExpect(content().json(jsonMapper.writeValueAsString(mockDto)));
 	}
 
 	@Test
-	void testGetAllAccountsByUsername() throws JsonProcessingException, Exception {
+	void testGetAllAccountsByUsername() throws Exception {
 		String testUsername = "test";
-		List<Account> mockAccountList = new ArrayList<>();
 		Account mockAccount = new Account(12345L, CHECKING_ACCOUNT, 100.00, 1L);
+		AccountResponseDTO mockDto = new AccountResponseDTO(12345L, CHECKING_ACCOUNT, 100.00);
+		List<Account> mockAccountList = new ArrayList<>();
 		mockAccountList.add(mockAccount);
+
+		List<AccountResponseDTO> mockDtoList = new ArrayList<>();
+		mockAccountList.forEach(a -> mockDtoList
+				.add(new AccountResponseDTO(a.getAccountNumber(), a.getAccountType(), a.getAccountBalance())));
 		
 		Mockito.when(accountService.getAllAccountsByUsername(testUsername)).thenReturn(mockAccountList);
+		Mockito.when(dtoMapper.toAccountResponseDto(mockAccount)).thenReturn(mockDto);
 		
 		mockMvc.perform(get("/account/get/list/test"))
 				.andExpect(status().isOk())
-				.andExpect(content().json(jsonMapper.writeValueAsString(mockAccountList)));
+				.andExpect(content().json(jsonMapper.writeValueAsString(mockDtoList)));
 	}
 
 	@Test
-	void testSaveAccount() throws JsonProcessingException, Exception {
+	void testSaveAccount() throws Exception {
 		Account mockAccount = new Account(12345L, CHECKING_ACCOUNT, 100.00, 1L);
+		AccountResponseDTO mockDto = new AccountResponseDTO(12345L, CHECKING_ACCOUNT, 100.00);
 		
 		Mockito.when(accountService.saveAccount(mockAccount)).thenReturn(mockAccount);
+		Mockito.when(dtoMapper.toAccountResponseDto(mockAccount)).thenReturn(mockDto);
 		
 		mockMvc.perform(post("/account/save")
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(jsonMapper.writeValueAsString(mockAccount)))
+				.content(jsonMapper.writeValueAsString(mockDto)))
 				.andExpect(status().isCreated())
 				.andReturn();
 	}
 
 	@Test
-	void testUpdateAccount() throws JsonProcessingException, Exception {
+	void testUpdateAccount() throws Exception {
 		Account mockAccount = new Account(12345L, CHECKING_ACCOUNT, 100.00, 1L);
+		AccountDTO mockDto = new AccountDTO(12345L, CHECKING_ACCOUNT, 100.00, 1L);
 		
 		Mockito.when(accountService.updateAccount(any(Account.class))).thenReturn(mockAccount);
+		Mockito.when(dtoMapper.toAccount(mockDto)).thenReturn(mockAccount);
 
 		mockMvc.perform(put("/account/update/12345")
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(jsonMapper.writeValueAsString(mockAccount)))
+				.content(jsonMapper.writeValueAsString(mockDto)))
 				.andExpect(status().isOk())
-				.andExpect(content().json(jsonMapper.writeValueAsString(mockAccount)));
+				.andExpect(content().json(jsonMapper.writeValueAsString(mockDto)));
 		
 		verify(accountService, times(1)).updateAccount(any(Account.class));
 	}
 	
 	@Test
-	void testUpdateAccountConflict() throws JsonProcessingException, Exception {
+	void testUpdateAccountConflict() throws Exception {
 		Account mockAccount = new Account(12345L, CHECKING_ACCOUNT, 100.00, 1L);
+		AccountDTO mockDto = new AccountDTO(12345L, CHECKING_ACCOUNT, 100.00, 1L);
 		
 		Mockito.when(accountService.updateAccount(any(Account.class))).thenReturn(mockAccount);
+		Mockito.when(dtoMapper.toAccount(mockDto)).thenReturn(mockAccount);
 
 		mockMvc.perform(put("/account/update/45678")
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(jsonMapper.writeValueAsString(mockAccount)))
+				.content(jsonMapper.writeValueAsString(mockDto)))
 				.andExpect(status().isConflict());
 	}
 	
 	@Test
 	void testUpdateAccountBadRequest() throws JsonProcessingException, Exception {
 		Account mockAccount = new Account(12345L, CHECKING_ACCOUNT, 100.00, 1L);
-		
+		AccountDTO mockDto = new AccountDTO(12345L, CHECKING_ACCOUNT, 100.00, 1L);
+
 		Mockito.when(accountService.updateAccount(any(Account.class))).thenReturn(null);
+		Mockito.when(dtoMapper.toAccount(mockDto)).thenReturn(mockAccount);
 
 		mockMvc.perform(put("/account/update/12345")
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(jsonMapper.writeValueAsString(mockAccount)))
+				.content(jsonMapper.writeValueAsString(mockDto)))
 				.andExpect(status().isBadRequest());
 	}
 

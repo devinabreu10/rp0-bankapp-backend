@@ -6,7 +6,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
 /**
- * Represents a Tranaction entity.
+ * Represents a Transaction entity.
  * 
  * @author Devin Abreu
  */
