@@ -1,30 +1,19 @@
 package dev.abreu.bankapp.dao.impl;
 
-import static dev.abreu.bankapp.utils.BankappConstants.SQL_EXCEPTION_CAUGHT;
-import static dev.abreu.bankapp.utils.BankappQueryConstants.CREATE_CUSTOMER_QUERY;
-import static dev.abreu.bankapp.utils.BankappQueryConstants.DELETE_CUSTOMER_BY_ID_QUERY;
-import static dev.abreu.bankapp.utils.BankappQueryConstants.DELETE_CUSTOMER_BY_USERNAME_QUERY;
-import static dev.abreu.bankapp.utils.BankappQueryConstants.SELECT_ALL_CUSTOMERS_QUERY;
-import static dev.abreu.bankapp.utils.BankappQueryConstants.SELECT_CUSTOMERS_BY_ID_QUERY;
-import static dev.abreu.bankapp.utils.BankappQueryConstants.SELECT_CUSTOMERS_BY_USERNAME_QUERY;
-import static dev.abreu.bankapp.utils.BankappQueryConstants.UPDATE_CUSTOMER_QUERY;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
+import dev.abreu.bankapp.dao.CustomerDao;
+import dev.abreu.bankapp.model.Customer;
+import dev.abreu.bankapp.utils.ConnectionUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Repository;
 
-import dev.abreu.bankapp.dao.CustomerDao;
-import dev.abreu.bankapp.model.Customer;
-import dev.abreu.bankapp.utils.ConnectionUtil;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static dev.abreu.bankapp.utils.BankappConstants.SQL_EXCEPTION_CAUGHT;
+import static dev.abreu.bankapp.utils.BankappQueryConstants.*;
 
 @Repository
 public class CustomerDaoImpl implements CustomerDao {
@@ -38,14 +27,18 @@ public class CustomerDaoImpl implements CustomerDao {
 	private static final String PASSWORD = "passwrd";
 	private static final String ADDRESS = "address";
 	
-	private ConnectionUtil connUtil = ConnectionUtil.getConnectionUtil();
+	private final ConnectionUtil connUtil;
 
-	@Override
+    public CustomerDaoImpl(ConnectionUtil connUtil) {
+        this.connUtil = connUtil;
+    }
+
+    @Override
 	public Optional<Customer> findByUsername(String username) {
 		Customer customer = new Customer();
 		
 		try(Connection conn = connUtil.getConnection(); 
-				PreparedStatement stmt = conn.prepareStatement(SELECT_CUSTOMERS_BY_USERNAME_QUERY);) {
+				PreparedStatement stmt = conn.prepareStatement(SELECT_CUSTOMERS_BY_USERNAME_QUERY)) {
 			
 			stmt.setString(1, username);
 			
@@ -74,7 +67,7 @@ public class CustomerDaoImpl implements CustomerDao {
 		Customer customer = new Customer();
 		
 		try(Connection conn = connUtil.getConnection(); 
-				PreparedStatement stmt = conn.prepareStatement(SELECT_CUSTOMERS_BY_ID_QUERY);) {
+				PreparedStatement stmt = conn.prepareStatement(SELECT_CUSTOMERS_BY_ID_QUERY)) {
 			
 			stmt.setLong(1, customerId);
 			
@@ -102,7 +95,7 @@ public class CustomerDaoImpl implements CustomerDao {
 	public List<Customer> findAllCustomers() {
 		List<Customer> customerList = new ArrayList<>();
 		
-		try(Connection conn = connUtil.getConnection(); Statement stmt = conn.createStatement();) {
+		try(Connection conn = connUtil.getConnection(); Statement stmt = conn.createStatement()) {
 
 			ResultSet resultSet = stmt.executeQuery(SELECT_ALL_CUSTOMERS_QUERY);
 			
@@ -152,7 +145,7 @@ public class CustomerDaoImpl implements CustomerDao {
 		log.info("Entering saveCustomer method...");
 		
 		try(Connection conn = connUtil.getConnection(); 
-				PreparedStatement stmt = conn.prepareStatement(CREATE_CUSTOMER_QUERY);) {
+				PreparedStatement stmt = conn.prepareStatement(CREATE_CUSTOMER_QUERY)) {
 			
 			stmt.setString(1, customer.getFirstName());
 			stmt.setString(2, customer.getLastName());
@@ -177,7 +170,7 @@ public class CustomerDaoImpl implements CustomerDao {
 		log.info("Entering updateCustomer method...");
 		
 		try(Connection conn = connUtil.getConnection(); 
-				PreparedStatement stmt = conn.prepareStatement(UPDATE_CUSTOMER_QUERY);) {
+				PreparedStatement stmt = conn.prepareStatement(UPDATE_CUSTOMER_QUERY)) {
 			
 			stmt.setString(1, customer.getFirstName());
 			stmt.setString(2, customer.getLastName());
@@ -204,7 +197,7 @@ public class CustomerDaoImpl implements CustomerDao {
 		boolean success = false;
 		
 		try(Connection conn = connUtil.getConnection(); 
-				PreparedStatement stmt = conn.prepareStatement(DELETE_CUSTOMER_BY_USERNAME_QUERY);) {
+				PreparedStatement stmt = conn.prepareStatement(DELETE_CUSTOMER_BY_USERNAME_QUERY)) {
 			conn.setAutoCommit(false);
 			
 			stmt.setString(1, username);
@@ -235,7 +228,7 @@ public class CustomerDaoImpl implements CustomerDao {
 		boolean success = false;
 		
 		try(Connection conn = connUtil.getConnection(); 
-				PreparedStatement stmt = conn.prepareStatement(DELETE_CUSTOMER_BY_ID_QUERY);) {
+				PreparedStatement stmt = conn.prepareStatement(DELETE_CUSTOMER_BY_ID_QUERY)) {
 			conn.setAutoCommit(false);
 			
 			stmt.setLong(1, customerId);
