@@ -1,33 +1,28 @@
 package dev.abreu.bankapp.dao;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import dev.abreu.bankapp.dao.impl.AccountDaoImpl;
+import dev.abreu.bankapp.model.Account;
+import dev.abreu.bankapp.utils.ConnectionUtil;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
-
-import dev.abreu.bankapp.dao.impl.AccountDaoImpl;
-import dev.abreu.bankapp.model.Account;
-import dev.abreu.bankapp.utils.ConnectionUtil;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AccountDaoTest {
@@ -39,21 +34,17 @@ class AccountDaoTest {
 	private Connection connectionMock;
 
 	@Mock
-	private Statement statementMock;
-
-	@Mock
 	private PreparedStatement preparedStatementMock;
 
 	@Mock
 	private ResultSet resultSetMock;
 
+	@InjectMocks
 	private AccountDaoImpl accountDao;
 
 	@BeforeEach
 	public void setup() {
 		when(connectionUtilMock.getConnection()).thenReturn(connectionMock);
-		accountDao = new AccountDaoImpl();
-		ReflectionTestUtils.setField(accountDao, "connUtil", connectionUtilMock);
 	}
 
 	@Test
@@ -173,7 +164,7 @@ class AccountDaoTest {
 	
 	@Test
 	void testDeleteAccountByAcctNo() throws SQLException {
-        Long acctNo = 12345L;
+        long acctNo = 12345L;
         when(connectionMock.prepareStatement(anyString())).thenReturn(preparedStatementMock);
         when(preparedStatementMock.executeUpdate()).thenReturn(1);
         boolean success = accountDao.deleteAccountByAcctNo(acctNo);

@@ -1,11 +1,12 @@
 package dev.abreu.bankapp.dao.impl;
 
-import static dev.abreu.bankapp.utils.BankappConstants.SQL_EXCEPTION_CAUGHT;
-import static dev.abreu.bankapp.utils.BankappQueryConstants.CREATE_NEW_ACCOUNT_QUERY;
-import static dev.abreu.bankapp.utils.BankappQueryConstants.DELETE_ACCOUNT_BY_ACCTNO_QUERY;
-import static dev.abreu.bankapp.utils.BankappQueryConstants.SELECT_ACCOUNTS_BY_ACCTNO_QUERY;
-import static dev.abreu.bankapp.utils.BankappQueryConstants.SELECT_ALL_ACCOUNTS_BY_USERNAME_QUERY;
-import static dev.abreu.bankapp.utils.BankappQueryConstants.UPDATE_ACCOUNT_QUERY;
+import dev.abreu.bankapp.dao.AccountDao;
+import dev.abreu.bankapp.model.Account;
+import dev.abreu.bankapp.utils.ConnectionUtil;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Repository;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,20 +15,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.stereotype.Repository;
-
-import dev.abreu.bankapp.dao.AccountDao;
-import dev.abreu.bankapp.model.Account;
-import dev.abreu.bankapp.utils.ConnectionUtil;
+import static dev.abreu.bankapp.utils.BankappConstants.SQL_EXCEPTION_CAUGHT;
+import static dev.abreu.bankapp.utils.BankappQueryConstants.*;
 
 @Repository
 public class AccountDaoImpl implements AccountDao {
 	
 	private static final Logger log = LogManager.getLogger(AccountDaoImpl.class);
-	
-	private ConnectionUtil connUtil = ConnectionUtil.getConnectionUtil();
+
+	private final ConnectionUtil connUtil;
+
+	public AccountDaoImpl(ConnectionUtil connUtil) {
+		this.connUtil = connUtil;
+	}
 
 	@Override
 	public Optional<Account> findAccountByAcctNo(Long acctNo) {
@@ -61,7 +61,7 @@ public class AccountDaoImpl implements AccountDao {
 		List<Account> accountsList = new ArrayList<>();
 		Account account;
 		
-		try(Connection conn = connUtil.getConnection(); 
+		try(Connection conn = connUtil.getConnection();
 				PreparedStatement prepStmt = conn.prepareStatement(SELECT_ALL_ACCOUNTS_BY_USERNAME_QUERY)) {
 			
 			prepStmt.setString(1, username);
@@ -91,7 +91,7 @@ public class AccountDaoImpl implements AccountDao {
 		log.info("Entering saveAccount method...");
 		
 		try(Connection conn = connUtil.getConnection(); 
-				PreparedStatement stmt = conn.prepareStatement(CREATE_NEW_ACCOUNT_QUERY);) {
+				PreparedStatement stmt = conn.prepareStatement(CREATE_NEW_ACCOUNT_QUERY)) {
 			
 			stmt.setString(1, account.getAccountType());
 			stmt.setDouble(2, account.getAccountBalance());
@@ -114,7 +114,7 @@ public class AccountDaoImpl implements AccountDao {
 		log.info("Entering updateAccount method...");
 		
 		try(Connection conn = connUtil.getConnection(); 
-				PreparedStatement stmt = conn.prepareStatement(UPDATE_ACCOUNT_QUERY);) {
+				PreparedStatement stmt = conn.prepareStatement(UPDATE_ACCOUNT_QUERY)) {
 			
 			stmt.setString(1, account.getAccountType());
 			stmt.setDouble(2, account.getAccountBalance());
@@ -138,7 +138,7 @@ public class AccountDaoImpl implements AccountDao {
 		boolean success = false;
 		
 		try(Connection conn = connUtil.getConnection(); 
-				PreparedStatement stmt = conn.prepareStatement(DELETE_ACCOUNT_BY_ACCTNO_QUERY);) {
+				PreparedStatement stmt = conn.prepareStatement(DELETE_ACCOUNT_BY_ACCTNO_QUERY)) {
 			conn.setAutoCommit(false);
 			
 			stmt.setLong(1, acctNo);

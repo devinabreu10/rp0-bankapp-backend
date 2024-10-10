@@ -1,36 +1,31 @@
 package dev.abreu.bankapp.dao.impl;
 
-import static dev.abreu.bankapp.utils.BankappConstants.SQL_EXCEPTION_CAUGHT;
-import static dev.abreu.bankapp.utils.BankappQueryConstants.CREATE_NEW_TRANSACTION_QUERY;
-import static dev.abreu.bankapp.utils.BankappQueryConstants.DELETE_TRANSACTION_BY_ID_QUERY;
-import static dev.abreu.bankapp.utils.BankappQueryConstants.SELECT_ALL_TRANSACTIONS_BY_ACCTNO_QUERY;
-import static dev.abreu.bankapp.utils.BankappQueryConstants.SELECT_TRANSACTIONS_BY_ID_QUERY;
-import static dev.abreu.bankapp.utils.BankappQueryConstants.UPDATE_TRANSACTION_QUERY;
+import dev.abreu.bankapp.dao.TransactionDao;
+import dev.abreu.bankapp.model.Transaction;
+import dev.abreu.bankapp.utils.ConnectionUtil;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.stereotype.Repository;
-
-import dev.abreu.bankapp.dao.TransactionDao;
-import dev.abreu.bankapp.model.Transaction;
-import dev.abreu.bankapp.utils.ConnectionUtil;
+import static dev.abreu.bankapp.utils.BankappConstants.SQL_EXCEPTION_CAUGHT;
+import static dev.abreu.bankapp.utils.BankappQueryConstants.*;
 
 @Repository
 public class TransactionDaoImpl implements TransactionDao {
 	
 	private static final Logger log = LogManager.getLogger(TransactionDaoImpl.class);
-	
-	private ConnectionUtil connUtil = ConnectionUtil.getConnectionUtil();
+
+	private final ConnectionUtil connUtil;
+
+	public TransactionDaoImpl(ConnectionUtil connUtil) {
+		this.connUtil = connUtil;
+	}
 
 	@Override
 	public Optional<Transaction> findTransactionById(Long txnId) {
@@ -101,7 +96,7 @@ public class TransactionDaoImpl implements TransactionDao {
 		log.info("Entering saveTransaction method...");
 		
 		try(Connection conn = connUtil.getConnection(); 
-				PreparedStatement stmt = conn.prepareStatement(CREATE_NEW_TRANSACTION_QUERY);) {
+				PreparedStatement stmt = conn.prepareStatement(CREATE_NEW_TRANSACTION_QUERY)) {
 			
 			stmt.setString(1, txn.getTransactionType());
 			stmt.setDouble(2, txn.getTransactionAmount());
@@ -125,7 +120,7 @@ public class TransactionDaoImpl implements TransactionDao {
 		log.info("Entering updateTransaction method...");
 		
 		try(Connection conn = connUtil.getConnection(); 
-				PreparedStatement stmt = conn.prepareStatement(UPDATE_TRANSACTION_QUERY);) {
+				PreparedStatement stmt = conn.prepareStatement(UPDATE_TRANSACTION_QUERY)) {
 			
 			stmt.setString(1, txn.getTransactionType());
 			stmt.setDouble(2, txn.getTransactionAmount());
@@ -150,7 +145,7 @@ public class TransactionDaoImpl implements TransactionDao {
 		boolean success = false;
 		
 		try(Connection conn = connUtil.getConnection(); 
-				PreparedStatement stmt = conn.prepareStatement(DELETE_TRANSACTION_BY_ID_QUERY);) {
+				PreparedStatement stmt = conn.prepareStatement(DELETE_TRANSACTION_BY_ID_QUERY)) {
 			conn.setAutoCommit(false);
 			
 			stmt.setLong(1, txnId);

@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.1.6</version>
+        <version>3.0.2</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>dev.abreu</groupId>
@@ -13,11 +13,12 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>RP0 Bank Application</name>
     <description>Remake of original Revature p0 Banking Application</description>
+
     <properties>
         <java.version>17</java.version>
     </properties>
-    <dependencies>
 
+    <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
@@ -115,7 +116,6 @@
             <version>0.11.5</version>
             <scope>runtime</scope>
         </dependency>
-
     </dependencies>
 
     <build>

@@ -1,35 +1,26 @@
 package dev.abreu.bankapp.dao;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import dev.abreu.bankapp.dao.impl.TransactionDaoImpl;
+import dev.abreu.bankapp.model.Transaction;
+import dev.abreu.bankapp.utils.ConnectionUtil;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
-
-import dev.abreu.bankapp.dao.impl.TransactionDaoImpl;
-import dev.abreu.bankapp.model.Transaction;
-import dev.abreu.bankapp.utils.ConnectionUtil;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class TransactionDaoTest {
@@ -39,9 +30,6 @@ class TransactionDaoTest {
 
 	@Mock
 	private Connection connectionMock;
-	
-	@Mock
-	private Statement statementMock;
 
 	@Mock
 	private PreparedStatement preparedStatementMock;
@@ -49,13 +37,12 @@ class TransactionDaoTest {
 	@Mock
 	private ResultSet resultSetMock;
 
+    @InjectMocks
 	private TransactionDaoImpl transactionDao;
 
 	@BeforeEach
 	public void setup() {
 		when(connectionUtilMock.getConnection()).thenReturn(connectionMock);
-		transactionDao = new TransactionDaoImpl();
-		ReflectionTestUtils.setField(transactionDao, "connUtil", connectionUtilMock);
 	}
 
     @Test
@@ -139,7 +126,7 @@ class TransactionDaoTest {
     	Long transactionId = 1L;
 		when(connectionMock.prepareStatement(anyString())).thenReturn(preparedStatementMock);
 		when(preparedStatementMock.executeQuery()).thenThrow(SQLException.class);
-		List<Transaction> result = transactionDao.findAllTransactionsByAcctNo(transactionId);;
+		List<Transaction> result = transactionDao.findAllTransactionsByAcctNo(transactionId);
 		assertNotNull(result);
     }
     
@@ -191,7 +178,7 @@ class TransactionDaoTest {
 	
 	@Test
 	void testDeleteTransactionById() throws SQLException {
-		Long txnId = 1L;
+		long txnId = 1L;
         when(connectionMock.prepareStatement(anyString())).thenReturn(preparedStatementMock);
         when(preparedStatementMock.executeUpdate()).thenReturn(1);
         boolean success = transactionDao.deleteTransactionById(txnId);
