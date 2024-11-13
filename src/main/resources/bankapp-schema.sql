@@ -1,5 +1,4 @@
-/* SQL schema for p0 bank app remake */
-
+/* SQL schema for p0 bank app remake in Oracle */
 
 create table customer ( --added trigger to auto increment customer_id
 	customer_id number(15) primary key,
@@ -69,3 +68,84 @@ create table credit ( -- this credit has no interest
 );
 
 COMMIT;
+
+/* SQL schema for p0 bank app remake in PostgreSQL */
+
+create table "rp0-bankapp".customers (
+	customer_id bigserial primary key, -- automatically increments in PostgreSQL
+	first_name varchar(50) not null,
+	last_name varchar(50) not null,
+	address varchar(50) not null,
+	username varchar(50) not null,
+	passwrd varchar(50) not null
+);
+
+create table "rp0-bankapp".accounts (
+	account_number bigserial primary key, -- automatically increments in PostgreSQL
+	account_type varchar(20) not null,
+	account_balance numeric(15,2) not null,
+    customer_id bigint not null,
+	constraint customer_account 
+      foreign key (customer_id) 
+      references "rp0-bankapp".customers (customer_id) 
+);
+
+create table "rp0-bankapp".transactions (
+	transaction_id bigserial primary key,
+	transaction_type varchar(20) not null,
+	transaction_amount numeric(15,2) not null,
+	transaction_notes varchar(100) not null,
+	transaction_date date not null,
+    account_number bigint,
+	loan_id bigint,
+	credit_id bigint,
+    constraint account_transaction
+	  foreign key (account_number) 
+      references "rp0-bankapp".accounts (account_number),
+	constraint loan_payment
+	  foreign key (loan_id) 
+      references "rp0-bankapp".loans (loan_id),
+	constraint credit_payment
+	  foreign key (credit_id) 
+      references "rp0-bankapp".credit_cards (credit_id)
+);
+
+create table "rp0-bankapp".transfers (
+    transfer_id bigserial primary key,
+    source_acct_num bigint not null,
+    target_acct_num bigint not null,
+    transfer_amount numeric(15,2) not null,
+	transfer_notes varchar(150),
+    transfer_date date not null,
+    constraint src_account_fk foreign key (source_acct_num) references "rp0-bankapp".accounts (account_number),
+    constraint tgt_account_fk foreign key (target_acct_num) references "rp0-bankapp".accounts (account_number),
+	-- ensures source/target accounts are different
+    check (source_acct_num is distinct from target_acct_num)
+);
+
+create table "rp0-bankapp".loans (
+	loan_id bigserial primary key,
+	loan_amount numeric(15,2) not null,
+	loan_length integer not null,
+	interest numeric (15,2) not null,
+	minimum_due numeric(15,2),
+	due_date date not null,
+	customer_id bigint not null,
+	constraint customer_loan
+	  foreign key (customer_id) 
+      references "rp0-bankapp".customers (customer_id)
+);
+
+create table "rp0-bankapp".credit_cards (
+	credit_id bigserial primary key,
+	credit_balance numeric(15,2) not null,
+	minimum_due numeric(15,2),
+	credit_limit numeric(15) not null,
+	expiry_date date not null,
+	due_date date,
+	customer_id bigint not null,
+	constraint customer_credit
+	  foreign key (customer_id) 
+      references "rp0-bankapp".customers (customer_id)
+);
+-- Postgres doesn't require explicit COMMIT

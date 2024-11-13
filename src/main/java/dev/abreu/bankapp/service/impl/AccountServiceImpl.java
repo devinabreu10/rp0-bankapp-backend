@@ -102,7 +102,8 @@ public class AccountServiceImpl implements AccountService {
 		
 		// consider making the Account update and Transaction save in a single Transaction
 		// This ensures atomicity and consistency in case of any failures.
-		// This would involve an Account_Transaction junction table in the database.
+		// Created a new transfers table in the database for this purpose
+		// Need to call transferDao.saveTransfer()
 		
 		source.orElseThrow().decrementBalance(amount);
 		target.orElseThrow().incrementBalance(amount);

@@ -179,6 +179,6 @@ public class AccountController {
 		log.info("Performing PUT method to withdraw funds from Account with acctNo: {}", acctNo);
 		accountService.withdrawFundsFromAccount(acctNo, amount);
 
-		return new ResponseEntity<>("Successfully withdrawed funds from account...", HttpStatus.OK);
+		return new ResponseEntity<>("Successfully withdrew funds from account...", HttpStatus.OK);
 	}
 }
