@@ -1,11 +1,14 @@
 package dev.abreu.bankapp.exception;
 
+import java.io.Serial;
+
 public class UsernameTakenException extends Exception {
 
 	/**
 	 * throws exception if customer tries to register with a username that already exists
 	 * 
 	 */
+	@Serial
 	private static final long serialVersionUID = 4515974340454198388L;
 	
 	public UsernameTakenException() {
