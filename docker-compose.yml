@@ -9,7 +9,7 @@ services:
     env_file:
       - /.env/docker.env
     ports:
-      - 5433:5432
+      - "5433:5432"
     volumes:
       - postgres:/var/lib/postgresql/data
     networks:
@@ -20,7 +20,7 @@ services:
     container_name: rp0-bankapp-api
     image: rp0-bankapp-api:0.0.1-SNAPSHOT
     ports:
-      - 8088:8080
+      - "8088:8080"
     env_file:
       - /.env/docker.env
     networks:
@@ -33,7 +33,7 @@ services:
     container_name: rp0-bankapp-ui
     image: rp0-bankapp-ui:0.0.0
     ports:
-      - 80:80
+      - "80:80"
     networks:
       - rp0-bankapp-network
     depends_on:

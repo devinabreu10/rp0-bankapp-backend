@@ -1,0 +1,18 @@
+spring:
+  profiles:
+    active: dev
+  datasource:
+#    driver-class-name: oracle.jdbc.driver.OracleDriver
+    driver-class-name: org.postgresql.Driver
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+  jpa:
+    properties:
+      hibernate:
+#        dialect: org.hibernate.dialect.OracleDialect
+        dialect: org.hibernate.dialect.PostgreSQL9Dialect
+    # show-sql: true
+    # hibernate.ddl-auto: update
+server:
+  port: 8080

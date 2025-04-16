@@ -8,9 +8,6 @@ target/
 # Env files
 .env/
 
-# Properties files
-application.properties
-
 # Compiled class file
 *.class
 
