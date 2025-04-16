@@ -16,7 +16,7 @@
            <PatternLayout pattern="${LOG_PATTERN}"/>
        </Console>
        
-       <RollingFile name="bankAppRemakeLog" fileName="${LOG_ROOT}/bankAppRemake.log" filePattern="${LOG_ROOT}/bankAppRemake-%d{yyyy-MM-dd}-%i.log">
+       <RollingFile name="bankAppRemakeLog" fileName="${LOG_ROOT}/bank_app_remake.log" filePattern="${LOG_ROOT}/bank_app_remake-%d{yyyy-MM-dd}-%i.log">
            <PatternLayout pattern="${LOG_PATTERN}"/>
 		   <Policies>
 				<SizeBasedTriggeringPolicy size="${FILE_SIZE}"/>

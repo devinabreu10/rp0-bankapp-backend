@@ -21,7 +21,7 @@ if [ ! -f "$JAR_PATH" ]; then
     exit 1
 fi
 
-echo "Executing rp0-bankapp-ui..."
+echo "Executing rp0-bankapp..."
 
 # Run the Java application
 java -jar "$JAR_PATH"
