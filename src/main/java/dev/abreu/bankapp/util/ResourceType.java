@@ -1,4 +1,4 @@
-package dev.abreu.bankapp.utils;
+package dev.abreu.bankapp.util;
 
 /**
  * Represents the different types of resources.

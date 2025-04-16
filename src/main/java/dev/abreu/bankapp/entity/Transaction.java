@@ -1,4 +1,4 @@
-package dev.abreu.bankapp.model;
+package dev.abreu.bankapp.entity;
 
 import java.time.LocalDateTime;
 

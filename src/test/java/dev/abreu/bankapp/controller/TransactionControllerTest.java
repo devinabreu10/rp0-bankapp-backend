@@ -1,4 +1,4 @@
-package dev.abreu.bankapp.controllers;
+package dev.abreu.bankapp.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -11,7 +11,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,12 +36,12 @@ import dev.abreu.bankapp.config.ApplicationConfig;
 import dev.abreu.bankapp.dao.AccountDao;
 import dev.abreu.bankapp.dao.CustomerDao;
 import dev.abreu.bankapp.dao.TransactionDao;
-import dev.abreu.bankapp.model.Transaction;
+import dev.abreu.bankapp.entity.Transaction;
 import dev.abreu.bankapp.security.JwtConfig;
 import dev.abreu.bankapp.security.SecurityConfig;
 import dev.abreu.bankapp.service.CustomerService;
 import dev.abreu.bankapp.service.TransactionService;
-import dev.abreu.bankapp.utils.BankappConstants;
+import dev.abreu.bankapp.util.BankappConstants;
 
 @WebMvcTest(controllers = TransactionController.class)
 @AutoConfigureMockMvc(addFilters = false)

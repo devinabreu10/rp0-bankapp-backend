@@ -1,4 +1,4 @@
-package dev.abreu.bankapp.model;
+package dev.abreu.bankapp.entity;
 
 import java.util.Collection;
 import java.util.List;
@@ -17,8 +17,6 @@ import org.springframework.security.core.userdetails.UserDetails;
  */
 @Table(name = "customers")
 public class Customer implements UserDetails {
-	
-	private static final long serialVersionUID = 9095963579654299833L;
 	
 	private @Column(value="customer_id") @Id Long id;
 	private String firstName;

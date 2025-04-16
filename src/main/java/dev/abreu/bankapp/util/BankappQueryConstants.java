@@ -1,4 +1,4 @@
-package dev.abreu.bankapp.utils;
+package dev.abreu.bankapp.util;
 
 /**
  * Constants that will be used for SQL queries

@@ -1,6 +1,6 @@
-package dev.abreu.bankapp.controllers;
+package dev.abreu.bankapp.controller;
 
-import static dev.abreu.bankapp.utils.BankappConstants.CHECKING_ACCOUNT;
+import static dev.abreu.bankapp.util.BankappConstants.CHECKING_ACCOUNT;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -35,7 +35,7 @@ import dev.abreu.bankapp.config.ApplicationConfig;
 import dev.abreu.bankapp.dao.AccountDao;
 import dev.abreu.bankapp.dao.CustomerDao;
 import dev.abreu.bankapp.dto.TransferRequest;
-import dev.abreu.bankapp.model.Account;
+import dev.abreu.bankapp.entity.Account;
 import dev.abreu.bankapp.security.JwtConfig;
 import dev.abreu.bankapp.security.SecurityConfig;
 import dev.abreu.bankapp.service.AccountService;

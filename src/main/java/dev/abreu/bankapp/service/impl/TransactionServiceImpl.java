@@ -10,9 +10,9 @@ import org.springframework.stereotype.Service;
 import dev.abreu.bankapp.dao.AccountDao;
 import dev.abreu.bankapp.dao.TransactionDao;
 import dev.abreu.bankapp.exception.ResourceNotFoundException;
-import dev.abreu.bankapp.model.Transaction;
+import dev.abreu.bankapp.entity.Transaction;
 import dev.abreu.bankapp.service.TransactionService;
-import dev.abreu.bankapp.utils.ResourceType;
+import dev.abreu.bankapp.util.ResourceType;
 
 @Service
 public class TransactionServiceImpl implements TransactionService {

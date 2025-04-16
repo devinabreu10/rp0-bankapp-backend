@@ -1,4 +1,4 @@
-package dev.abreu.bankapp.controllers;
+package dev.abreu.bankapp.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -32,7 +32,7 @@ import dev.abreu.bankapp.dao.CustomerDao;
 import dev.abreu.bankapp.dto.CustomerDTO;
 import dev.abreu.bankapp.dto.CustomerResponseDTO;
 import dev.abreu.bankapp.dto.mapper.DtoMapper;
-import dev.abreu.bankapp.model.Customer;
+import dev.abreu.bankapp.entity.Customer;
 import dev.abreu.bankapp.security.JwtConfig;
 import dev.abreu.bankapp.security.SecurityConfig;
 import dev.abreu.bankapp.service.CustomerService;

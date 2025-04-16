@@ -1,8 +1,8 @@
 package dev.abreu.bankapp.dao.impl;
 
 import dev.abreu.bankapp.dao.AccountDao;
-import dev.abreu.bankapp.model.Account;
-import dev.abreu.bankapp.utils.ConnectionUtil;
+import dev.abreu.bankapp.entity.Account;
+import dev.abreu.bankapp.util.ConnectionUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Repository;
@@ -15,8 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static dev.abreu.bankapp.utils.BankappConstants.SQL_EXCEPTION_CAUGHT;
-import static dev.abreu.bankapp.utils.BankappQueryConstants.*;
+import static dev.abreu.bankapp.util.BankappConstants.SQL_EXCEPTION_CAUGHT;
+import static dev.abreu.bankapp.util.BankappQueryConstants.*;
 
 @Repository
 public class AccountDaoImpl implements AccountDao {

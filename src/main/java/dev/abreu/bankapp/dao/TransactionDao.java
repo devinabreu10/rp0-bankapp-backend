@@ -3,7 +3,7 @@ package dev.abreu.bankapp.dao;
 import java.util.List;
 import java.util.Optional;
 
-import dev.abreu.bankapp.model.Transaction;
+import dev.abreu.bankapp.entity.Transaction;
 
 /**
  * The TransactionDao interface provides methods for interacting with the

@@ -3,7 +3,7 @@ package dev.abreu.bankapp.dao;
 import java.util.List;
 import java.util.Optional;
 
-import dev.abreu.bankapp.model.Account;
+import dev.abreu.bankapp.entity.Account;
 
 /**
  * The AccountDao interface provides methods for interacting with the Account

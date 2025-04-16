@@ -10,9 +10,9 @@ import org.springframework.stereotype.Service;
 import dev.abreu.bankapp.dao.CustomerDao;
 import dev.abreu.bankapp.exception.ResourceNotFoundException;
 import dev.abreu.bankapp.exception.UsernameTakenException;
-import dev.abreu.bankapp.model.Customer;
+import dev.abreu.bankapp.entity.Customer;
 import dev.abreu.bankapp.service.CustomerService;
-import dev.abreu.bankapp.utils.ResourceType;
+import dev.abreu.bankapp.util.ResourceType;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {

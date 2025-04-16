@@ -3,7 +3,7 @@ package dev.abreu.bankapp.dao;
 import java.util.List;
 import java.util.Optional;
 
-import dev.abreu.bankapp.model.Customer;
+import dev.abreu.bankapp.entity.Customer;
 
 /**
  * The CustomerDao interface provides methods for interacting with the Customer

@@ -1,4 +1,4 @@
-package dev.abreu.bankapp.controllers;
+package dev.abreu.bankapp.controller;
 
 import java.util.List;
 
@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import dev.abreu.bankapp.dto.TransferRequest;
 import dev.abreu.bankapp.exception.InsufficientFundsException;
-import dev.abreu.bankapp.model.Account;
+import dev.abreu.bankapp.entity.Account;
 import dev.abreu.bankapp.service.AccountService;
 
 /**

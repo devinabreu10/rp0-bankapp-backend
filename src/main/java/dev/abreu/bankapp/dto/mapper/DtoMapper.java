@@ -1,13 +1,13 @@
 package dev.abreu.bankapp.dto.mapper;
 
 import dev.abreu.bankapp.dto.*;
-import dev.abreu.bankapp.model.Account;
-import dev.abreu.bankapp.model.Transaction;
+import dev.abreu.bankapp.entity.Account;
+import dev.abreu.bankapp.entity.Transaction;
 import org.springframework.lang.NonNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import dev.abreu.bankapp.model.Customer;
+import dev.abreu.bankapp.entity.Customer;
 
 /**
  * This class provides methods to map between different DTOs and the corresponding model classes.

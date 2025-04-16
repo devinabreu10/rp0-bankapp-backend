@@ -1,4 +1,4 @@
-package dev.abreu.bankapp.controllers;
+package dev.abreu.bankapp.controller;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,7 +20,7 @@ import dev.abreu.bankapp.dto.LoginRequest;
 import dev.abreu.bankapp.dto.RegisterRequest;
 import dev.abreu.bankapp.dto.mapper.DtoMapper;
 import dev.abreu.bankapp.exception.UsernameTakenException;
-import dev.abreu.bankapp.model.Customer;
+import dev.abreu.bankapp.entity.Customer;
 import dev.abreu.bankapp.service.CustomerService;
 import dev.abreu.bankapp.service.TokenService;
 import jakarta.validation.Valid;

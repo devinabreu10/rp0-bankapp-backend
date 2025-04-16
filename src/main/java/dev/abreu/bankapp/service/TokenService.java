@@ -1,7 +1,7 @@
 package dev.abreu.bankapp.service;
 
 import java.util.Map;
-import dev.abreu.bankapp.model.Customer;
+import dev.abreu.bankapp.entity.Customer;
 
 public interface TokenService {
 	

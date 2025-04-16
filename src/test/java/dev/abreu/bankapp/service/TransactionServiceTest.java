@@ -19,10 +19,10 @@ import dev.abreu.bankapp.dao.AccountDao;
 import dev.abreu.bankapp.dao.CustomerDao;
 import dev.abreu.bankapp.dao.TransactionDao;
 import dev.abreu.bankapp.exception.ResourceNotFoundException;
-import dev.abreu.bankapp.model.Account;
-import dev.abreu.bankapp.model.Transaction;
+import dev.abreu.bankapp.entity.Account;
+import dev.abreu.bankapp.entity.Transaction;
 import dev.abreu.bankapp.service.impl.TransactionServiceImpl;
-import dev.abreu.bankapp.utils.BankappConstants;
+import dev.abreu.bankapp.util.BankappConstants;
 
 @SpringBootTest(classes =  TransactionServiceImpl.class)
 class TransactionServiceTest {

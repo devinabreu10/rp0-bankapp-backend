@@ -4,15 +4,15 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 import dev.abreu.bankapp.dto.*;
-import dev.abreu.bankapp.model.Account;
-import dev.abreu.bankapp.model.Transaction;
+import dev.abreu.bankapp.entity.Account;
+import dev.abreu.bankapp.entity.Transaction;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import dev.abreu.bankapp.model.Customer;
+import dev.abreu.bankapp.entity.Customer;
 
 import java.time.LocalDateTime;
 
