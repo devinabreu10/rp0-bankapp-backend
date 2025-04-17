@@ -17,26 +17,27 @@ jobs:
           java-version: '17'
           distribution: 'corretto'
 
-      - name: Build and Run Tests with Maven
-        run: ./mvnw clean package
+      - name: Cache SonarQube packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      - name: Cache Maven packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Build & Analyze with Maven/SonarQube
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: ./mvnw -B verify sonar:sonar -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
 
       - name: Extract Project Version
         id: extract_version
         run: echo "VERSION=$(./mvnw -q -Dexec.executable='echo' -Dexec.args='${project.version}' --non-recursive exec:exec)" >> $GITHUB_OUTPUT
-
-        # https://github.com/marketplace/actions/official-sonarqube-scan
-#      - name: SonarQubeCloud Scan
-#        uses: SonarSource/sonarqube-scan-action@v5.1.0
-#        env:
-#          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-#          SONAR_ROOT_CERT: ${{ secrets.SONAR_ROOT_CERT }}
-#        with:
-#          projectBaseDir: p0-bankapp-remake/src
-#          args: >
-#            -Dsonar.organization=${{ secrets.SONAR_ORG }}
-#            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
-#            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
-#            -Dsonar.verbose=true
 
       - name: Login to DockerHub
         uses: docker/login-action@v3
