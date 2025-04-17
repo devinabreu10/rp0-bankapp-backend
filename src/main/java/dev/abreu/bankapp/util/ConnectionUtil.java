@@ -1,21 +1,33 @@
-package dev.abreu.bankapp.utils;
+package dev.abreu.bankapp.util;
 
-import static dev.abreu.bankapp.utils.BankappConstants.SQL_EXCEPTION_CAUGHT;
+import static dev.abreu.bankapp.util.BankappConstants.SQL_EXCEPTION_CAUGHT;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 
 /**
  * This class provides utility methods for managing database connections.
- * 
+ * <p>
+ * Replaced by Spring DataSource configured in {@link dev.abreu.bankapp.config.ApplicationConfig}
+ *
  * @author Devin Abreu
  */
 public class ConnectionUtil {
 
 	private static final Logger log = LogManager.getLogger(ConnectionUtil.class);
+
+	@Value("${spring.datasource.url}")
+	private String dbUrl;
+
+	@Value("${spring.datasource.username}")
+	private String dbUser;
+
+	@Value("${spring.datasource.password}")
+	private String dbPass;
 
 	private static ConnectionUtil connUtil;
 
@@ -45,10 +57,6 @@ public class ConnectionUtil {
 	 */
 	public Connection getConnection() {
 		Connection conn = null;
-
-		String dbUrl = System.getenv("DB_URL");
-		String dbUser = System.getenv("DB_USER");
-		String dbPass = System.getenv("DB_PASSWORD");
 
 		try {
 			conn = DriverManager.getConnection(dbUrl, dbUser, dbPass);
