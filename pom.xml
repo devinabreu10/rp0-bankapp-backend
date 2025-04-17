@@ -12,11 +12,12 @@
     <groupId>dev.abreu</groupId>
     <artifactId>p0-bankapp-remake</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>RP0 Bank Application</name>
-    <description>Remake of original Revature p0 Banking Application</description>
 
     <properties>
         <java.version>17</java.version>
+        <sonar.organization>devinabreu10</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     </properties>
 
     <dependencies>
