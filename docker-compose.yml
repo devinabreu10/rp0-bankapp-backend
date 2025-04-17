@@ -1,6 +1,7 @@
 # running this is equivalent to running all the docker commands in the terminal separately
 # - instead of executing docker run, docker volume, and docker network separately for these
-#   two services we streamline the process by using this docker-compose.yml
+#   two services, we streamline the process by using this docker-compose.yml
+# - `docker-compose up` automatically pulls latest images from DockerHub Repository
 services:
   # first service named postgres-db
   postgres-db:
@@ -18,7 +19,7 @@ services:
   # second service named rp0-bankapp-api
   rp0-bankapp-api:
     container_name: rp0-bankapp-api
-    image: rp0-bankapp-api:0.0.1-SNAPSHOT
+    image: devinabreu10/rp0-bankapp-api:latest
     ports:
       - "8088:8080"
     env_file:
@@ -31,7 +32,7 @@ services:
   # third service named rp0-bankapp-ui
   rp0-bankapp-ui:
     container_name: rp0-bankapp-ui
-    image: rp0-bankapp-ui:0.0.0
+    image: devinabreu10/rp0-bankapp-ui:latest
     ports:
       - "80:80"
     networks:

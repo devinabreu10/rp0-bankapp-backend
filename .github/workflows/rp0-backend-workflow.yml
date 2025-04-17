@@ -38,8 +38,8 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: ./mvnw -B verify sonar:sonar -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
 
-      - name: Extract Project Version
-        id: extract_version
+      - name: Extract project version
+        id: extract-version
         run: echo "VERSION=$(./mvnw -q -Dexec.executable='echo' -Dexec.args='${project.version}' --non-recursive exec:exec)" >> $GITHUB_OUTPUT
 
       - name: Login to DockerHub
@@ -48,14 +48,16 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build & Push Image to DockerHub
+      - name: Build & Push to DockerHub
         uses: docker/build-push-action@v6
         with:
           context: .
           file: Dockerfile
           push: true
           platforms: linux/amd64
-          tags: ${{ secrets.DOCKER_USERNAME }}/rp0-bankapp-api:${{ steps.extract_version.outputs.VERSION }}
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/rp0-bankapp-api:latest
+            ${{ secrets.DOCKER_USERNAME }}/rp0-bankapp-api:${{ steps.extract-version.outputs.VERSION }}
           build-args: |
             PROFILE=dev
-            APP_VERSION=${{ steps.extract_version.outputs.VERSION }}
+            APP_VERSION=${{ steps.extract-version.outputs.VERSION }}
