@@ -1,6 +1,6 @@
 package dev.abreu.bankapp.service.impl;
 
-import static dev.abreu.bankapp.utils.BankappConstants.JWT_RP0_BANKAPP_ISSUER;
+import static dev.abreu.bankapp.util.BankappConstants.JWT_RP0_BANKAPP_ISSUER;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -9,7 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
-import dev.abreu.bankapp.model.Customer;
+import dev.abreu.bankapp.entity.Customer;
 import dev.abreu.bankapp.security.JwtConfig;
 import dev.abreu.bankapp.service.TokenService;
 import io.jsonwebtoken.Jwts;

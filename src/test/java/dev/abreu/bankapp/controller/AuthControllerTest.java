@@ -1,4 +1,4 @@
-package dev.abreu.bankapp.controllers;
+package dev.abreu.bankapp.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -26,7 +26,7 @@ import dev.abreu.bankapp.dto.CustomerResponseDTO;
 import dev.abreu.bankapp.dto.LoginRequest;
 import dev.abreu.bankapp.dto.RegisterRequest;
 import dev.abreu.bankapp.dto.mapper.DtoMapper;
-import dev.abreu.bankapp.model.Customer;
+import dev.abreu.bankapp.entity.Customer;
 import dev.abreu.bankapp.security.JwtConfig;
 import dev.abreu.bankapp.security.SecurityConfig;
 import dev.abreu.bankapp.service.CustomerService;

@@ -1,4 +1,4 @@
-package dev.abreu.bankapp.controllers;
+package dev.abreu.bankapp.controller;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import dev.abreu.bankapp.model.Transaction;
+import dev.abreu.bankapp.entity.Transaction;
 import dev.abreu.bankapp.service.TransactionService;
 
 /**

@@ -3,7 +3,7 @@ package dev.abreu.bankapp.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import dev.abreu.bankapp.utils.ResourceType;
+import dev.abreu.bankapp.util.ResourceType;
 
 import java.io.Serial;
 

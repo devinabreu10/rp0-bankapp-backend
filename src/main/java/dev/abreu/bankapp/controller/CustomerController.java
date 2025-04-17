@@ -1,9 +1,9 @@
-package dev.abreu.bankapp.controllers;
+package dev.abreu.bankapp.controller;
 
 import dev.abreu.bankapp.dto.CustomerDTO;
 import dev.abreu.bankapp.dto.CustomerResponseDTO;
 import dev.abreu.bankapp.dto.mapper.DtoMapper;
-import dev.abreu.bankapp.model.Customer;
+import dev.abreu.bankapp.entity.Customer;
 import dev.abreu.bankapp.service.CustomerService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

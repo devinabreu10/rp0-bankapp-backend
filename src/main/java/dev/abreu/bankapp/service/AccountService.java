@@ -4,7 +4,7 @@ import java.util.List;
 
 import dev.abreu.bankapp.exception.InsufficientFundsException;
 import dev.abreu.bankapp.exception.ResourceNotFoundException;
-import dev.abreu.bankapp.model.Account;
+import dev.abreu.bankapp.entity.Account;
 
 /**
  * Provides methods for managing accounts in the banking system.

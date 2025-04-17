@@ -1,8 +1,8 @@
 package dev.abreu.bankapp.dao;
 
 import dev.abreu.bankapp.dao.impl.AccountDaoImpl;
-import dev.abreu.bankapp.model.Account;
-import dev.abreu.bankapp.utils.ConnectionUtil;
+import dev.abreu.bankapp.entity.Account;
+import dev.abreu.bankapp.util.ConnectionUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

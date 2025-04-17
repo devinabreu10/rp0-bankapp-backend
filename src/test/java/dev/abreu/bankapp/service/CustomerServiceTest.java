@@ -20,7 +20,7 @@ import dev.abreu.bankapp.dao.AccountDao;
 import dev.abreu.bankapp.dao.CustomerDao;
 import dev.abreu.bankapp.exception.ResourceNotFoundException;
 import dev.abreu.bankapp.exception.UsernameTakenException;
-import dev.abreu.bankapp.model.Customer;
+import dev.abreu.bankapp.entity.Customer;
 import dev.abreu.bankapp.service.impl.CustomerServiceImpl;
 
 @SpringBootTest(classes = CustomerServiceImpl.class)

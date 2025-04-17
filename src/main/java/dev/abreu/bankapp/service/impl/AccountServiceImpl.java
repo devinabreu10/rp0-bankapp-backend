@@ -1,8 +1,8 @@
 package dev.abreu.bankapp.service.impl;
 
-import static dev.abreu.bankapp.utils.BankappConstants.ACCOUNT_DEPOSIT;
-import static dev.abreu.bankapp.utils.BankappConstants.ACCOUNT_TRANSFER;
-import static dev.abreu.bankapp.utils.BankappConstants.ACCOUNT_WITHDRAW;
+import static dev.abreu.bankapp.util.BankappConstants.ACCOUNT_DEPOSIT;
+import static dev.abreu.bankapp.util.BankappConstants.ACCOUNT_TRANSFER;
+import static dev.abreu.bankapp.util.BankappConstants.ACCOUNT_WITHDRAW;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,20 +16,20 @@ import dev.abreu.bankapp.dao.CustomerDao;
 import dev.abreu.bankapp.dao.TransactionDao;
 import dev.abreu.bankapp.exception.InsufficientFundsException;
 import dev.abreu.bankapp.exception.ResourceNotFoundException;
-import dev.abreu.bankapp.model.Account;
-import dev.abreu.bankapp.model.Transaction;
+import dev.abreu.bankapp.entity.Account;
+import dev.abreu.bankapp.entity.Transaction;
 import dev.abreu.bankapp.service.AccountService;
-import dev.abreu.bankapp.utils.ResourceType;
+import dev.abreu.bankapp.util.ResourceType;
 
 @Service
 public class AccountServiceImpl implements AccountService {
-	
+
 	private static final Logger log = LogManager.getLogger(AccountServiceImpl.class);
-	
+
 	private final AccountDao accountDao;
 	private final CustomerDao customerDao;
 	private final TransactionDao transactionDao;
-	
+
 	public AccountServiceImpl(AccountDao accountDao, CustomerDao customerDao, TransactionDao transactionDao) {
 		this.accountDao = accountDao;
 		this.customerDao = customerDao;
@@ -51,12 +51,6 @@ public class AccountServiceImpl implements AccountService {
 				.filter(customerDao::existsByUsername)
 				.map(accountDao::findAllAccountsByUsername)
 				.orElseThrow(() -> new ResourceNotFoundException(ResourceType.ACCOUNT, username));
-		
-//		if(customerDao.existsByUsername(username)) {
-//			return accountDao.findAllAccountsByUsername(username);
-//		} else {
-//			throw new ResourceNotFoundException(ResourceType.ACCOUNT, username);
-//		}
 	}
 
 	@Override
@@ -78,14 +72,6 @@ public class AccountServiceImpl implements AccountService {
 		return accountDao.findAccountByAcctNo(acctNo)
 				.map(a -> accountDao.deleteAccountByAcctNo(acctNo))
 				.orElse(false);
-
-//		boolean success = false;
-//
-//		if(!accountDao.findAccountByAcctNo(acctNo).equals(Optional.empty())) {
-//			success = accountDao.deleteAccountByAcctNo(acctNo);
-//		}
-//
-//		return success;
 	}
 	
 	@Override

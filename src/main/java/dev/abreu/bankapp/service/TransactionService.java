@@ -2,7 +2,7 @@ package dev.abreu.bankapp.service;
 
 import java.util.List;
 
-import dev.abreu.bankapp.model.Transaction;
+import dev.abreu.bankapp.entity.Transaction;
 
 public interface TransactionService {
 	

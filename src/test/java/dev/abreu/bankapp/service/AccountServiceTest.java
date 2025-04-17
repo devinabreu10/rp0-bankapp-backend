@@ -1,6 +1,6 @@
 package dev.abreu.bankapp.service;
 
-import static dev.abreu.bankapp.utils.BankappConstants.CHECKING_ACCOUNT;
+import static dev.abreu.bankapp.util.BankappConstants.CHECKING_ACCOUNT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -20,7 +20,7 @@ import dev.abreu.bankapp.dao.CustomerDao;
 import dev.abreu.bankapp.dao.TransactionDao;
 import dev.abreu.bankapp.exception.InsufficientFundsException;
 import dev.abreu.bankapp.exception.ResourceNotFoundException;
-import dev.abreu.bankapp.model.Account;
+import dev.abreu.bankapp.entity.Account;
 import dev.abreu.bankapp.service.impl.AccountServiceImpl;
 
 @SpringBootTest(classes =  AccountServiceImpl.class)
