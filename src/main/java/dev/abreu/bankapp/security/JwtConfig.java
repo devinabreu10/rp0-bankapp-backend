@@ -1,33 +1,32 @@
 package dev.abreu.bankapp.security;
 
-import java.security.Key;
-import java.util.Date;
-import java.util.function.Function;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
 import dev.abreu.bankapp.entity.Customer;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import java.security.Key;
+import java.util.Date;
+import java.util.function.Function;
 
 @Component
 public class JwtConfig {
-	
+
 	/**
-	 * retrieves the jwt secret from environment variables
-	 * 
+	 * Represents the secret key used for signing JWT tokens.
+	 * This value is fetched from the application properties.
 	 */
-	private String salt = System.getenv("JWT_SECRET");
-	
+	@Value("${application.security.jwt.secret-key}")
+	private String salt;
+
 	/**
-	 * Calculating the number of milliseconds in a day using
-	 * Spring expression language (SpEL)
-	 * 
+	 * The expiration time (in seconds) for JWT tokens.
+	 * This value is fetched from the application properties.
 	 */
-	@Value("#{24*60*60*1000}")
+	@Value("${application.security.jwt.expiration}")
 	private int expiration;
 
 	/**

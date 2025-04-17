@@ -14,5 +14,12 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQL9Dialect
     # show-sql: true
     # hibernate.ddl-auto: update
+application:
+  security:
+    jwt:
+      secret-key: ${JWT_SECRET}
+      expiration: 86400000 # a day
+  cors:
+    origins: http://localhost:4200,http://localhost
 server:
   port: 8080
