@@ -2,18 +2,15 @@ package dev.abreu.bankapp;
 
 import dev.abreu.bankapp.dao.AccountDao;
 import dev.abreu.bankapp.dao.CustomerDao;
-import dev.abreu.bankapp.model.Customer;
-import dev.abreu.bankapp.utils.ConnectionUtil;
+import dev.abreu.bankapp.entity.Customer;
+import dev.abreu.bankapp.util.ConnectionUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import javax.sql.DataSource;
 
 @SpringBootApplication
 public class RP0BankApplication {
@@ -45,20 +42,5 @@ public class RP0BankApplication {
     @Bean
     public ConnectionUtil connUtil() {
         return ConnectionUtil.getConnectionUtil();
-    }
-
-    /**
-     * Spring alternative to using custom ConnectionUtil singleton class
-     *
-     * @return DataSource
-     */
-    @Bean
-    public DataSource dataSource() {
-        return DataSourceBuilder.create()
-                .url(System.getenv("DB_URL"))
-                .username(System.getenv("DB_USER"))
-                .password(System.getenv("DB_PASSWORD"))
-                .driverClassName("org.postgresql.Driver")
-                .build();
     }
 }
