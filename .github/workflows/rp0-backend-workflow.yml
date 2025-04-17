@@ -15,10 +15,10 @@ jobs:
         uses: actions/setup-java@v4
         with:
           java-version: '17'
-          distribution: 'temurin'
+          distribution: 'corretto'
 
-      - name: Build with Maven
-        run: ./mvnw clean package -DskipTests
+      - name: Build and Run Tests with Maven
+        run: ./mvnw clean package
 
       - name: Log in to DockerHub
         uses: docker/login-action@v3
