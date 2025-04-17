@@ -17,6 +17,9 @@ jobs:
           java-version: '17'
           distribution: 'corretto'
 
+      # Cache configuration for build acceleration:
+        # 1. SonarQube cache - stores analysis data
+        # 2. Maven cache - stores dependencies; key changes when pom.xml changes
       - name: Cache SonarQube packages
         uses: actions/cache@v4
         with:

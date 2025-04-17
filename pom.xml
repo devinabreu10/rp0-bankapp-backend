@@ -18,6 +18,9 @@
         <sonar.organization>devinabreu10</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+        <sonar.coverage.exclusions>
+            **/config/*,**/util/ConnectionUtil.*
+        </sonar.coverage.exclusions>
     </properties>
 
     <dependencies>
