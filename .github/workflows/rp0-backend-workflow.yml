@@ -32,7 +32,7 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-      - name: Compile/Tests with Maven and Analyze with SonarQube
+      - name: Compile/Test with Maven and Analyze with SonarQube
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: ./mvnw -B test sonar:sonar -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
@@ -40,7 +40,7 @@ jobs:
   build-and-push-docker-image:
     name: Build and Push Docker Image
     runs-on: ubuntu-latest
-    needs: build-rp0-bankapp-backend
+    needs: compile-and-analyze-rp0-bankapp-backend
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
