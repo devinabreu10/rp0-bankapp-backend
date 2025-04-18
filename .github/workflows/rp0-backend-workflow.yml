@@ -6,6 +6,7 @@ on:
 
 jobs:
   build-rp0-bankapp-backend:
+    name: Build RP0 Bank Backend
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -20,12 +21,12 @@ jobs:
       # Cache configuration for build acceleration:
         # 1. SonarQube cache - stores analysis data
         # 2. Maven cache - stores dependencies; key changes when pom.xml changes
-      - name: Cache SonarQube packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
+#      - name: Cache SonarQube packages
+#        uses: actions/cache@v4
+#        with:
+#          path: ~/.sonar/cache
+#          key: ${{ runner.os }}-sonar
+#          restore-keys: ${{ runner.os }}-sonar
       - name: Cache Maven packages
         uses: actions/cache@v4
         with:
@@ -33,10 +34,20 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-      - name: Build & Analyze with Maven/SonarQube
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./mvnw -B verify sonar:sonar -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
+#      - name: Build & Analyze with Maven/SonarQube
+#        env:
+#          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+#        run: ./mvnw -B verify sonar:sonar -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
+
+      - name: Build and Run Tests with Maven
+        run: ./mvnw clean package
+
+      - name: Upload coverage reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-report
+          path: target/site/jacoco/jacoco.xml
+          retention-days: 1
 
       - name: Extract project version
         id: extract-version
@@ -62,8 +73,39 @@ jobs:
             PROFILE=dev
             APP_VERSION=${{ steps.extract-version.outputs.VERSION }}
             
-  snyk-vulnerability-scan:
+  sonar-qube-scan:
+    name: SonarQube Scan
     runs-on: ubuntu-latest
+    needs: build-rp0-bankapp-backend
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Cache SonarQube packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
+      - name: Download coverage reports
+        uses: actions/download-artifact@v4
+        with:
+          name: jacoco-report
+          path: target/site/jacoco/jacoco.xml
+
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
+
+  snyk-vulnerability-scan:
+    name: Snyk Vulnerability Scan
+    runs-on: ubuntu-latest
+    needs: build-rp0-bankapp-backend
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
