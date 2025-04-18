@@ -33,13 +33,6 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-      - name: Snyk monitor (upload to dashboard)
-        uses: snyk/actions/maven-3-jdk-17@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          args: monitor
-
       - name: Build & Analyze with Maven/SonarQube
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
