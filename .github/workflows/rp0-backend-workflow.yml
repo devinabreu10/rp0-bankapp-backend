@@ -5,6 +5,16 @@ on:
     branches: [ main ]
 
 jobs:
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/maven-3-jdk-17@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: monitor
   build-rp0-bankapp-backend:
     runs-on: ubuntu-latest
     steps:
@@ -37,13 +47,6 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: ./mvnw -B verify sonar:sonar -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
-
-      - name: Snyk monitor (upload to dashboard)
-        uses: snyk/actions/maven-3-jdk-17@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          args: test
 
       - name: Extract project version
         id: extract-version
