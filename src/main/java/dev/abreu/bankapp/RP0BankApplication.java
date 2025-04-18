@@ -1,16 +1,11 @@
 package dev.abreu.bankapp;
 
-import dev.abreu.bankapp.dao.AccountDao;
-import dev.abreu.bankapp.dao.CustomerDao;
-import dev.abreu.bankapp.entity.Customer;
 import dev.abreu.bankapp.util.ConnectionUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
 public class RP0BankApplication {
@@ -20,18 +15,6 @@ public class RP0BankApplication {
     public static void main(String[] args) {
         SpringApplication.run(RP0BankApplication.class, args);
         log.info("RP0 Bank Application has STARTED...");
-    }
-
-    @Bean
-    CommandLineRunner commandLineRunner(CustomerDao customerDao, AccountDao accountDao, PasswordEncoder passwordEncoder) {
-        return args -> {
-            // When id is not null it treats it as an update as opposed to inserting a new record
-            log.info("Adding customers if they don't already exist...");
-            customerDao.saveCustomer(new Customer("Bobby", "Abreu", "12345 MLB Dr.", "bobby123", passwordEncoder.encode("ph8(*445%64")));
-            customerDao.saveCustomer(new Customer("Jolene", "FitzGilbert", "4 Sycamore Circle", "jfitzgilbert0", passwordEncoder.encode("bP6>#)NTV?qgg")));
-            customerDao.saveCustomer(new Customer("Josefa", "Merwood", "23569 Bultman Drive", "jmerwood1", passwordEncoder.encode("pK9%b?igvw")));
-            customerDao.saveCustomer(new Customer("Ronnie", "Voak", "7 Ridge Oak Terrace", "rvoak3", passwordEncoder.encode("pN9,Z7#mC")));
-        };
     }
 
     /**
