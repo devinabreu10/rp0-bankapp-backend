@@ -40,15 +40,10 @@ jobs:
 
       - name: Snyk monitor (upload to dashboard)
         uses: snyk/actions/maven-3-jdk-17@master
-        continue-on-error: true # To make sure that SARIF upload gets called
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          args: --sarif-file-output=snyk.sarif
-      - name: Upload result to GitHub Code Scanning
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: snyk.sarif
+          args: test
 
       - name: Extract project version
         id: extract-version
