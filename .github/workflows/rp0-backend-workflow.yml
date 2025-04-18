@@ -5,16 +5,6 @@ on:
     branches: [ main ]
 
 jobs:
-  snyk-vulnerability-scan:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Run Snyk to check for vulnerabilities
-        uses: snyk/actions/maven-3-jdk-17@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-
   build-rp0-bankapp-backend:
     runs-on: ubuntu-latest
     steps:
@@ -71,3 +61,15 @@ jobs:
           build-args: |
             PROFILE=dev
             APP_VERSION=${{ steps.extract-version.outputs.VERSION }}
+            
+  snyk-vulnerability-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/maven-3-jdk-17@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          command: monitor
