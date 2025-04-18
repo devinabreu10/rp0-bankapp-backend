@@ -42,8 +42,6 @@ jobs:
         uses: snyk/actions/maven-3-jdk-17@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          args: monitor
 
       - name: Extract project version
         id: extract-version
