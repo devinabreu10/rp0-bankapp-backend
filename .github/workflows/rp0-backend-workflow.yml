@@ -46,7 +46,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: jacoco-report
-          path: target/site/jacoco/jacoco.xml
+          path: target/site/jacoco/
           retention-days: 1
 
       - name: Extract project version
@@ -92,7 +92,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: jacoco-report
-          path: target/site/jacoco/jacoco.xml
+          path: target/site/jacoco/
 
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v5
@@ -101,6 +101,9 @@ jobs:
         with:
           args: >
             -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
+            -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
+            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
+            -Dsonar.coverage.exclusions=**/config/*,**/util/ConnectionUtil.*
 
   snyk-vulnerability-scan:
     name: Snyk Vulnerability Scan
