@@ -95,11 +95,14 @@ jobs:
     runs-on: ubuntu-latest
     needs: build-and-push-docker-image
     steps:
-#      - name: Trigger Render Deploy
-#        run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
-      - name: Deploy to production
-        uses: johnbeynon/render-deploy-action@v0.0.8
-        with:
-          service-id: ${{ secrets.MY_RENDER_SERVICE_ID }}
-          api-key: ${{ secrets.MY_RENDER_API_KEY }}
-          wait-for-success: true
+      - name: Trigger Render Deploy
+        run: |
+          response=$(curl -s -w "\n%{http_code}" -X POST \
+            -H "Content-Type: application/json" \
+            "${{ secrets.RENDER_DEPLOY_HOOK }}")
+          status_code=$(echo "$response" | tail -n 1)
+          if [ "$status_code" -ge 400 ]; then
+            echo "Deploy failed with status: $status_code"
+            echo "Response: $(echo "$response" | head -n -1)"
+            exit 1
+          fi
