@@ -23,4 +23,4 @@ application:
     # Use the value of `CORS_ORIGINS` env variable if it exists, if not, fall back to the default values
     origins: ${CORS_ORIGINS:http://localhost:4200,http://localhost}
 server:
-  port: ${PORT}
+  port: ${PORT:8080}
