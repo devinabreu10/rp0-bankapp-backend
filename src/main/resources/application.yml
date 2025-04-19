@@ -20,6 +20,7 @@ application:
       secret-key: ${JWT_SECRET}
       expiration: 86400000 # a day
   cors:
-    origins: http://localhost:4200,http://localhost
+    # Use the value of `CORS_ORIGINS` env variable if it exists, if not, fall back to the default values
+    origins: ${CORS_ORIGINS:http://localhost:4200,http://localhost}
 server:
   port: 8080
