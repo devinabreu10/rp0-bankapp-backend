@@ -33,7 +33,7 @@ import io.swagger.v3.oas.annotations.servers.Server;
 				),
 				@Server(
 						description = "Prod ENV",
-						url = "" // not available yet
+						url = "https://rp0-bankapp-api-v1.onrender.com"
 				)
 		},
 		security = {
