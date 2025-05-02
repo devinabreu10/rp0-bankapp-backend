@@ -1,34 +1,24 @@
 package dev.abreu.bankapp.controller;
 
-import java.util.List;
-
 import dev.abreu.bankapp.dto.AccountDTO;
 import dev.abreu.bankapp.dto.AccountResponseDTO;
+import dev.abreu.bankapp.dto.TransferRequest;
 import dev.abreu.bankapp.dto.mapper.DtoMapper;
+import dev.abreu.bankapp.entity.Account;
+import dev.abreu.bankapp.exception.InsufficientFundsException;
+import dev.abreu.bankapp.service.AccountService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import dev.abreu.bankapp.dto.TransferRequest;
-import dev.abreu.bankapp.exception.InsufficientFundsException;
-import dev.abreu.bankapp.entity.Account;
-import dev.abreu.bankapp.service.AccountService;
+import java.util.List;
 
 /**
  * Controller for handling account-related operations.
  */
 @RestController
-@CrossOrigin
 @RequestMapping(path = "/account")
 public class AccountController {
 
