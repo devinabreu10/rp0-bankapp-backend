@@ -1,5 +1,14 @@
 package dev.abreu.bankapp.controller;
 
+import dev.abreu.bankapp.dto.CustomerResponseDTO;
+import dev.abreu.bankapp.dto.LoginRequest;
+import dev.abreu.bankapp.dto.RegisterRequest;
+import dev.abreu.bankapp.dto.mapper.DtoMapper;
+import dev.abreu.bankapp.entity.Customer;
+import dev.abreu.bankapp.exception.UsernameTakenException;
+import dev.abreu.bankapp.service.CustomerService;
+import dev.abreu.bankapp.service.TokenService;
+import jakarta.validation.Valid;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpHeaders;
@@ -7,26 +16,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import dev.abreu.bankapp.dto.CustomerResponseDTO;
-import dev.abreu.bankapp.dto.LoginRequest;
-import dev.abreu.bankapp.dto.RegisterRequest;
-import dev.abreu.bankapp.dto.mapper.DtoMapper;
-import dev.abreu.bankapp.exception.UsernameTakenException;
-import dev.abreu.bankapp.entity.Customer;
-import dev.abreu.bankapp.service.CustomerService;
-import dev.abreu.bankapp.service.TokenService;
-import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@CrossOrigin
 @RequestMapping("/auth")
 public class AuthController {
 	

@@ -43,10 +43,8 @@ class CustomerDaoTest {
 	private CustomerDaoImpl customerDao;
 
 	@BeforeEach
-	public void setup() {
+	void setup() {
 		when(connectionUtilMock.getConnection()).thenReturn(connectionMock);
-//		customerDao = new CustomerDaoImpl();
-//		ReflectionTestUtils.setField(customerDao, "connUtil", connectionUtilMock);
 	}
 
 	@Test
@@ -220,7 +218,7 @@ class CustomerDaoTest {
 
 	@Test
 	void testUpdateCustomer() throws SQLException {
-		Customer updatedCustomer = new Customer("Alice", "Johnson", "789 Street Updated", "alice123", "password123");
+		Customer updatedCustomer = new Customer("Alice", "Johnson", "789 Street Updated", "alice123", null);
 		updatedCustomer.setId(1L);
 
 		when(connectionMock.prepareStatement(anyString())).thenReturn(preparedStatementMock);
@@ -233,7 +231,7 @@ class CustomerDaoTest {
 
 	@Test
 	void testUpdateCustomerSQLException() throws SQLException {
-		Customer updatedCustomer = new Customer("Alice", "Johnson", "789 Street Updated", "alice123", "password123");
+		Customer updatedCustomer = new Customer("Alice", "Johnson", "789 Street Updated", "alice123", null);
 		updatedCustomer.setId(1L);
 		when(connectionMock.prepareStatement(anyString())).thenReturn(preparedStatementMock);
 		when(preparedStatementMock.executeUpdate()).thenThrow(SQLException.class);

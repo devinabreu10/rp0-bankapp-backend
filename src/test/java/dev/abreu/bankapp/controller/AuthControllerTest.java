@@ -1,24 +1,6 @@
 package dev.abreu.bankapp.controller;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import dev.abreu.bankapp.config.ApplicationConfig;
 import dev.abreu.bankapp.dao.AccountDao;
 import dev.abreu.bankapp.dao.CustomerDao;
@@ -31,6 +13,21 @@ import dev.abreu.bankapp.security.JwtConfig;
 import dev.abreu.bankapp.security.SecurityConfig;
 import dev.abreu.bankapp.service.CustomerService;
 import dev.abreu.bankapp.service.TokenService;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.web.servlet.MockMvc;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = AuthController.class)
 @Import({SecurityConfig.class, ApplicationConfig.class})
@@ -63,13 +60,13 @@ class AuthControllerTest {
 	@Autowired
 	private MockMvc mockMvc;
 	
-	private ObjectMapper jsonMapper = new ObjectMapper();
+	private final ObjectMapper jsonMapper = new ObjectMapper();
 	
 	@Test
 	void testGetAuthCustomer() throws Exception {
 		String mockToken = "token";
 		Customer mockCustomer = new Customer(1L, "testFirst", "testLast", "testAddr", "user");
-		CustomerResponseDTO mockCustomerDto = new CustomerResponseDTO("testFirst", "testLast", "user", "testAddr", mockToken);
+		CustomerResponseDTO mockCustomerDto = new CustomerResponseDTO(1L, "testFirst", "testLast", "user", "testAddr", mockToken);
 		
 		Mockito.when(customerService.getCustomerByUsername("user")).thenReturn(mockCustomer);
 		Mockito.when(dtoMapper.toCustomerResponseDto(mockCustomer, mockToken)).thenReturn(mockCustomerDto);
@@ -85,7 +82,7 @@ class AuthControllerTest {
 	void testCustomerLogin() throws Exception {
 		String mockToken = "token";
 		Customer mockCustomer = new Customer(1L, "testFirst", "testLast", "testAddr", "user");
-		CustomerResponseDTO mockCustomerDto = new CustomerResponseDTO("testFirst", "testLast", "user", "testAddr", mockToken);
+		CustomerResponseDTO mockCustomerDto = new CustomerResponseDTO(1L, "testFirst", "testLast", "user", "testAddr", mockToken);
 		LoginRequest mockRequest = new LoginRequest("user", "pass");
 			
 		Mockito.when(customerService.getCustomerByUsername("user")).thenReturn(mockCustomer);
@@ -104,7 +101,7 @@ class AuthControllerTest {
 	void testRegisterCustomer() throws Exception {
 		String mockToken = "token";
 		Customer mockCustomer = new Customer("testFirst", "testLast", "testAddr", "user", "password");
-		CustomerResponseDTO mockCustomerDto = new CustomerResponseDTO("testFirst", "testLast", "user", "testAddr", mockToken);
+		CustomerResponseDTO mockCustomerDto = new CustomerResponseDTO(1L, "testFirst", "testLast", "user", "testAddr", mockToken);
 		RegisterRequest mockRequest = new RegisterRequest("testFirst", "testLast", "testAddr", "user", "password");
 		
 		Mockito.when(customerService.registerNewCustomer(mockCustomer)).thenReturn(mockCustomer);

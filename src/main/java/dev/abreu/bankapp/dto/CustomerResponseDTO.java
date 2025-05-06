@@ -8,6 +8,7 @@ package dev.abreu.bankapp.dto;
  * @author Devin Abreu
  */
 public record CustomerResponseDTO(
+        Long id,
         String firstName,
         String lastName,
         String username,
