@@ -176,8 +176,7 @@ public class CustomerDaoImpl implements CustomerDao {
 			stmt.setString(2, customer.getLastName());
 			stmt.setString(3, customer.getAddress());
 			stmt.setString(4, customer.getUsername());
-			stmt.setString(5, customer.getPassword());
-			stmt.setLong(6, customer.getId());
+			stmt.setLong(5, customer.getId());
 			
 			log.info("Update Customer Query String: {}", UPDATE_CUSTOMER_QUERY);
 			int updateStatus = stmt.executeUpdate();

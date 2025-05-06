@@ -42,24 +42,26 @@ class DtoMapperTest {
 	@Test
 	void testToCustomerResponseDto() {
 		Customer customer = new Customer();
+		customer.setId(1L);
 		customer.setFirstName("John");
 		customer.setLastName("Doe");
 		customer.setUsername("johndoe");
 		customer.setAddress("123 Main St");
 
-		CustomerResponseDTO expectedDTO = new CustomerResponseDTO("John", "Doe", "johndoe", "123 Main St", "ABC123");
+		CustomerResponseDTO expectedDTO = new CustomerResponseDTO(1L,"John", "Doe", "johndoe", "123 Main St", "ABC123");
 		assertEquals(expectedDTO, dtoMapper.toCustomerResponseDto(customer, "ABC123"));
 	}
 
 	@Test
 	void testToCustomerResponseDtoWithoutToken() {
 		Customer customer = new Customer();
+		customer.setId(1L);
 		customer.setFirstName("John");
 		customer.setLastName("Doe");
 		customer.setUsername("johndoe");
 		customer.setAddress("123 Main St");
 
-		CustomerResponseDTO expectedDTO = new CustomerResponseDTO("John", "Doe", "johndoe", "123 Main St", null);
+		CustomerResponseDTO expectedDTO = new CustomerResponseDTO(1L, "John", "Doe", "johndoe", "123 Main St", null);
 		assertEquals(expectedDTO, dtoMapper.toCustomerResponseDto(customer));
 	}
 

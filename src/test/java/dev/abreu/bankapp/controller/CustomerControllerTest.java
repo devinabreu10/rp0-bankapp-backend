@@ -1,31 +1,6 @@
 package dev.abreu.bankapp.controller;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import dev.abreu.bankapp.config.ApplicationConfig;
 import dev.abreu.bankapp.dao.AccountDao;
 import dev.abreu.bankapp.dao.CustomerDao;
@@ -36,6 +11,26 @@ import dev.abreu.bankapp.entity.Customer;
 import dev.abreu.bankapp.security.JwtConfig;
 import dev.abreu.bankapp.security.SecurityConfig;
 import dev.abreu.bankapp.service.CustomerService;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = CustomerController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -63,9 +58,9 @@ class CustomerControllerTest {
 	private final ObjectMapper jsonMapper = new ObjectMapper();
 
 	@Test
-	void testGetCustomerByUsername() throws JsonProcessingException, Exception {
+	void testGetCustomerByUsername() throws Exception {
 		Customer mockCustomer = new Customer(1L, "testFirst", "testLast", "testAddr", "testUsername");
-		CustomerResponseDTO mockCustomerDto = new CustomerResponseDTO("testFirst", "testLast", "testAddr", "testUsername", null);
+		CustomerResponseDTO mockCustomerDto = new CustomerResponseDTO(1L, "testFirst", "testLast", "testAddr", "testUsername", null);
 
 		Mockito.when(customerService.getCustomerByUsername(mockCustomer.getUsername())).thenReturn(mockCustomer);
 		Mockito.when(dtoMapper.toCustomerResponseDto(mockCustomer)).thenReturn(mockCustomerDto);
@@ -75,9 +70,9 @@ class CustomerControllerTest {
 	}
 
 	@Test
-	void testGetCustomerById() throws JsonProcessingException, Exception {
+	void testGetCustomerById() throws Exception {
 		Customer mockCustomer = new Customer(1L, "testFirst", "testLast", "testAddr", "testUsername");
-		CustomerResponseDTO mockCustomerDto = new CustomerResponseDTO("testFirst", "testLast", "testAddr", "testUsername", null);
+		CustomerResponseDTO mockCustomerDto = new CustomerResponseDTO(1L, "testFirst", "testLast", "testAddr", "testUsername", null);
 
 		Mockito.when(customerService.getCustomerById(mockCustomer.getId())).thenReturn(mockCustomer);
 		Mockito.when(dtoMapper.toCustomerResponseDto(mockCustomer)).thenReturn(mockCustomerDto);
@@ -90,12 +85,12 @@ class CustomerControllerTest {
 	void testGetAllCustomers() throws Exception {
 		List<Customer> mockCustomerList = new ArrayList<>();
 		Customer mockCustomer = new Customer(1L, "testFirst", "testLast", "testAddr", "testUsername");
-		CustomerResponseDTO mockCustomerDto = new CustomerResponseDTO("testFirst", "testLast", "testAddr", "testUsername", null);
+		CustomerResponseDTO mockCustomerDto = new CustomerResponseDTO(1L, "testFirst", "testLast", "testAddr", "testUsername", null);
 		mockCustomerList.add(mockCustomer);
 
 		List<CustomerResponseDTO> mockCustomerDtoList = new ArrayList<>();
 		mockCustomerList.forEach(c -> mockCustomerDtoList
-				.add(new CustomerResponseDTO(c.getFirstName(), c.getLastName(), c.getAddress(), c.getUsername(), null)));
+				.add(new CustomerResponseDTO(c.getId(), c.getFirstName(), c.getLastName(), c.getAddress(), c.getUsername(), null)));
 
 		Mockito.when(customerService.getAllCustomers()).thenReturn(mockCustomerList);
 		Mockito.when(dtoMapper.toCustomerResponseDto(mockCustomer)).thenReturn(mockCustomerDto);
@@ -120,7 +115,7 @@ class CustomerControllerTest {
 	}
 
 	@Test
-	void testUpdateCustomerConflict() throws JsonProcessingException, Exception {
+	void testUpdateCustomerConflict() throws Exception {
 		Customer mockCustomer = new Customer(1L, "testFirst", "testLast", "testAddr", "testUsername");
 		Customer mockCustomerUpdate = new Customer(1L, "newTestFirst", "newTestLast", "newTestAddr", "testUsername");
 
@@ -131,7 +126,7 @@ class CustomerControllerTest {
 	}
 
 	@Test
-	void testUpdateNullCustomer() throws JsonProcessingException, Exception {
+	void testUpdateNullCustomer() throws Exception {
 		Customer mockCustomer = new Customer(1L, "testFirst", "testLast", "testAddr", "testUsername");
 		CustomerDTO mockCustomerDto = new CustomerDTO(1L, "testFirst", "testLast", "testAddr", "testUsername");
 
@@ -142,7 +137,7 @@ class CustomerControllerTest {
 	}
 
 	@Test
-	void testDeleteCustomerByUsername() throws JsonProcessingException, Exception {
+	void testDeleteCustomerByUsername() throws Exception {
 		Customer mockCustomer = new Customer(1L, "testFirst", "testLast", "testAddr", "testUsername");
 
 		Mockito.when(customerService.deleteCustomerByUsername(mockCustomer.getUsername())).thenReturn(Boolean.TRUE);
@@ -151,7 +146,7 @@ class CustomerControllerTest {
 	}
 
 	@Test
-	void testUnsucessfulDeleteCustomerByUsername() throws JsonProcessingException, Exception {
+	void testUnsucessfulDeleteCustomerByUsername() throws Exception {
 		Customer mockCustomer = new Customer(1L, "testFirst", "testLast", "testAddr", "testUsername");
 
 		Mockito.when(customerService.deleteCustomerByUsername(mockCustomer.getUsername())).thenReturn(Boolean.FALSE);
@@ -169,7 +164,7 @@ class CustomerControllerTest {
 	}
 
 	@Test
-	void testUnsucessfulDeleteCustomerById() throws Exception {
+	void testUnsuccessfulDeleteCustomerById() throws Exception {
 		Customer mockCustomer = new Customer(1L, "testFirst", "testLast", "testAddr", "testUsername");
 
 		Mockito.when(customerService.deleteCustomerById(mockCustomer.getId())).thenReturn(Boolean.FALSE);

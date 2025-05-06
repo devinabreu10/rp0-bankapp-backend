@@ -23,7 +23,7 @@ public class BankappQueryConstants {
 	
 	public static final String CREATE_CUSTOMER_QUERY = "INSERT into " + CUSTOMERS_TABLE + " (customer_id,first_name,last_name,address,username,passwrd) VALUES (default,?,?,?,?,?)";
 
-	public static final String UPDATE_CUSTOMER_QUERY = "UPDATE " + CUSTOMERS_TABLE + " SET first_name=?,last_name=?,address=?,username=?,passwrd=? WHERE customer_id=?";
+	public static final String UPDATE_CUSTOMER_QUERY = "UPDATE " + CUSTOMERS_TABLE + " SET first_name=?,last_name=?,address=?,username=? WHERE customer_id=?";
 
 	public static final String DELETE_CUSTOMER_BY_USERNAME_QUERY = "DELETE from " + CUSTOMERS_TABLE + " WHERE username=?";
 	

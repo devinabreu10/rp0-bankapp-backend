@@ -41,7 +41,7 @@ public class DtoMapper {
      * @return The mapped CustomerResponseDTO object.
      */
     public CustomerResponseDTO toCustomerResponseDto(@NonNull Customer customer) {
-        return new CustomerResponseDTO(customer.getFirstName(), customer.getLastName(), customer.getUsername(),
+        return new CustomerResponseDTO(customer.getId(), customer.getFirstName(), customer.getLastName(), customer.getUsername(),
                 customer.getAddress(), null);
     }
 
@@ -53,7 +53,7 @@ public class DtoMapper {
      * @return The mapped CustomerResponseDTO object.
      */
     public CustomerResponseDTO toCustomerResponseDto(@NonNull Customer customer, String token) {
-        return new CustomerResponseDTO(customer.getFirstName(), customer.getLastName(), customer.getUsername(),
+        return new CustomerResponseDTO(customer.getId(),customer.getFirstName(), customer.getLastName(), customer.getUsername(),
                 customer.getAddress(), token);
     }
 
