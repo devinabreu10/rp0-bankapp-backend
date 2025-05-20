@@ -2,6 +2,7 @@ package dev.abreu.bankapp.dao.impl;
 
 import dev.abreu.bankapp.dao.AccountDao;
 import dev.abreu.bankapp.entity.Account;
+import dev.abreu.bankapp.util.AccountNumberGenerator;
 import dev.abreu.bankapp.util.ConnectionUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,7 +21,7 @@ import static dev.abreu.bankapp.util.BankappQueryConstants.*;
 
 @Repository
 public class AccountDaoImpl implements AccountDao {
-	
+
 	private static final Logger log = LogManager.getLogger(AccountDaoImpl.class);
 
 	private final ConnectionUtil connUtil;
@@ -32,14 +33,14 @@ public class AccountDaoImpl implements AccountDao {
 	@Override
 	public Optional<Account> findAccountByAcctNo(Long acctNo) {
 		Account account = new Account();
-		
+
 		try(Connection conn = connUtil.getConnection(); 
 				PreparedStatement prepStmt = conn.prepareStatement(SELECT_ACCOUNTS_BY_ACCTNO_QUERY)) {
-			
+
 			prepStmt.setLong(1, acctNo);
-			
+
 			ResultSet rs = prepStmt.executeQuery();
-			
+
 			if(rs.next()) {
 				account.setAccountNumber(rs.getLong("account_number"));
 				account.setAccountType(rs.getString("account_type"));
@@ -48,11 +49,11 @@ public class AccountDaoImpl implements AccountDao {
 			} else {
 				return Optional.empty();
 			}
-			
+
 		} catch(SQLException e) {
 			log.error("SQLException caught: {}", e.getMessage());
 		}
-		
+
 		return Optional.of(account);
 	}
 
@@ -60,92 +61,106 @@ public class AccountDaoImpl implements AccountDao {
 	public List<Account> findAllAccountsByUsername(String username) {
 		List<Account> accountsList = new ArrayList<>();
 		Account account;
-		
+
 		try(Connection conn = connUtil.getConnection();
 				PreparedStatement prepStmt = conn.prepareStatement(SELECT_ALL_ACCOUNTS_BY_USERNAME_QUERY)) {
-			
+
 			prepStmt.setString(1, username);
-			
+
 			ResultSet rs = prepStmt.executeQuery();
-			
+
 			while (rs.next()) {
 				account = new Account();
 				account.setAccountNumber(rs.getLong("acc_no"));
 				account.setAccountType(rs.getString("acc_typ"));
 				account.setAccountBalance(rs.getDouble("acc_bal"));
 				account.setCustomerId(rs.getLong("cust_id"));
-				
+
 				accountsList.add(account);
 			}
-			
+
 		} catch(SQLException e) {
-			log.error(SQL_EXCEPTION_CAUGHT, e.getMessage());		
+			log.error(SQL_EXCEPTION_CAUGHT, e.getMessage());
 		}
-		
+
 		return accountsList;
 	}
 
 	@Override
 	public Account saveAccount(Account account) {
-		
+
 		log.info("Entering saveAccount method...");
-		
+
+		// Generate a random 8-digit account number and ensure it's unique
+		Long accountNumber;
+		boolean isUnique;
+
+		do {
+			accountNumber = AccountNumberGenerator.generateAccountNumber();
+			// Check if this account number already exists
+			isUnique = findAccountByAcctNo(accountNumber).isEmpty();
+		} while (!isUnique);
+
+		account.setAccountNumber(accountNumber);
+		log.info("Generated unique account number: {}", accountNumber);
+
 		try(Connection conn = connUtil.getConnection(); 
 				PreparedStatement stmt = conn.prepareStatement(CREATE_NEW_ACCOUNT_QUERY)) {
-			
-			stmt.setString(1, account.getAccountType());
-			stmt.setDouble(2, account.getAccountBalance());
-			stmt.setLong(3, account.getCustomerId());
-			
+
+			stmt.setLong(1, account.getAccountNumber());
+			stmt.setString(2, account.getAccountType());
+			stmt.setDouble(3, account.getAccountBalance());
+			stmt.setLong(4, account.getCustomerId());
+
 			log.info("Create Account Query String: {}", CREATE_NEW_ACCOUNT_QUERY);
 			int rowsAffected = stmt.executeUpdate();
 			log.info("{} Row(s) Affected", rowsAffected);
-			
+
 		} catch (SQLException e) {
 			log.error(SQL_EXCEPTION_CAUGHT, e.getMessage());
 		}
-		
+
 		return account;
 	}
 
 	@Override
 	public Account updateAccount(Account account) {
-		
+
 		log.info("Entering updateAccount method...");
-		
+
 		try(Connection conn = connUtil.getConnection(); 
 				PreparedStatement stmt = conn.prepareStatement(UPDATE_ACCOUNT_QUERY)) {
-			
+
 			stmt.setString(1, account.getAccountType());
 			stmt.setDouble(2, account.getAccountBalance());
 			stmt.setLong(3, account.getAccountNumber());
-			
+
 			log.info("Update Account Query String: {}", UPDATE_ACCOUNT_QUERY);
 			int updateStatus = stmt.executeUpdate();
 			log.info("{} Row(s) Updated", updateStatus);
-			
+
 		} catch (SQLException e) {
 			log.error(SQL_EXCEPTION_CAUGHT, e.getMessage());
 		}
-		
+
 		return account;
 	}
 
 	@Override
 	public boolean deleteAccountByAcctNo(Long acctNo) {
 		log.info("Entering deleteAccountByAcctNo method...");
-		
+
 		boolean success = false;
-		
+
 		try(Connection conn = connUtil.getConnection(); 
 				PreparedStatement stmt = conn.prepareStatement(DELETE_ACCOUNT_BY_ACCTNO_QUERY)) {
 			conn.setAutoCommit(false);
-			
+
 			stmt.setLong(1, acctNo);
 
 			log.info("Delete Account Query String: {}", DELETE_ACCOUNT_BY_ACCTNO_QUERY);
 			int deleteStatus = stmt.executeUpdate();
-			
+
 			if(deleteStatus <= 1) {
 				conn.commit();
 				log.info("{} Row(s) Deleted", deleteStatus);
@@ -154,11 +169,11 @@ public class AccountDaoImpl implements AccountDao {
 				conn.rollback();
 				log.info("There was an issue with deleteAccountByAcctNo, rolling back changes...");
 			}
-			
+
 		} catch (SQLException e) {
 			log.error(SQL_EXCEPTION_CAUGHT, e.getMessage());
 		}
-		
+
 		return success;
 	}
 

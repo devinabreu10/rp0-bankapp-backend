@@ -117,9 +117,9 @@ public class AccountController {
 		boolean success = accountService.deleteAccountByAcctNo(acctNo);
 
 		if(Boolean.TRUE.equals(success)) {
-			return new ResponseEntity<>("Account successfully deleted...", HttpStatus.OK);
+			return new ResponseEntity<>("{\"success\": \"Account successfully deleted...\"}", HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>("Account could not be deleted, please check backend...", HttpStatus.CONFLICT);
+			return new ResponseEntity<>("{\"error\": \"Account could not be deleted...\"}", HttpStatus.CONFLICT);
 		}
 	}
 

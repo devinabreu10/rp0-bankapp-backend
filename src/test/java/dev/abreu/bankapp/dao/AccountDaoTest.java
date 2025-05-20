@@ -43,7 +43,7 @@ class AccountDaoTest {
 	private AccountDaoImpl accountDao;
 
 	@BeforeEach
-	public void setup() {
+	void setup() {
 		when(connectionUtilMock.getConnection()).thenReturn(connectionMock);
 	}
 
@@ -59,9 +59,9 @@ class AccountDaoTest {
 		when(resultSetMock.getString("account_type")).thenReturn("Checking");
 		when(resultSetMock.getDouble("account_balance")).thenReturn(1000.00);
 		when(resultSetMock.getLong("customer_id")).thenReturn(1L);
-		
+
 		Optional<Account> result = accountDao.findAccountByAcctNo(acctNo);
-		
+
 		assertTrue(result.isPresent());
 		assertEquals(expectedAccount.getAccountNumber(), result.get().getAccountNumber());
 	}
@@ -84,29 +84,29 @@ class AccountDaoTest {
 		Optional<Account> result = accountDao.findAccountByAcctNo(acctNo);
 		assertNotNull(result);
 	}
-	
+
 	@Test
 	void testFindAllAccountsByUsername() throws SQLException {
 		String username = "testUser";
 		List<Account> expectedAccountsList = new ArrayList<>();
 		Account expectedAccount = new Account(12345L, "Checking", 1000.00, 1L);
 		expectedAccountsList.add(expectedAccount);
-		
+
 		when(connectionMock.prepareStatement(anyString())).thenReturn(preparedStatementMock);
 		when(preparedStatementMock.executeQuery()).thenReturn(resultSetMock);
 		when(resultSetMock.next()).thenReturn(true, false); // false needed to break out of loop
-		
+
 		when(resultSetMock.getLong("acc_no")).thenReturn(12345L);
 		when(resultSetMock.getString("acc_typ")).thenReturn("Checking");
 		when(resultSetMock.getDouble("acc_bal")).thenReturn(1000.00);
 		when(resultSetMock.getLong("cust_id")).thenReturn(1L);
-		
+
 		List<Account> result = accountDao.findAllAccountsByUsername(username);
-		
+
 		assertNotNull(result);
 		assertEquals(expectedAccountsList.size(), result.size());
 	}
-	
+
 	@Test
 	void testFindAllAccountsByUsernameSQLException() throws SQLException {
 		String username = "testUser";
@@ -115,53 +115,94 @@ class AccountDaoTest {
 		List<Account> result = accountDao.findAllAccountsByUsername(username);
 		assertNotNull(result);
 	}
-	
+
 	@Test
 	void testSaveAccount() throws SQLException {
-		Account newAccount = new Account(12345L, "Checking", 1000.00, 1L);
-		
-	    when(connectionMock.prepareStatement(anyString())).thenReturn(preparedStatementMock);
-	    when(preparedStatementMock.executeUpdate()).thenReturn(1);
-	    
+		// Create account without account number - it should be generated
+		Account newAccount = new Account("Checking", 1000.00, 1L);
+
+	    // First mock the findAccountByAcctNo call that checks for uniqueness
+	    // We need to set up the mocks for two different PreparedStatement calls
+	    PreparedStatement findStmt = Mockito.mock(PreparedStatement.class);
+	    PreparedStatement saveStmt = Mockito.mock(PreparedStatement.class);
+	    ResultSet findRs = Mockito.mock(ResultSet.class);
+
+	    // First call is for findAccountByAcctNo
+	    when(connectionMock.prepareStatement(Mockito.contains("SELECT * FROM"))).thenReturn(findStmt);
+	    when(findStmt.executeQuery()).thenReturn(findRs);
+	    when(findRs.next()).thenReturn(false); // No existing account with this number
+
+	    // Second call is for saveAccount
+	    when(connectionMock.prepareStatement(Mockito.contains("INSERT into"))).thenReturn(saveStmt);
+	    when(saveStmt.executeUpdate()).thenReturn(1);
+
 	    Account result = accountDao.saveAccount(newAccount);
-	    
-	    assertEquals(newAccount, result);
+
+	    // Verify account number was generated (8 digits)
+	    assertNotNull(result.getAccountNumber());
+	    assertTrue(result.getAccountNumber() >= 10000000L && result.getAccountNumber() <= 99999999L);
+
+	    // Verify the account number was set on the original account object
+	    assertEquals(newAccount.getAccountNumber(), result.getAccountNumber());
+
+	    // Verify the prepared statement was called with the generated account number
+	    verify(saveStmt).setLong(1, result.getAccountNumber());
 	}
-	
+
 	@Test
 	void testSaveAccountSQLException() throws SQLException {
-		Account newAccount = new Account(12345L, "Checking", 1000.00, 1L);
-		
-	    when(connectionMock.prepareStatement(anyString())).thenReturn(preparedStatementMock);
-	    when(preparedStatementMock.executeUpdate()).thenThrow(SQLException.class);
+		// Create account without account number - it should be generated
+		Account newAccount = new Account("Checking", 1000.00, 1L);
+
+	    // First mock the findAccountByAcctNo call that checks for uniqueness
+	    // We need to set up the mocks for two different PreparedStatement calls
+	    PreparedStatement findStmt = Mockito.mock(PreparedStatement.class);
+	    PreparedStatement saveStmt = Mockito.mock(PreparedStatement.class);
+	    ResultSet findRs = Mockito.mock(ResultSet.class);
+
+	    // First call is for findAccountByAcctNo
+	    when(connectionMock.prepareStatement(Mockito.contains("SELECT * FROM"))).thenReturn(findStmt);
+	    when(findStmt.executeQuery()).thenReturn(findRs);
+	    when(findRs.next()).thenReturn(false); // No existing account with this number
+
+	    // Second call is for saveAccount - this one throws SQLException
+	    when(connectionMock.prepareStatement(Mockito.contains("INSERT into"))).thenReturn(saveStmt);
+	    when(saveStmt.executeUpdate()).thenThrow(SQLException.class);
+
 	    Account result = accountDao.saveAccount(newAccount);
-	    assertNotNull(result);
+
+	    // Verify account number was generated (8 digits)
+	    assertNotNull(result.getAccountNumber());
+	    assertTrue(result.getAccountNumber() >= 10000000L && result.getAccountNumber() <= 99999999L);
+
+	    // Even with SQL exception, the account number should be set
+	    assertEquals(newAccount.getAccountNumber(), result.getAccountNumber());
 	}
-	
+
 	@Test
 	void testUpdateAccount() throws SQLException {
 		Account updatedAccount = new Account(12345L, "Checking", 1000.00, 1L);
-		
+
 	    when(connectionMock.prepareStatement(anyString())).thenReturn(preparedStatementMock);
 	    when(preparedStatementMock.executeUpdate()).thenReturn(1);
-	    
+
 	    Account result = accountDao.updateAccount(updatedAccount);
-	    
+
 	    assertEquals(updatedAccount, result);
 	}
-	
+
 	@Test
 	void testUpdateAccountSQLException() throws SQLException {
 		Account updatedAccount = new Account(12345L, "Checking", 1000.00, 1L);
-		
+
 	    when(connectionMock.prepareStatement(anyString())).thenReturn(preparedStatementMock);
 	    when(preparedStatementMock.executeUpdate()).thenThrow(SQLException.class);
-	    
+
 	    Account result = accountDao.updateAccount(updatedAccount);
-	    
+
 	    assertNotNull(result);
 	}
-	
+
 	@Test
 	void testDeleteAccountByAcctNo() throws SQLException {
         long acctNo = 12345L;
@@ -175,7 +216,7 @@ class AccountDaoTest {
         verify(connectionMock, Mockito.times(1)).close();
         verify(preparedStatementMock, Mockito.times(1)).close();
 	}
-	
+
 	@Test
 	void testDeleteAccountByAcctNoMultipleRowsDeleted() throws SQLException {
         Long acctNo = 12345L;
@@ -187,7 +228,7 @@ class AccountDaoTest {
         verify(connectionMock, Mockito.times(1)).close();
         verify(preparedStatementMock, Mockito.times(1)).close();
 	}
-	
+
 	@Test
 	void testDeleteAccountByAcctNoSQLException() throws SQLException {
         Long acctNo = 12345L;
@@ -196,6 +237,6 @@ class AccountDaoTest {
         boolean success = accountDao.deleteAccountByAcctNo(acctNo);
         assertFalse(success);
 	}
-	
-	
+
+
 }
