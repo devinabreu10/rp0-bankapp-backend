@@ -41,7 +41,7 @@ public class CustomerController {
 
         CustomerResponseDTO dto = dtoMapper.toCustomerResponseDto(customer);
 
-        log.info("Customer with username {} was successfully retrieved...", username);
+        log.info("Customer was successfully retrieved...");
         return ResponseEntity.ok(dto); //sends 200 status
     }
 
@@ -115,7 +115,7 @@ public class CustomerController {
      */
     @DeleteMapping(path = "/delete/user/{username}")
     public ResponseEntity<String> deleteCustomerByUsername(@PathVariable("username") String username) {
-        log.info("Performing DELETE method for customer with username: {}", username);
+        log.info("Performing DELETE method for customer using username");
 
         boolean success = customerService.deleteCustomerByUsername(username);
 

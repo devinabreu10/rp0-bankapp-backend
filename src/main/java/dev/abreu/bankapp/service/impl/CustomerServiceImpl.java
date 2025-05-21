@@ -31,10 +31,10 @@ public class CustomerServiceImpl implements CustomerService {
 		boolean usernameExists = customerDao.existsByUsername(customer.getUsername());
 		
 		if(!usernameExists) {
-			log.info("Registering new customer with username: {}", customer.getUsername());
+			log.info("Registering new customer using unique username");
 			customerDao.saveCustomer(customer);
 		} else {
-			log.error("Username, {}, is already present in the database", customer.getUsername());
+			log.error("Username is already present in the database");
 			throw new UsernameTakenException();
 		}
 		
@@ -63,13 +63,13 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Override
 	public Customer updateCustomerDetails(Customer customer) {
-		log.info("Updating customer details for username: {}", customer.getUsername());
+		log.info("Updating customer details using username");
 		return customerDao.updateCustomer(customer);
 	}
 	
 	@Override
 	public boolean deleteCustomerByUsername(String username) {
-		log.info("Deleting customer with username: {}", username);
+		log.info("Deleting customer using username");
 		
 		boolean success = false;
 		

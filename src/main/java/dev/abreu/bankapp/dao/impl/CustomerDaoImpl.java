@@ -19,12 +19,12 @@ import static dev.abreu.bankapp.util.BankappQueryConstants.*;
 public class CustomerDaoImpl implements CustomerDao {
 	
 	private static final Logger log = LogManager.getLogger(CustomerDaoImpl.class);
-	
+
 	private static final String CUSTOMER_ID = "customer_id";
 	private static final String FIRST_NAME = "first_name";
 	private static final String LAST_NAME = "last_name";
 	private static final String USERNAME = "username";
-	private static final String PASSWORD = "passwrd";
+	private static final String PASSWRD = "passwrd";
 	private static final String ADDRESS = "address";
 	
 	private final ConnectionUtil connUtil;
@@ -49,7 +49,7 @@ public class CustomerDaoImpl implements CustomerDao {
 				customer.setFirstName(resultSet.getString(FIRST_NAME));
 				customer.setLastName(resultSet.getString(LAST_NAME));
 				customer.setUsername(resultSet.getString(USERNAME));
-				customer.setPassword(resultSet.getString(PASSWORD));
+				customer.setPassword(resultSet.getString(PASSWRD));
 				customer.setAddress(resultSet.getString(ADDRESS));
 			} else {
 				return Optional.empty();
@@ -78,7 +78,7 @@ public class CustomerDaoImpl implements CustomerDao {
 				customer.setFirstName(resultSet.getString(FIRST_NAME));
 				customer.setLastName(resultSet.getString(LAST_NAME));
 				customer.setUsername(resultSet.getString(USERNAME));
-				customer.setPassword(resultSet.getString(PASSWORD));
+				customer.setPassword(resultSet.getString(PASSWRD));
 				customer.setAddress(resultSet.getString(ADDRESS));
 			} else {
 				return Optional.empty();
@@ -105,7 +105,7 @@ public class CustomerDaoImpl implements CustomerDao {
 				customer.setFirstName(resultSet.getString(FIRST_NAME));
 				customer.setLastName(resultSet.getString(LAST_NAME));
 				customer.setUsername(resultSet.getString(USERNAME));
-				customer.setPassword(resultSet.getString(PASSWORD));
+				customer.setPassword(resultSet.getString(PASSWRD));
 				customer.setAddress(resultSet.getString(ADDRESS));
 				customerList.add(customer);
 			}

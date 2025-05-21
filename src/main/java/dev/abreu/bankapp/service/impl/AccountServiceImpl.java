@@ -45,7 +45,7 @@ public class AccountServiceImpl implements AccountService {
 
 	@Override
 	public List<Account> getAllAccountsByUsername(String username) {
-		log.info("Fetching all accounts associated with username: {}", username);
+		log.info("Fetching all accounts associated with customer");
 
 		return Optional.of(username)
 				.filter(customerDao::existsByUsername)

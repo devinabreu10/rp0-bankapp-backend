@@ -7,6 +7,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.lang.NonNull;
@@ -22,7 +23,7 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Value("${application.cors.origins}")
-    private String allowedOrigins;
+    private String[] allowedOrigins;
 
     private final JwtConfig jwtConfig;
     private final CustomerService customerService;
@@ -66,8 +67,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
             }
         } catch (ExpiredJwtException e) {
+            if (StringUtils.isNotBlank(allowedOrigins[0])) {
+                response.setHeader("Access-Control-Allow-Origin", allowedOrigins[0]);
+            }
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.setHeader("Access-Control-Allow-Origin", allowedOrigins);
             response.setContentType("application/json");
             response.getWriter().write("{\"error\":\"Access token expired, please login again.\"}");
             return;
