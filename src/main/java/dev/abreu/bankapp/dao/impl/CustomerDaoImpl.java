@@ -41,27 +41,22 @@ public class CustomerDaoImpl implements CustomerDao {
 				PreparedStatement stmt = conn.prepareStatement(SELECT_CUSTOMERS_BY_USERNAME_QUERY)) {
 			
 			stmt.setString(1, username);
-			
+
 			ResultSet resultSet = stmt.executeQuery();
-			
+
 			if(resultSet.next()) {
-				customer.setId(resultSet.getLong(CUSTOMER_ID));
-				customer.setFirstName(resultSet.getString(FIRST_NAME));
-				customer.setLastName(resultSet.getString(LAST_NAME));
-				customer.setUsername(resultSet.getString(USERNAME));
-				customer.setPassword(resultSet.getString(PASSWRD));
-				customer.setAddress(resultSet.getString(ADDRESS));
+				setCustomerFromResultSet(customer, resultSet);
 			} else {
 				return Optional.empty();
 			}
-			
+
 		} catch (SQLException e) {
 			log.error(SQL_EXCEPTION_CAUGHT + "findByUsername: {}", e.getMessage());
 		}
 		
 		return Optional.of(customer);
 	}
-	
+
 	@Override
 	public Optional<Customer> findById(Long customerId) {
 		Customer customer = new Customer();
@@ -70,20 +65,15 @@ public class CustomerDaoImpl implements CustomerDao {
 				PreparedStatement stmt = conn.prepareStatement(SELECT_CUSTOMERS_BY_ID_QUERY)) {
 			
 			stmt.setLong(1, customerId);
-			
-			ResultSet resultSet = stmt.executeQuery();
-			
-			if(resultSet.next()) {
-				customer.setId(resultSet.getLong(CUSTOMER_ID));
-				customer.setFirstName(resultSet.getString(FIRST_NAME));
-				customer.setLastName(resultSet.getString(LAST_NAME));
-				customer.setUsername(resultSet.getString(USERNAME));
-				customer.setPassword(resultSet.getString(PASSWRD));
-				customer.setAddress(resultSet.getString(ADDRESS));
+
+			ResultSet rs = stmt.executeQuery();
+
+			if(rs.next()) {
+				setCustomerFromResultSet(customer, rs);
 			} else {
 				return Optional.empty();
 			}
-			
+
 		} catch (SQLException e) {
 			log.error(SQL_EXCEPTION_CAUGHT + "findById: {}", e.getMessage());
 		}
@@ -101,12 +91,7 @@ public class CustomerDaoImpl implements CustomerDao {
 			
 			while(resultSet.next()) {
 				Customer customer = new Customer();
-				customer.setId(resultSet.getLong(CUSTOMER_ID));
-				customer.setFirstName(resultSet.getString(FIRST_NAME));
-				customer.setLastName(resultSet.getString(LAST_NAME));
-				customer.setUsername(resultSet.getString(USERNAME));
-				customer.setPassword(resultSet.getString(PASSWRD));
-				customer.setAddress(resultSet.getString(ADDRESS));
+				setCustomerFromResultSet(customer, resultSet);
 				customerList.add(customer);
 			}
 			
@@ -232,16 +217,16 @@ public class CustomerDaoImpl implements CustomerDao {
 			
 			stmt.setLong(1, customerId);
 
-			log.info("Delete Customer Query String: {}", DELETE_CUSTOMER_BY_ID_QUERY);
+			log.info("Delete Customer By Id Query String: {}", DELETE_CUSTOMER_BY_ID_QUERY);
 			int deleteStatus = stmt.executeUpdate();
 			
 			if(deleteStatus <= 1) {
 				conn.commit();
-				log.info("{} Row(s) Deleted", deleteStatus);
+				log.info("{} Row(s) Deleted...", deleteStatus);
 				success = true;
 			} else {
 				conn.rollback();
-				log.info("There was an issue with deleteCustomer, rolling back changes...");
+				log.info("There was an issue with deleteCustomerById, rolling back changes...");
 			}
 			
 		} catch (SQLException e) {
@@ -249,6 +234,15 @@ public class CustomerDaoImpl implements CustomerDao {
 		}
 		
 		return success;
+	}
+
+	private void setCustomerFromResultSet(Customer customer, ResultSet resultSet) throws SQLException {
+		customer.setId(resultSet.getLong(CUSTOMER_ID));
+		customer.setFirstName(resultSet.getString(FIRST_NAME));
+		customer.setLastName(resultSet.getString(LAST_NAME));
+		customer.setUsername(resultSet.getString(USERNAME));
+		customer.setPassword(resultSet.getString(PASSWRD));
+		customer.setAddress(resultSet.getString(ADDRESS));
 	}
 
 }
