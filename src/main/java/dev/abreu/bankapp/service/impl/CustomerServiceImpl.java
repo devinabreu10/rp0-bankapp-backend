@@ -43,7 +43,7 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Override
 	public Customer getCustomerByUsername(String username) {
-		log.info("Fetching customer with username: {}", username);
+		log.info("Fetching customer with username");
 		return customerDao.findByUsername(username)
 				.orElseThrow(() -> new ResourceNotFoundException(ResourceType.CUSTOMER, username));
 	}

@@ -44,16 +44,10 @@ public class AccountDaoImpl implements AccountDao {
 
 			prepStmt.setLong(1, acctNo);
 
-			ResultSet rs = prepStmt.executeQuery();
+			ResultSet resultSet = prepStmt.executeQuery();
 
-			if(rs.next()) {
-				account.setAccountNumber(rs.getLong(ACCOUNT_NUMBER));
-				account.setNickname(rs.getString(NICKNAME));
-				account.setAccountType(rs.getString(TYPE));
-				account.setAccountBalance(rs.getDouble(BALANCE));
-				account.setCreatedAt(rs.getTimestamp(CREATED_AT).toLocalDateTime());
-				account.setUpdatedAt(rs.getTimestamp(UPDATED_AT).toLocalDateTime());
-				account.setCustomerId(rs.getLong(CUSTOMER_ID));
+			if(resultSet.next()) {
+				setAccountFromResultSet(account, resultSet);
 			} else {
 				return Optional.empty();
 			}
@@ -79,14 +73,7 @@ public class AccountDaoImpl implements AccountDao {
 
 			while (rs.next()) {
 				account = new Account();
-				account.setAccountNumber(rs.getLong(ACCOUNT_NUMBER));
-				account.setNickname(rs.getString(NICKNAME));
-				account.setAccountType(rs.getString(TYPE));
-				account.setAccountBalance(rs.getDouble(BALANCE));
-				account.setCreatedAt(rs.getTimestamp(CREATED_AT).toLocalDateTime());
-				account.setUpdatedAt(rs.getTimestamp(UPDATED_AT).toLocalDateTime());
-				account.setCustomerId(rs.getLong(CUSTOMER_ID));
-
+				setAccountFromResultSet(account, rs);
 				accountsList.add(account);
 			}
 
@@ -191,6 +178,16 @@ public class AccountDaoImpl implements AccountDao {
 		}
 
 		return success;
+	}
+
+	private void setAccountFromResultSet(Account account, ResultSet rs) throws SQLException {
+		account.setAccountNumber(rs.getLong(ACCOUNT_NUMBER));
+		account.setNickname(rs.getString(NICKNAME));
+		account.setAccountType(rs.getString(TYPE));
+		account.setAccountBalance(rs.getDouble(BALANCE));
+		account.setCreatedAt(rs.getTimestamp(CREATED_AT).toLocalDateTime());
+		account.setUpdatedAt(rs.getTimestamp(UPDATED_AT).toLocalDateTime());
+		account.setCustomerId(rs.getLong(CUSTOMER_ID));
 	}
 
 }
