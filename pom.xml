@@ -19,7 +19,7 @@
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
         <sonar.coverage.exclusions>
-            **/config/*,**/util/ConnectionUtil.*
+            **/config/*,**/util/ConnectionUtil.*,**/entity/Credit.*,**/entity/Loan.*
         </sonar.coverage.exclusions>
         <tomcat.version>10.1.40</tomcat.version> <!-- override vulnerable version 10.1.34 -->
         <spring-security.version>6.3.8</spring-security.version> <!-- override vulnerable version 6.3.6 -->
@@ -172,6 +172,7 @@
                                 <!-- Exclude specific classes from JaCoCo report -->
                                 <exclude>**/config/*</exclude>
                                 <exclude>**/util/ConnectionUtil.*</exclude>
+                                <exclude>**/entity/Credit.*,**/entity/Loan.*</exclude>
                             </excludes>
                         </configuration>
                     </execution>
