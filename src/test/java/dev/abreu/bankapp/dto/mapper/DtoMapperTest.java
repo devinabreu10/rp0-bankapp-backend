@@ -99,17 +99,18 @@ class DtoMapperTest {
 	void testToAccountDto() {
 		Account account = new Account();
 		account.setAccountNumber(123L);
+		account.setNickname("my checking");
 		account.setAccountType("checking");
 		account.setAccountBalance(100.00);
 		account.setCustomerId(1L);
 
-		AccountDTO expectedDTO = new AccountDTO(123L, "checking", 100.00, 1L);
+		AccountDTO expectedDTO = new AccountDTO(123L, "my checking", "checking", 100.00, 1L);
 		assertEquals(expectedDTO, dtoMapper.toAccountDto(account));
 	}
 
 	@Test
 	void testToAccount() {
-		AccountDTO accountDTO = new AccountDTO(123L, "checking", 100.00, 1L);
+		AccountDTO accountDTO = new AccountDTO(123L, "my checking", "checking", 100.00, 1L);
 
 		Account expectedAccount = new Account();
 		expectedAccount.setAccountNumber(accountDTO.accountNumber());
@@ -124,11 +125,14 @@ class DtoMapperTest {
 	void testToAccountResponseDto() {
 		Account account = new Account();
 		account.setAccountNumber(123L);
+		account.setNickname("my checking");
 		account.setAccountType("checking");
 		account.setAccountBalance(100.00);
+		account.setCreatedAt(LocalDateTime.parse("2022-01-01T00:00:00"));
+		account.setUpdatedAt(LocalDateTime.parse("2022-01-01T00:00:00"));
 		account.setCustomerId(1L);
 
-		AccountResponseDTO expectedDTO = new AccountResponseDTO(123L, "checking", 100.00);
+		AccountResponseDTO expectedDTO = new AccountResponseDTO(123L, "my checking", "checking", 100.00, LocalDateTime.parse("2022-01-01T00:00:00"), LocalDateTime.parse("2022-01-01T00:00:00"));
 		assertEquals(expectedDTO, dtoMapper.toAccountResponseDto(account));
 	}
 
@@ -139,23 +143,22 @@ class DtoMapperTest {
 		transaction.setTransactionType("deposit");
 		transaction.setTransactionAmount(100.00);
 		transaction.setTransactionNotes("initial deposit");
-		transaction.setTransactionDate(LocalDateTime.parse("2022-01-01T00:00:00"));
+		transaction.setCreatedAt(LocalDateTime.parse("2022-01-01T00:00:00"));
 		transaction.setAccountNumber(123L);
 
-		TransactionDTO expectedDTO = new TransactionDTO(1L, "deposit", 100.00, "initial deposit", LocalDateTime.parse("2022-01-01T00:00:00"), 123L);
+		TransactionDTO expectedDTO = new TransactionDTO(1L, "deposit", 100.00, "initial deposit", 123L);
 		assertEquals(expectedDTO, dtoMapper.toTransactionDto(transaction));
 	}
 
 	@Test
 	void testToTransaction() {
-		TransactionDTO transactionDTO = new TransactionDTO(1L, "deposit", 100.00, "initial deposit", LocalDateTime.parse("2022-01-01T00:00:00"), 123L);
+		TransactionDTO transactionDTO = new TransactionDTO(1L, "deposit", 100.00, "initial deposit", 123L);
 
 		Transaction expectedTransaction = new Transaction();
 		expectedTransaction.setTransactionId(transactionDTO.transactionId());
 		expectedTransaction.setTransactionType(transactionDTO.transactionType());
 		expectedTransaction.setTransactionAmount(transactionDTO.transactionAmount());
 		expectedTransaction.setTransactionNotes(transactionDTO.transactionNotes());
-		expectedTransaction.setTransactionDate(transactionDTO.transactionDate());
 		expectedTransaction.setAccountNumber(transactionDTO.accountNumber());
 
 		assertNotNull(dtoMapper.toTransaction(transactionDTO));
@@ -168,7 +171,7 @@ class DtoMapperTest {
 		transaction.setTransactionType("deposit");
 		transaction.setTransactionAmount(100.00);
 		transaction.setTransactionNotes("initial deposit");
-		transaction.setTransactionDate(LocalDateTime.parse("2022-01-01T00:00:00"));
+		transaction.setCreatedAt(LocalDateTime.parse("2022-01-01T00:00:00"));
 		transaction.setAccountNumber(123L);
 
 		TransactionResponseDTO expectedDTO = new TransactionResponseDTO(1L, "deposit", 100.00, "initial deposit", LocalDateTime.parse("2022-01-01T00:00:00"));

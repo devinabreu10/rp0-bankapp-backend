@@ -196,4 +196,20 @@ class CustomerServiceTest {
 		
 		assertFalse(result);
 	}
+
+	@Test
+	void testCustomerToString() {
+		Customer mockCustomer = new Customer();
+		mockCustomer.setId(1L);
+		mockCustomer.setFirstName("testFirst");
+		mockCustomer.setLastName("testLast");
+		mockCustomer.setAddress("testAddr");
+		mockCustomer.setUsername("testUsername");
+
+		Mockito.when(customerDao.findById(1L)).thenReturn(Optional.of(mockCustomer));
+
+		String result = String.valueOf(customerService.getCustomerById(1L));
+
+		assertEquals(mockCustomer.toString(), result);
+	}
 }

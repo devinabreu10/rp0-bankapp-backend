@@ -56,7 +56,7 @@ public class CustomerDaoImpl implements CustomerDao {
 			}
 			
 		} catch (SQLException e) {
-			log.error(SQL_EXCEPTION_CAUGHT, e.getMessage());
+			log.error(SQL_EXCEPTION_CAUGHT + "findByUsername: {}", e.getMessage());
 		}
 		
 		return Optional.of(customer);
@@ -85,7 +85,7 @@ public class CustomerDaoImpl implements CustomerDao {
 			}
 			
 		} catch (SQLException e) {
-			log.error(SQL_EXCEPTION_CAUGHT, e.getMessage());
+			log.error(SQL_EXCEPTION_CAUGHT + "findById: {}", e.getMessage());
 		}
 		
 		return Optional.of(customer);
@@ -111,7 +111,7 @@ public class CustomerDaoImpl implements CustomerDao {
 			}
 			
 		} catch (SQLException e) {
-			log.error(SQL_EXCEPTION_CAUGHT, e.getMessage());
+			log.error(SQL_EXCEPTION_CAUGHT + "findAllCustomers: {}", e.getMessage());
 		}
 		
 		return customerList;
@@ -133,7 +133,7 @@ public class CustomerDaoImpl implements CustomerDao {
 			}
 			
 		} catch (SQLException e) {
-			log.error(SQL_EXCEPTION_CAUGHT, e.getMessage());
+			log.error(SQL_EXCEPTION_CAUGHT + "existsByUsername: {}", e.getMessage());
 		}
 
 		return usernameExists;
@@ -158,7 +158,7 @@ public class CustomerDaoImpl implements CustomerDao {
 			log.info("{} Row(s) Affected", rowsAffected);
 			
 		} catch (SQLException e) {
-			log.error(SQL_EXCEPTION_CAUGHT, e.getMessage());
+			log.error(SQL_EXCEPTION_CAUGHT + "saveCustomer: {}", e.getMessage());
 		}
 		
 		return customer;
@@ -183,7 +183,7 @@ public class CustomerDaoImpl implements CustomerDao {
 			log.info("{} Row(s) Updated", updateStatus);
 			
 		} catch (SQLException e) {
-			log.error(SQL_EXCEPTION_CAUGHT, e.getMessage());
+			log.error(SQL_EXCEPTION_CAUGHT + "updateCustomer: {}", e.getMessage());
 		}
 
 		return customer;
@@ -214,7 +214,7 @@ public class CustomerDaoImpl implements CustomerDao {
 			}
 			
 		} catch (SQLException e) {
-			log.error(SQL_EXCEPTION_CAUGHT, e.getMessage());
+			log.error(SQL_EXCEPTION_CAUGHT + "deleteCustomerByUsername: {}", e.getMessage());
 		}
 		
 		return success;
@@ -245,7 +245,7 @@ public class CustomerDaoImpl implements CustomerDao {
 			}
 			
 		} catch (SQLException e) {
-			log.error(SQL_EXCEPTION_CAUGHT, e.getMessage());
+			log.error(SQL_EXCEPTION_CAUGHT + "deleteCustomerById: {}", e.getMessage());
 		}
 		
 		return success;

@@ -96,8 +96,8 @@ public class DtoMapper {
      * @return The mapped AccountDTO object.
      */
     public AccountDTO toAccountDto(@NonNull Account account) {
-        return new AccountDTO(account.getAccountNumber(), account.getAccountType(), account.getAccountBalance(),
-                account.getCustomerId());
+        return new AccountDTO(account.getAccountNumber(), account.getNickname(), account.getAccountType(),
+                account.getAccountBalance(), account.getCustomerId());
     }
 
     /**
@@ -107,8 +107,8 @@ public class DtoMapper {
      * @return The mapped AccountResponseDTO object.
      */
     public AccountResponseDTO toAccountResponseDto(@NonNull Account account) {
-        return new AccountResponseDTO(account.getAccountNumber(), account.getAccountType(),
-                account.getAccountBalance());
+        return new AccountResponseDTO(account.getAccountNumber(), account.getNickname(), account.getAccountType(),
+                account.getAccountBalance(), account.getCreatedAt(), account.getUpdatedAt());
     }
 
     /**
@@ -118,11 +118,8 @@ public class DtoMapper {
      * @return The mapped Account object.
      */
     public Account toAccount(@NonNull AccountDTO accountDto) {
-        Account account = new Account();
-        account.setAccountNumber(accountDto.accountNumber());
-        account.setAccountType(accountDto.accountType());
-        account.setAccountBalance(accountDto.accountBalance());
-        account.setCustomerId(accountDto.customerId());
+        Account account = new Account(accountDto.accountNumber(), accountDto.accountType(), accountDto.accountBalance(), accountDto.customerId());
+        account.setNickname(accountDto.nickname());
         return account;
     }
 
@@ -135,7 +132,7 @@ public class DtoMapper {
     public TransactionDTO toTransactionDto(@NonNull Transaction transaction) {
         return new TransactionDTO(transaction.getTransactionId(),
                 transaction.getTransactionType(), transaction.getTransactionAmount(),
-                transaction.getTransactionNotes(), transaction.getTransactionDate(), transaction.getAccountNumber());
+                transaction.getTransactionNotes(), transaction.getAccountNumber());
     }
 
     /**
@@ -147,7 +144,7 @@ public class DtoMapper {
     public TransactionResponseDTO toTransactionResponseDto(@NonNull Transaction transaction) {
         return new TransactionResponseDTO(transaction.getTransactionId(),
                 transaction.getTransactionType(), transaction.getTransactionAmount(),
-                transaction.getTransactionNotes(), transaction.getTransactionDate());
+                transaction.getTransactionNotes(), transaction.getCreatedAt());
     }
 
     /**
@@ -157,13 +154,6 @@ public class DtoMapper {
      * @return The mapped Transaction object.
      */
     public Transaction toTransaction(@NonNull TransactionDTO transactionDto) {
-        Transaction transaction = new Transaction();
-        transaction.setTransactionId(transactionDto.transactionId());
-        transaction.setTransactionType(transactionDto.transactionType());
-        transaction.setTransactionAmount(transactionDto.transactionAmount());
-        transaction.setTransactionNotes(transactionDto.transactionNotes());
-        transaction.setTransactionDate(transactionDto.transactionDate());
-        transaction.setAccountNumber(transactionDto.accountNumber());
-        return transaction;
+        return new Transaction(transactionDto.transactionId(), transactionDto.transactionType(), transactionDto.transactionAmount(), transactionDto.transactionNotes(), transactionDto.accountNumber());
     }
 }
