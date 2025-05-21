@@ -8,6 +8,7 @@ package dev.abreu.bankapp.dto;
  */
 public record AccountDTO(
         Long accountNumber,
+        String nickname,
         String accountType,
         double accountBalance,
         Long customerId) {

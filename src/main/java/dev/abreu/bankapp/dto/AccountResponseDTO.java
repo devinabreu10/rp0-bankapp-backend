@@ -1,5 +1,7 @@
 package dev.abreu.bankapp.dto;
 
+import java.time.LocalDateTime;
+
 /**
  * A data transfer object (DTO) for an account response.
  *
@@ -7,6 +9,9 @@ package dev.abreu.bankapp.dto;
  */
 public record AccountResponseDTO(
         Long accountNumber,
+        String nickname,
         String accountType,
-        double accountBalance) {
+        double accountBalance,
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt) {
 }
