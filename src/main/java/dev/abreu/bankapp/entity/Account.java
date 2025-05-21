@@ -3,6 +3,8 @@ package dev.abreu.bankapp.entity;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.time.LocalDateTime;
+
 /**
  * Represents an Account entity.
  * 
@@ -12,10 +14,13 @@ import org.springframework.data.relational.core.mapping.Table;
 public class Account {
 
 	private @Id Long accountNumber;
+	private String nickname;
 	private String accountType;
 	private double accountBalance;
+	private LocalDateTime createdAt;
+	private LocalDateTime updatedAt;
 	private Long customerId;
-	
+
 	public Account() {
 		
 	}
@@ -24,6 +29,8 @@ public class Account {
 		this.accountType = accountType;
 		this.accountBalance = initialDeposit;
 		this.customerId = customerId;
+		this.createdAt = LocalDateTime.now();
+		this.updatedAt = LocalDateTime.now();
 	}
 	
 	public Account(Long accountNumber, String accountType, double initialDeposit, Long customerId) {
@@ -31,9 +38,34 @@ public class Account {
 		this.accountType = accountType;
 		this.accountBalance = initialDeposit;
 		this.customerId = customerId;
+		this.createdAt = LocalDateTime.now();
+		this.updatedAt = LocalDateTime.now();
 	}
-	
-	
+
+	public String getNickname() {
+		return nickname;
+	}
+
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
+	}
+
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(LocalDateTime updatedAt) {
+		this.updatedAt = updatedAt;
+	}
+
 	public Long getCustomerId() {
 		return customerId;
 	}
@@ -76,8 +108,14 @@ public class Account {
 
 	@Override
 	public String toString() {
-		return "Account [accountNumber=" + accountNumber + ", accountType=" + accountType + ", accountBalance="
-				+ accountBalance + ", customerId=" + customerId + "]";
+		return "Account{" +
+				"accountNumber=" + accountNumber +
+				", nickname='" + nickname + '\'' +
+				", accountType='" + accountType + '\'' +
+				", accountBalance=" + accountBalance +
+				", createdAt=" + createdAt +
+				", updatedAt=" + updatedAt +
+				", customerId=" + customerId +
+				'}';
 	}
-
 }

@@ -1,22 +1,20 @@
 package dev.abreu.bankapp.controller;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import dev.abreu.bankapp.config.ApplicationConfig;
+import dev.abreu.bankapp.dao.AccountDao;
+import dev.abreu.bankapp.dao.CustomerDao;
+import dev.abreu.bankapp.dao.TransactionDao;
 import dev.abreu.bankapp.dto.TransactionDTO;
 import dev.abreu.bankapp.dto.TransactionResponseDTO;
 import dev.abreu.bankapp.dto.mapper.DtoMapper;
+import dev.abreu.bankapp.entity.Transaction;
+import dev.abreu.bankapp.security.JwtConfig;
+import dev.abreu.bankapp.security.SecurityConfig;
+import dev.abreu.bankapp.service.CustomerService;
+import dev.abreu.bankapp.service.TransactionService;
+import dev.abreu.bankapp.util.BankappConstants;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -28,20 +26,16 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import java.util.ArrayList;
+import java.util.List;
 
-import dev.abreu.bankapp.config.ApplicationConfig;
-import dev.abreu.bankapp.dao.AccountDao;
-import dev.abreu.bankapp.dao.CustomerDao;
-import dev.abreu.bankapp.dao.TransactionDao;
-import dev.abreu.bankapp.entity.Transaction;
-import dev.abreu.bankapp.security.JwtConfig;
-import dev.abreu.bankapp.security.SecurityConfig;
-import dev.abreu.bankapp.service.CustomerService;
-import dev.abreu.bankapp.service.TransactionService;
-import dev.abreu.bankapp.util.BankappConstants;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = TransactionController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -83,7 +77,7 @@ class TransactionControllerTest {
 	@Test
 	void testGetTransactionById() throws Exception {
 		Transaction mockTxn = new Transaction(BankappConstants.ACCOUNT_DEPOSIT, 100.00, "Deposited $100.00", 12345L);
-		TransactionResponseDTO mockDto = new TransactionResponseDTO(1L, BankappConstants.ACCOUNT_DEPOSIT, 100.00, "Deposited $100.00", mockTxn.getTransactionDate());
+		TransactionResponseDTO mockDto = new TransactionResponseDTO(1L, BankappConstants.ACCOUNT_DEPOSIT, 100.00, "Deposited $100.00", mockTxn.getCreatedAt());
 		
 		Mockito.when(transactionService.getTransactionById(1L)).thenReturn(mockTxn);
 		Mockito.when(dtoMapper.toTransactionResponseDto(mockTxn)).thenReturn(mockDto);
@@ -101,7 +95,7 @@ class TransactionControllerTest {
 
 		List<TransactionResponseDTO> mockDtoList = new ArrayList<>();
 		txnList.forEach(t -> mockDtoList
-				.add(new TransactionResponseDTO(1L, t.getTransactionType(), t.getTransactionAmount(), t.getTransactionNotes(), t.getTransactionDate())));
+				.add(new TransactionResponseDTO(1L, t.getTransactionType(), t.getTransactionAmount(), t.getTransactionNotes(), t.getCreatedAt())));
 		
 		Mockito.when(transactionService.getAllTransactionsByAcctNo(12345L)).thenReturn(txnList);
 		Mockito.when(dtoMapper.toTransactionResponseDto(txnList.get(0))).thenReturn(mockDtoList.get(0));
@@ -115,7 +109,7 @@ class TransactionControllerTest {
 	@Test
 	void testSaveTransaction() throws Exception {
 		Transaction mockTxn = new Transaction(BankappConstants.ACCOUNT_DEPOSIT, 100.00, "Deposited $100.00", 12345L);
-		TransactionResponseDTO mockDto = new TransactionResponseDTO(1L, BankappConstants.ACCOUNT_DEPOSIT, 100.00, "Deposited $100.00", mockTxn.getTransactionDate());
+		TransactionResponseDTO mockDto = new TransactionResponseDTO(1L, BankappConstants.ACCOUNT_DEPOSIT, 100.00, "Deposited $100.00", mockTxn.getCreatedAt());
 		
 		Mockito.when(transactionService.saveTransaction(mockTxn)).thenReturn(mockTxn);
 		Mockito.when(dtoMapper.toTransactionResponseDto(mockTxn)).thenReturn(mockDto);
@@ -130,7 +124,7 @@ class TransactionControllerTest {
 	@Test
 	void testUpdateTransaction() throws Exception {
 		Transaction mockTxn = new Transaction(BankappConstants.ACCOUNT_DEPOSIT, 100.00, "Deposited $100.00", 12345L);
-		TransactionDTO mockDto = new TransactionDTO(1L, BankappConstants.ACCOUNT_DEPOSIT, 100.00, "Deposited $100.00", mockTxn.getTransactionDate(), 12345L);
+		TransactionDTO mockDto = new TransactionDTO(1L, BankappConstants.ACCOUNT_DEPOSIT, 100.00, "Deposited $100.00", 12345L);
 		mockTxn.setTransactionId(1L);
 		
 		Mockito.when(transactionService.updateTransactionDetails(any(Transaction.class))).thenReturn(mockTxn);
@@ -148,7 +142,7 @@ class TransactionControllerTest {
 	@Test
 	void testUpdateTransactionConflict() throws Exception {
 		Transaction mockTxn = new Transaction(BankappConstants.ACCOUNT_DEPOSIT, 100.00, "Deposited $100.00", 12345L);
-		TransactionDTO mockDto = new TransactionDTO(1L, BankappConstants.ACCOUNT_DEPOSIT, 100.00, "Deposited $100.00", mockTxn.getTransactionDate(), 12345L);
+		TransactionDTO mockDto = new TransactionDTO(1L, BankappConstants.ACCOUNT_DEPOSIT, 100.00, "Deposited $100.00", 12345L);
 		mockTxn.setTransactionId(1L);
 		
 		Mockito.when(transactionService.updateTransactionDetails(any(Transaction.class))).thenReturn(mockTxn);
@@ -161,9 +155,9 @@ class TransactionControllerTest {
 	}
 	
 	@Test
-	void testUpdateTransactionBadRequest() throws JsonProcessingException, Exception {
+	void testUpdateTransactionBadRequest() throws Exception {
 		Transaction mockTxn = new Transaction(BankappConstants.ACCOUNT_DEPOSIT, 100.00, "Deposited $100.00", 12345L);
-		TransactionDTO mockDto = new TransactionDTO(1L, BankappConstants.ACCOUNT_DEPOSIT, 100.00, "Deposited $100.00", mockTxn.getTransactionDate(), 12345L);
+		TransactionDTO mockDto = new TransactionDTO(1L, BankappConstants.ACCOUNT_DEPOSIT, 100.00, "Deposited $100.00", 12345L);
 		mockTxn.setTransactionId(1L);
 		
 		Mockito.when(transactionService.updateTransactionDetails(any(Transaction.class))).thenReturn(null);

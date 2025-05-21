@@ -1,23 +1,20 @@
 package dev.abreu.bankapp.controller;
 
-import static dev.abreu.bankapp.util.BankappConstants.CHECKING_ACCOUNT;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import dev.abreu.bankapp.config.ApplicationConfig;
+import dev.abreu.bankapp.dao.AccountDao;
+import dev.abreu.bankapp.dao.CustomerDao;
 import dev.abreu.bankapp.dto.AccountDTO;
 import dev.abreu.bankapp.dto.AccountResponseDTO;
+import dev.abreu.bankapp.dto.TransferRequest;
 import dev.abreu.bankapp.dto.mapper.DtoMapper;
+import dev.abreu.bankapp.entity.Account;
+import dev.abreu.bankapp.security.JwtConfig;
+import dev.abreu.bankapp.security.SecurityConfig;
+import dev.abreu.bankapp.service.AccountService;
+import dev.abreu.bankapp.service.CustomerService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,18 +25,17 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.ArrayList;
+import java.util.List;
 
-import dev.abreu.bankapp.config.ApplicationConfig;
-import dev.abreu.bankapp.dao.AccountDao;
-import dev.abreu.bankapp.dao.CustomerDao;
-import dev.abreu.bankapp.dto.TransferRequest;
-import dev.abreu.bankapp.entity.Account;
-import dev.abreu.bankapp.security.JwtConfig;
-import dev.abreu.bankapp.security.SecurityConfig;
-import dev.abreu.bankapp.service.AccountService;
-import dev.abreu.bankapp.service.CustomerService;
+import static dev.abreu.bankapp.util.BankappConstants.CHECKING_ACCOUNT;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = AccountController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -69,10 +65,17 @@ class AccountControllerTest {
 	
 	private final ObjectMapper jsonMapper = new ObjectMapper();
 
+	@BeforeEach
+	void setup() {
+		jsonMapper.findAndRegisterModules();
+		jsonMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+	}
+
 	@Test
 	void testGetAccountByAcctNo() throws Exception {
-		Account mockAccount = new Account(12345L, CHECKING_ACCOUNT, 100.00, 1L);
-		AccountResponseDTO mockDto = new AccountResponseDTO(12345L, CHECKING_ACCOUNT, 100.00);
+		Account mockAccount = new Account(12345L,CHECKING_ACCOUNT, 100.00, 1L);
+		mockAccount.setNickname("my checking");
+		AccountResponseDTO mockDto = new AccountResponseDTO(12345L, mockAccount.getNickname(), CHECKING_ACCOUNT, 100.00, mockAccount.getCreatedAt(), mockAccount.getUpdatedAt());
 		
 		Mockito.when(accountService.getAccountByAcctNo(12345L)).thenReturn(mockAccount);
 		Mockito.when(dtoMapper.toAccountResponseDto(mockAccount)).thenReturn(mockDto);
@@ -86,13 +89,14 @@ class AccountControllerTest {
 	void testGetAllAccountsByUsername() throws Exception {
 		String testUsername = "test";
 		Account mockAccount = new Account(12345L, CHECKING_ACCOUNT, 100.00, 1L);
-		AccountResponseDTO mockDto = new AccountResponseDTO(12345L, CHECKING_ACCOUNT, 100.00);
+		mockAccount.setNickname("my checking");
+		AccountResponseDTO mockDto = new AccountResponseDTO(12345L, mockAccount.getNickname(), CHECKING_ACCOUNT, 100.00, mockAccount.getCreatedAt(), mockAccount.getUpdatedAt());
 		List<Account> mockAccountList = new ArrayList<>();
 		mockAccountList.add(mockAccount);
 
 		List<AccountResponseDTO> mockDtoList = new ArrayList<>();
 		mockAccountList.forEach(a -> mockDtoList
-				.add(new AccountResponseDTO(a.getAccountNumber(), a.getAccountType(), a.getAccountBalance())));
+				.add(new AccountResponseDTO(a.getAccountNumber(), a.getNickname(), a.getAccountType(), a.getAccountBalance(), a.getCreatedAt(), a.getUpdatedAt())));
 		
 		Mockito.when(accountService.getAllAccountsByUsername(testUsername)).thenReturn(mockAccountList);
 		Mockito.when(dtoMapper.toAccountResponseDto(mockAccount)).thenReturn(mockDto);
@@ -105,7 +109,8 @@ class AccountControllerTest {
 	@Test
 	void testSaveAccount() throws Exception {
 		Account mockAccount = new Account(12345L, CHECKING_ACCOUNT, 100.00, 1L);
-		AccountResponseDTO mockDto = new AccountResponseDTO(12345L, CHECKING_ACCOUNT, 100.00);
+		mockAccount.setNickname("my checking");
+		AccountResponseDTO mockDto = new AccountResponseDTO(12345L, mockAccount.getNickname(), CHECKING_ACCOUNT, 100.00, mockAccount.getCreatedAt(), mockAccount.getUpdatedAt());
 		
 		Mockito.when(accountService.saveAccount(mockAccount)).thenReturn(mockAccount);
 		Mockito.when(dtoMapper.toAccountResponseDto(mockAccount)).thenReturn(mockDto);
@@ -120,7 +125,8 @@ class AccountControllerTest {
 	@Test
 	void testUpdateAccount() throws Exception {
 		Account mockAccount = new Account(12345L, CHECKING_ACCOUNT, 100.00, 1L);
-		AccountDTO mockDto = new AccountDTO(12345L, CHECKING_ACCOUNT, 100.00, 1L);
+		mockAccount.setNickname("my checking");
+		AccountDTO mockDto = new AccountDTO(12345L, mockAccount.getNickname(), CHECKING_ACCOUNT, 100.00, 1L);
 		
 		Mockito.when(accountService.updateAccount(any(Account.class))).thenReturn(mockAccount);
 		Mockito.when(dtoMapper.toAccount(mockDto)).thenReturn(mockAccount);
@@ -137,7 +143,8 @@ class AccountControllerTest {
 	@Test
 	void testUpdateAccountConflict() throws Exception {
 		Account mockAccount = new Account(12345L, CHECKING_ACCOUNT, 100.00, 1L);
-		AccountDTO mockDto = new AccountDTO(12345L, CHECKING_ACCOUNT, 100.00, 1L);
+		mockAccount.setNickname("my checking");
+		AccountDTO mockDto = new AccountDTO(12345L, mockAccount.getNickname(), CHECKING_ACCOUNT, 100.00, 1L);
 		
 		Mockito.when(accountService.updateAccount(any(Account.class))).thenReturn(mockAccount);
 		Mockito.when(dtoMapper.toAccount(mockDto)).thenReturn(mockAccount);
@@ -149,9 +156,10 @@ class AccountControllerTest {
 	}
 	
 	@Test
-	void testUpdateAccountBadRequest() throws JsonProcessingException, Exception {
+	void testUpdateAccountBadRequest() throws Exception {
 		Account mockAccount = new Account(12345L, CHECKING_ACCOUNT, 100.00, 1L);
-		AccountDTO mockDto = new AccountDTO(12345L, CHECKING_ACCOUNT, 100.00, 1L);
+		mockAccount.setNickname("my checking");
+		AccountDTO mockDto = new AccountDTO(12345L, mockAccount.getNickname(), CHECKING_ACCOUNT, 100.00, 1L);
 
 		Mockito.when(accountService.updateAccount(any(Account.class))).thenReturn(null);
 		Mockito.when(dtoMapper.toAccount(mockDto)).thenReturn(mockAccount);
@@ -185,7 +193,7 @@ class AccountControllerTest {
 	}
 	
 	@Test
-	void testTransferFundsBetweenAccounts() throws JsonProcessingException, Exception {
+	void testTransferFundsBetweenAccounts() throws Exception {
 		TransferRequest mockTransferReq = new TransferRequest(12345L, 45678L, 50.00);
 		
 		Mockito.doNothing().when(accountService).transferFundsBetweenAccounts(mockTransferReq.sourceAccountNumber(), 

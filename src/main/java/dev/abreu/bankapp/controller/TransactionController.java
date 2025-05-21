@@ -76,13 +76,13 @@ public class TransactionController {
     /**
      * Updates an existing transaction.
      *
-     * @param txnId the transaction ID
+     * @param txnId          the transaction ID
      * @param transactionDto the transaction details to update
      * @return the updated transaction
      */
     @PutMapping(path = "/update/{txnId}")
     public ResponseEntity<TransactionDTO> updateTransaction(@PathVariable("txnId") Long txnId,
-                                                                    @RequestBody TransactionDTO transactionDto) {
+                                                            @RequestBody TransactionDTO transactionDto) {
         log.info("Performing PUT method to update details for transaction with id: {}", txnId);
 
         if (!transactionDto.transactionId().equals(txnId)) {
@@ -112,9 +112,9 @@ public class TransactionController {
         boolean success = transactionService.deleteTransactionById(txnId);
 
         if (Boolean.TRUE.equals(success)) {
-            return new ResponseEntity<>("Transaction successfully deleted...", HttpStatus.OK);
+            return new ResponseEntity<>("{\"success\": \"Transaction successfully deleted...\"}", HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("Transaction could not be deleted, please check backend...", HttpStatus.CONFLICT);
+            return new ResponseEntity<>("{\"error\": \"Transaction could not be deleted...\"}", HttpStatus.CONFLICT);
         }
     }
 

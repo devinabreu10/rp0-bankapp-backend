@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static dev.abreu.bankapp.util.BankappConstants.ACCOUNT_DEPOSIT;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
@@ -41,27 +42,27 @@ class TransactionDaoTest {
 	private TransactionDaoImpl transactionDao;
 
 	@BeforeEach
-	public void setup() {
+	void setup() {
 		when(connectionUtilMock.getConnection()).thenReturn(connectionMock);
 	}
 
     @Test
     void testFindTransactionById() throws SQLException {
         Long transactionId = 1L;
-        Transaction expectedTransaction = new Transaction("Account Deposit", 100.00, "notes", 12345L);
+        Transaction expectedTransaction = new Transaction(ACCOUNT_DEPOSIT, 100.00, "notes", 12345L);
         LocalDateTime testDateTime = LocalDateTime.of(2024, 4, 24, 15, 30);
         expectedTransaction.setTransactionId(transactionId);
-        expectedTransaction.setTransactionDate(testDateTime);
+        expectedTransaction.setCreatedAt(testDateTime);
 
         when(connectionMock.prepareStatement(anyString())).thenReturn(preparedStatementMock);
         when(preparedStatementMock.executeQuery()).thenReturn(resultSetMock);
         when(resultSetMock.next()).thenReturn(true);
         when(resultSetMock.getLong("transaction_id")).thenReturn(1L);
-		when(resultSetMock.getString("transaction_type")).thenReturn("Account Deposit");
+		when(resultSetMock.getString("transaction_type")).thenReturn(ACCOUNT_DEPOSIT);
 		when(resultSetMock.getDouble("transaction_amount")).thenReturn(100.00);
 		when(resultSetMock.getString("transaction_notes")).thenReturn("notes");
 		when(resultSetMock.getLong("account_number")).thenReturn(12345L);
-		when(resultSetMock.getTimestamp("transaction_date")).thenReturn(Timestamp.valueOf(testDateTime));
+		when(resultSetMock.getTimestamp("created_at")).thenReturn(Timestamp.valueOf(testDateTime));
 
         Optional<Transaction> result = transactionDao.findTransactionById(transactionId);
 
@@ -98,10 +99,10 @@ class TransactionDaoTest {
     void testFindAllTransactionsByAcctNo() throws SQLException {
     	Long transactionId = 1L;
 		List<Transaction> expectedTransactionsList = new ArrayList<>();
-		Transaction expectedTransaction = new Transaction("Account Deposit", 100.00, "notes", 12345L);
+		Transaction expectedTransaction = new Transaction(ACCOUNT_DEPOSIT, 100.00, "notes", 12345L);
 		LocalDateTime testDateTime = LocalDateTime.of(2024, 4, 24, 15, 30);
         expectedTransaction.setTransactionId(transactionId);
-        expectedTransaction.setTransactionDate(testDateTime);
+        expectedTransaction.setCreatedAt(testDateTime);
 		expectedTransactionsList.add(expectedTransaction);
 		
 		when(connectionMock.prepareStatement(anyString())).thenReturn(preparedStatementMock);
@@ -109,11 +110,11 @@ class TransactionDaoTest {
 		when(resultSetMock.next()).thenReturn(true, false); // false needed to break out of loop
 		
         when(resultSetMock.getLong("transaction_id")).thenReturn(1L);
-		when(resultSetMock.getString("transaction_type")).thenReturn("Account Deposit");
+		when(resultSetMock.getString("transaction_type")).thenReturn(ACCOUNT_DEPOSIT);
 		when(resultSetMock.getDouble("transaction_amount")).thenReturn(100.00);
 		when(resultSetMock.getString("transaction_notes")).thenReturn("notes");
 		when(resultSetMock.getLong("account_number")).thenReturn(12345L);
-		when(resultSetMock.getTimestamp("transaction_date")).thenReturn(Timestamp.valueOf(testDateTime));
+		when(resultSetMock.getTimestamp("created_at")).thenReturn(Timestamp.valueOf(testDateTime));
 		
 		List<Transaction> result = transactionDao.findAllTransactionsByAcctNo(transactionId);
 		
@@ -132,7 +133,7 @@ class TransactionDaoTest {
     
     @Test
     void testSaveTransaction() throws SQLException {
-		Transaction newTransaction = new Transaction("Account Deposit", 100.00, "notes", 12345L);
+		Transaction newTransaction = new Transaction(ACCOUNT_DEPOSIT, 100.00, "notes", 12345L);
 		newTransaction.setTransactionId(1L);
 
 		when(connectionMock.prepareStatement(anyString())).thenReturn(preparedStatementMock);
@@ -145,7 +146,7 @@ class TransactionDaoTest {
     
     @Test
     void testSaveTransactionSQLException() throws SQLException {
-    	Transaction newTransaction = new Transaction("Account Deposit", 100.00, "notes", 12345L);
+    	Transaction newTransaction = new Transaction(ACCOUNT_DEPOSIT, 100.00, "notes", 12345L);
 		newTransaction.setTransactionId(1L);
 		when(connectionMock.prepareStatement(anyString())).thenReturn(preparedStatementMock);
 		when(preparedStatementMock.executeUpdate()).thenThrow(SQLException.class);
@@ -155,7 +156,7 @@ class TransactionDaoTest {
     
     @Test
     void testUpdateTransaction() throws SQLException {
-		Transaction updatedTransaction = new Transaction("Account Deposit", 100.00, "notes", 12345L);
+		Transaction updatedTransaction = new Transaction(ACCOUNT_DEPOSIT, 100.00, "notes", 12345L);
 		updatedTransaction.setTransactionId(1L);
 
 		when(connectionMock.prepareStatement(anyString())).thenReturn(preparedStatementMock);
@@ -168,7 +169,7 @@ class TransactionDaoTest {
     
     @Test
     void testUpdateTransactionSQLException() throws SQLException {
-		Transaction updatedTransaction = new Transaction("Account Deposit", 100.00, "notes", 12345L);
+		Transaction updatedTransaction = new Transaction(ACCOUNT_DEPOSIT, 100.00, "notes", 12345L);
 		updatedTransaction.setTransactionId(1L);
 		when(connectionMock.prepareStatement(anyString())).thenReturn(preparedStatementMock);
 		when(preparedStatementMock.executeUpdate()).thenThrow(SQLException.class);

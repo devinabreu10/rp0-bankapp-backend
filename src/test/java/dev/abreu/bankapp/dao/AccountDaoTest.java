@@ -11,14 +11,14 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static dev.abreu.bankapp.util.BankappConstants.CHECKING_ACCOUNT;
+import static dev.abreu.bankapp.util.BankappConstants.SAVINGS_ACCOUNT;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
@@ -50,14 +50,19 @@ class AccountDaoTest {
 	@Test
 	void testFindAccountByAcctNo() throws SQLException {
 		Long acctNo = 12345L;
-		Account expectedAccount = new Account(12345L, "Checking", 1000.00, 1L);
+		Account expectedAccount = new Account(12345L, CHECKING_ACCOUNT, 1000.00, 1L);
+		LocalDateTime testDateTime = LocalDateTime.of(2024, 4, 24, 15, 30);
+		expectedAccount.setCreatedAt(testDateTime);
 
 		when(connectionMock.prepareStatement(anyString())).thenReturn(preparedStatementMock);
 		when(preparedStatementMock.executeQuery()).thenReturn(resultSetMock);
 		when(resultSetMock.next()).thenReturn(true);
 		when(resultSetMock.getLong("account_number")).thenReturn(12345L);
-		when(resultSetMock.getString("account_type")).thenReturn("Checking");
+		when(resultSetMock.getString("nickname")).thenReturn("my checking");
+		when(resultSetMock.getString("account_type")).thenReturn(CHECKING_ACCOUNT);
 		when(resultSetMock.getDouble("account_balance")).thenReturn(1000.00);
+		when(resultSetMock.getTimestamp("created_at")).thenReturn(Timestamp.valueOf(testDateTime));
+		when(resultSetMock.getTimestamp("updated_at")).thenReturn(Timestamp.valueOf(testDateTime));
 		when(resultSetMock.getLong("customer_id")).thenReturn(1L);
 
 		Optional<Account> result = accountDao.findAccountByAcctNo(acctNo);
@@ -89,17 +94,22 @@ class AccountDaoTest {
 	void testFindAllAccountsByUsername() throws SQLException {
 		String username = "testUser";
 		List<Account> expectedAccountsList = new ArrayList<>();
-		Account expectedAccount = new Account(12345L, "Checking", 1000.00, 1L);
+		Account expectedAccount = new Account(12345L, SAVINGS_ACCOUNT, 1000.00, 1L);
+		LocalDateTime testDateTime = LocalDateTime.of(2024, 4, 24, 15, 30);
+		expectedAccount.setCreatedAt(testDateTime);
 		expectedAccountsList.add(expectedAccount);
 
 		when(connectionMock.prepareStatement(anyString())).thenReturn(preparedStatementMock);
 		when(preparedStatementMock.executeQuery()).thenReturn(resultSetMock);
 		when(resultSetMock.next()).thenReturn(true, false); // false needed to break out of loop
 
-		when(resultSetMock.getLong("acc_no")).thenReturn(12345L);
-		when(resultSetMock.getString("acc_typ")).thenReturn("Checking");
-		when(resultSetMock.getDouble("acc_bal")).thenReturn(1000.00);
-		when(resultSetMock.getLong("cust_id")).thenReturn(1L);
+		when(resultSetMock.getLong("account_number")).thenReturn(12345L);
+		when(resultSetMock.getString("nickname")).thenReturn("my savings");
+		when(resultSetMock.getString("account_type")).thenReturn(SAVINGS_ACCOUNT);
+		when(resultSetMock.getDouble("account_balance")).thenReturn(1000.00);
+		when(resultSetMock.getTimestamp("created_at")).thenReturn(Timestamp.valueOf(testDateTime));
+		when(resultSetMock.getTimestamp("updated_at")).thenReturn(Timestamp.valueOf(testDateTime));
+		when(resultSetMock.getLong("customer_id")).thenReturn(1L);
 
 		List<Account> result = accountDao.findAllAccountsByUsername(username);
 

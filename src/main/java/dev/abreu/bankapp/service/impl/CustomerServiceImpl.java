@@ -19,7 +19,7 @@ public class CustomerServiceImpl implements CustomerService {
 	
 	private static final Logger log = LogManager.getLogger(CustomerServiceImpl.class);
 	
-	private CustomerDao customerDao;
+	private final CustomerDao customerDao;
 
 	public CustomerServiceImpl(CustomerDao customerDao) {
 		this.customerDao = customerDao;

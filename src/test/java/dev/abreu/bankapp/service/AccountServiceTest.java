@@ -206,4 +206,15 @@ class AccountServiceTest {
 				() -> accountService.withdrawFundsFromAccount(12345L, 150.00));
 	}
 
+	@Test
+	void testAccountToString() {
+		Optional<Account> mockAccountOpt = Optional.of(new Account(12345L, CHECKING_ACCOUNT, 100.00, 1L));
+
+		Mockito.when(accountDao.findAccountByAcctNo(12345L)).thenReturn(mockAccountOpt);
+
+		String result = String.valueOf(accountService.getAccountByAcctNo(12345L));
+
+		assertEquals(mockAccountOpt.orElseThrow().toString(), result);
+	}
+
 }

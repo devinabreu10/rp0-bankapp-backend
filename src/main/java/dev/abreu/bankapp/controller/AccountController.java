@@ -138,7 +138,7 @@ public class AccountController {
         accountService.transferFundsBetweenAccounts(transferRequest.sourceAccountNumber(),
         		transferRequest.targetAccountNumber(), transferRequest.amount());
 
-        return new ResponseEntity<>("Successfully transferred funds between accounts...", HttpStatus.OK);
+        return new ResponseEntity<>("{\"success\": \"Successfully transferred funds between accounts...\"}", HttpStatus.OK);
 	}
 
 	/**
@@ -153,7 +153,7 @@ public class AccountController {
 		log.info("Performing PUT method to deposit funds into Account with acctNo: {}", acctNo);
 		accountService.depositFundsIntoAccount(acctNo, amount);
 
-		return new ResponseEntity<>("Successfully deposited funds into account...", HttpStatus.OK);
+		return new ResponseEntity<>("{\"success\": \"Successfully deposited funds into account...\"}", HttpStatus.OK);
 	}
 
 	/**
@@ -169,6 +169,6 @@ public class AccountController {
 		log.info("Performing PUT method to withdraw funds from Account with acctNo: {}", acctNo);
 		accountService.withdrawFundsFromAccount(acctNo, amount);
 
-		return new ResponseEntity<>("Successfully withdrew funds from account...", HttpStatus.OK);
+		return new ResponseEntity<>("{\"success\": \"Successfully withdrew funds from account...\"}", HttpStatus.OK);
 	}
 }

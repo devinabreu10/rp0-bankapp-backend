@@ -19,6 +19,6 @@ public class BankappConstants {
 	public static final String JWT_RP0_BANKAPP_ISSUER = "rp0-bankapp";
 	
 	//Caught exception statements
-	public static final String SQL_EXCEPTION_CAUGHT= "SQLException Caught: {}";
+	public static final String SQL_EXCEPTION_CAUGHT= "SQLException caught in ";
 
 }

@@ -8,7 +8,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +19,13 @@ import static dev.abreu.bankapp.util.BankappQueryConstants.*;
 public class TransactionDaoImpl implements TransactionDao {
 	
 	private static final Logger log = LogManager.getLogger(TransactionDaoImpl.class);
+
+	private static final String TRANSACTION_ID = "transaction_id";
+	private static final String TYPE = "transaction_type";
+	private static final String AMOUNT = "transaction_amount";
+	private static final String NOTES = "transaction_notes";
+	private static final String ACCT_NO = "account_number";
+	private static final String CREATED_AT = "created_at";
 
 	private final ConnectionUtil connUtil;
 
@@ -39,20 +45,18 @@ public class TransactionDaoImpl implements TransactionDao {
 			ResultSet rs = prepStmt.executeQuery();
 			
 			if(rs.next()) {
-				transaction.setTransactionId(rs.getLong("transaction_id"));
-				transaction.setTransactionType(rs.getString("transaction_type"));
-				transaction.setTransactionAmount(rs.getDouble("transaction_amount"));
-				transaction.setTransactionNotes(rs.getString("transaction_notes"));
-				transaction.setAccountNumber(rs.getLong("account_number"));
-				Timestamp ts = rs.getTimestamp("transaction_date");
-				LocalDateTime localDtTime = ts.toLocalDateTime();
-				transaction.setTransactionDate(localDtTime);
+				transaction.setTransactionId(rs.getLong(TRANSACTION_ID));
+				transaction.setTransactionType(rs.getString(TYPE));
+				transaction.setTransactionAmount(rs.getDouble(AMOUNT));
+				transaction.setTransactionNotes(rs.getString(NOTES));
+				transaction.setAccountNumber(rs.getLong(ACCT_NO));
+				transaction.setCreatedAt(rs.getTimestamp(CREATED_AT).toLocalDateTime());
 			} else {
 				return Optional.empty();
 			}
 			
 		} catch(SQLException e) {
-			log.error(SQL_EXCEPTION_CAUGHT, e.getMessage());
+			log.error(SQL_EXCEPTION_CAUGHT + "findTransactionById: {}", e.getMessage());
 		}
 		
 		return Optional.of(transaction);
@@ -72,20 +76,18 @@ public class TransactionDaoImpl implements TransactionDao {
 			
 			while (rs.next()) {
 				transaction = new Transaction();
-				transaction.setTransactionId(rs.getLong("transaction_id"));
-				transaction.setTransactionType(rs.getString("transaction_type"));
-				transaction.setTransactionAmount(rs.getDouble("transaction_amount"));
-				transaction.setTransactionNotes(rs.getString("transaction_notes"));
-				transaction.setAccountNumber(rs.getLong("account_number"));
-				Timestamp ts = rs.getTimestamp("transaction_date");
-				LocalDateTime localDtTime = ts.toLocalDateTime();
-				transaction.setTransactionDate(localDtTime);
+				transaction.setTransactionId(rs.getLong(TRANSACTION_ID));
+				transaction.setTransactionType(rs.getString(TYPE));
+				transaction.setTransactionAmount(rs.getDouble(AMOUNT));
+				transaction.setTransactionNotes(rs.getString(NOTES));
+				transaction.setAccountNumber(rs.getLong(ACCT_NO));
+				transaction.setCreatedAt(rs.getTimestamp(CREATED_AT).toLocalDateTime());
 				
 				transactionsList.add(transaction);
 			}
 			
 		} catch(SQLException e) {
-			log.error(SQL_EXCEPTION_CAUGHT, e.getMessage());		
+			log.error(SQL_EXCEPTION_CAUGHT + "findAllTransactionsByAcctNo: {}", e.getMessage());
 		}
 		
 		return transactionsList;
@@ -101,7 +103,7 @@ public class TransactionDaoImpl implements TransactionDao {
 			stmt.setString(1, txn.getTransactionType());
 			stmt.setDouble(2, txn.getTransactionAmount());
 			stmt.setString(3, txn.getTransactionNotes());
-			stmt.setTimestamp(4, Timestamp.valueOf(txn.getTransactionDate()));
+			stmt.setTimestamp(4, Timestamp.valueOf(txn.getCreatedAt()));
 			stmt.setLong(5, txn.getAccountNumber());
 			
 			log.info("Create Transaction Query String: {}", CREATE_NEW_TRANSACTION_QUERY);
@@ -109,7 +111,7 @@ public class TransactionDaoImpl implements TransactionDao {
 			log.info("{} Row(s) Affected", rowsAffected);
 			
 		} catch (SQLException e) {
-			log.error(SQL_EXCEPTION_CAUGHT, e.getMessage());
+			log.error(SQL_EXCEPTION_CAUGHT + "saveTransaction: {}", e.getMessage());
 		}
 		
 		return txn;
@@ -132,7 +134,7 @@ public class TransactionDaoImpl implements TransactionDao {
 			log.info("{} Row(s) Updated", updateStatus);
 			
 		} catch (SQLException e) {
-			log.error(SQL_EXCEPTION_CAUGHT, e.getMessage());
+			log.error(SQL_EXCEPTION_CAUGHT + "updateTransaction: {}", e.getMessage());
 		}
 		
 		return txn;
@@ -163,7 +165,7 @@ public class TransactionDaoImpl implements TransactionDao {
 			}
 			
 		} catch (SQLException e) {
-			log.error(SQL_EXCEPTION_CAUGHT, e.getMessage());
+			log.error(SQL_EXCEPTION_CAUGHT + "deleteTransactionById: {}", e.getMessage());
 		}
 		
 		return success;
