@@ -2,7 +2,6 @@ package dev.abreu.bankapp.dao;
 
 import dev.abreu.bankapp.dao.impl.CustomerDaoImpl;
 import dev.abreu.bankapp.entity.Customer;
-import dev.abreu.bankapp.util.ConnectionUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 class CustomerDaoTest {
 
 	@Mock
-	private ConnectionUtil connectionUtilMock;
+	private DataSource dataSourceMock;
 
 	@Mock
 	private Connection connectionMock;
@@ -43,8 +43,8 @@ class CustomerDaoTest {
 	private CustomerDaoImpl customerDao;
 
 	@BeforeEach
-	void setup() {
-		when(connectionUtilMock.getConnection()).thenReturn(connectionMock);
+	void setup() throws SQLException {
+		when(dataSourceMock.getConnection()).thenReturn(connectionMock);
 	}
 
 	@Test

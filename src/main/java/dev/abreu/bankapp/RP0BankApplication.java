@@ -1,11 +1,14 @@
 package dev.abreu.bankapp;
 
-import dev.abreu.bankapp.util.ConnectionUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
+
+import javax.sql.DataSource;
 
 @SpringBootApplication
 public class RP0BankApplication {
@@ -17,13 +20,18 @@ public class RP0BankApplication {
         log.info("RP0 Bank Application has STARTED...");
     }
 
-    /**
-     * This bean provides a connection utility instance that can be used throughout the application.
-     *
-     * @return the singleton instance of the ConnectionUtil class
-     */
     @Bean
-    public ConnectionUtil connUtil() {
-        return ConnectionUtil.getConnectionUtil();
+    public DataSource dataSource(
+            @Value("${spring.datasource.url}") String dbUrl,
+            @Value("${spring.datasource.username}") String dbUser,
+            @Value("${spring.datasource.password}") String dbPassword,
+            @Value("${spring.datasource.driver-class-name}") String driverClassName
+    ) {
+        return DataSourceBuilder.create()
+                .url(dbUrl)
+                .username(dbUser)
+                .password(dbPassword)
+                .driverClassName(driverClassName)
+                .build();
     }
 }

@@ -3,11 +3,11 @@ package dev.abreu.bankapp.dao.impl;
 import dev.abreu.bankapp.dao.AccountDao;
 import dev.abreu.bankapp.entity.Account;
 import dev.abreu.bankapp.util.AccountNumberGenerator;
-import dev.abreu.bankapp.util.ConnectionUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,17 +29,17 @@ public class AccountDaoImpl implements AccountDao {
 	private static final String UPDATED_AT = "updated_at";
 	private static final String CUSTOMER_ID = "customer_id";
 
-	private final ConnectionUtil connUtil;
+	private final DataSource dataSource;
 
-	public AccountDaoImpl(ConnectionUtil connUtil) {
-		this.connUtil = connUtil;
+	public AccountDaoImpl(DataSource dataSource) {
+		this.dataSource = dataSource;
 	}
 
 	@Override
 	public Optional<Account> findAccountByAcctNo(Long acctNo) {
 		Account account = new Account();
 
-		try(Connection conn = connUtil.getConnection(); 
+		try(Connection conn = dataSource.getConnection();
 				PreparedStatement prepStmt = conn.prepareStatement(SELECT_ACCOUNTS_BY_ACCTNO_QUERY)) {
 
 			prepStmt.setLong(1, acctNo);
@@ -64,7 +64,7 @@ public class AccountDaoImpl implements AccountDao {
 		List<Account> accountsList = new ArrayList<>();
 		Account account;
 
-		try(Connection conn = connUtil.getConnection();
+		try(Connection conn = dataSource.getConnection();
 				PreparedStatement prepStmt = conn.prepareStatement(SELECT_ALL_ACCOUNTS_BY_USERNAME_QUERY)) {
 
 			prepStmt.setString(1, username);
@@ -102,7 +102,7 @@ public class AccountDaoImpl implements AccountDao {
 		account.setAccountNumber(accountNumber);
 		log.info("Generated unique account number: {}", accountNumber);
 
-		try(Connection conn = connUtil.getConnection(); 
+		try(Connection conn = dataSource.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(CREATE_NEW_ACCOUNT_QUERY)) {
 
 			stmt.setLong(1, account.getAccountNumber());
@@ -129,7 +129,7 @@ public class AccountDaoImpl implements AccountDao {
 
 		log.info("Entering updateAccount method...");
 
-		try(Connection conn = connUtil.getConnection(); 
+		try(Connection conn = dataSource.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(UPDATE_ACCOUNT_QUERY)) {
 
 			stmt.setString(1, account.getAccountType());
@@ -155,7 +155,7 @@ public class AccountDaoImpl implements AccountDao {
 
 		boolean success = false;
 
-		try(Connection conn = connUtil.getConnection(); 
+		try(Connection conn = dataSource.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(DELETE_ACCOUNT_BY_ACCTNO_QUERY)) {
 			conn.setAutoCommit(false);
 

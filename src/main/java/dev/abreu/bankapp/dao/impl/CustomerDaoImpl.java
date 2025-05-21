@@ -2,11 +2,11 @@ package dev.abreu.bankapp.dao.impl;
 
 import dev.abreu.bankapp.dao.CustomerDao;
 import dev.abreu.bankapp.entity.Customer;
-import dev.abreu.bankapp.util.ConnectionUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,18 +26,18 @@ public class CustomerDaoImpl implements CustomerDao {
 	private static final String USERNAME = "username";
 	private static final String PASSWRD = "passwrd";
 	private static final String ADDRESS = "address";
-	
-	private final ConnectionUtil connUtil;
 
-    public CustomerDaoImpl(ConnectionUtil connUtil) {
-        this.connUtil = connUtil;
+	private final DataSource dataSource;
+
+    public CustomerDaoImpl(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     @Override
 	public Optional<Customer> findByUsername(String username) {
 		Customer customer = new Customer();
 		
-		try(Connection conn = connUtil.getConnection(); 
+		try(Connection conn = dataSource.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(SELECT_CUSTOMERS_BY_USERNAME_QUERY)) {
 			
 			stmt.setString(1, username);
@@ -61,7 +61,7 @@ public class CustomerDaoImpl implements CustomerDao {
 	public Optional<Customer> findById(Long customerId) {
 		Customer customer = new Customer();
 		
-		try(Connection conn = connUtil.getConnection(); 
+		try(Connection conn = dataSource.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(SELECT_CUSTOMERS_BY_ID_QUERY)) {
 			
 			stmt.setLong(1, customerId);
@@ -85,7 +85,7 @@ public class CustomerDaoImpl implements CustomerDao {
 	public List<Customer> findAllCustomers() {
 		List<Customer> customerList = new ArrayList<>();
 		
-		try(Connection conn = connUtil.getConnection(); Statement stmt = conn.createStatement()) {
+		try(Connection conn = dataSource.getConnection(); Statement stmt = conn.createStatement()) {
 
 			ResultSet resultSet = stmt.executeQuery(SELECT_ALL_CUSTOMERS_QUERY);
 			
@@ -106,7 +106,7 @@ public class CustomerDaoImpl implements CustomerDao {
 	public boolean existsByUsername(String username) {
 		boolean usernameExists = false;
 		
-		try(Connection conn = connUtil.getConnection(); 
+		try(Connection conn = dataSource.getConnection();
 				PreparedStatement prepStmt = conn.prepareStatement(SELECT_CUSTOMERS_BY_USERNAME_QUERY)) {
 			
 			prepStmt.setString(1, username);
@@ -129,7 +129,7 @@ public class CustomerDaoImpl implements CustomerDao {
 		
 		log.info("Entering saveCustomer method...");
 		
-		try(Connection conn = connUtil.getConnection(); 
+		try(Connection conn = dataSource.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(CREATE_CUSTOMER_QUERY)) {
 			
 			stmt.setString(1, customer.getFirstName());
@@ -154,7 +154,7 @@ public class CustomerDaoImpl implements CustomerDao {
 		
 		log.info("Entering updateCustomer method...");
 		
-		try(Connection conn = connUtil.getConnection(); 
+		try(Connection conn = dataSource.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(UPDATE_CUSTOMER_QUERY)) {
 			
 			stmt.setString(1, customer.getFirstName());
@@ -180,7 +180,7 @@ public class CustomerDaoImpl implements CustomerDao {
 		
 		boolean success = false;
 		
-		try(Connection conn = connUtil.getConnection(); 
+		try(Connection conn = dataSource.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(DELETE_CUSTOMER_BY_USERNAME_QUERY)) {
 			conn.setAutoCommit(false);
 			
@@ -211,7 +211,7 @@ public class CustomerDaoImpl implements CustomerDao {
 		
 		boolean success = false;
 		
-		try(Connection conn = connUtil.getConnection(); 
+		try(Connection conn = dataSource.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(DELETE_CUSTOMER_BY_ID_QUERY)) {
 			conn.setAutoCommit(false);
 			
