@@ -1,7 +1,5 @@
 package dev.abreu.bankapp.dto;
 
-import java.time.LocalDateTime;
-
 /**
  * Transaction DTO (Data Transfer Object) to prepare Transaction object to be sent in HTTP
  * request and received in a response
@@ -13,6 +11,5 @@ public record TransactionDTO(
         String transactionType,
         double transactionAmount,
         String transactionNotes,
-        LocalDateTime transactionDate,
         Long accountNumber) {
 }

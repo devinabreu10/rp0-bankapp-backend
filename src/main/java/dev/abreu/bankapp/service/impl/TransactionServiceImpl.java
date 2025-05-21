@@ -19,8 +19,8 @@ public class TransactionServiceImpl implements TransactionService {
 	
 	private static final Logger log = LogManager.getLogger(TransactionServiceImpl.class);
 	
-	private TransactionDao transactionDao;
-	private AccountDao accountDao;
+	private final TransactionDao transactionDao;
+	private final AccountDao accountDao;
 
 	public TransactionServiceImpl(TransactionDao transactionDao, AccountDao accountDao) {
 		this.transactionDao = transactionDao;

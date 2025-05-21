@@ -1,28 +1,23 @@
 package dev.abreu.bankapp.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
-import java.util.Optional;
-
+import dev.abreu.bankapp.dao.AccountDao;
+import dev.abreu.bankapp.dao.CustomerDao;
+import dev.abreu.bankapp.dao.TransactionDao;
+import dev.abreu.bankapp.entity.Account;
+import dev.abreu.bankapp.entity.Transaction;
+import dev.abreu.bankapp.exception.ResourceNotFoundException;
+import dev.abreu.bankapp.service.impl.TransactionServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import dev.abreu.bankapp.dao.AccountDao;
-import dev.abreu.bankapp.dao.CustomerDao;
-import dev.abreu.bankapp.dao.TransactionDao;
-import dev.abreu.bankapp.exception.ResourceNotFoundException;
-import dev.abreu.bankapp.entity.Account;
-import dev.abreu.bankapp.entity.Transaction;
-import dev.abreu.bankapp.service.impl.TransactionServiceImpl;
-import dev.abreu.bankapp.util.BankappConstants;
+import java.util.List;
+import java.util.Optional;
+
+import static dev.abreu.bankapp.util.BankappConstants.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(classes =  TransactionServiceImpl.class)
 class TransactionServiceTest {
@@ -41,7 +36,7 @@ class TransactionServiceTest {
 
 	@Test
 	void testGetTransactionById() {
-		Transaction txn = new Transaction(BankappConstants.ACCOUNT_DEPOSIT, 100.00, "Deposited $100.00", 12345L);
+		Transaction txn = new Transaction(ACCOUNT_DEPOSIT, 100.00, "Deposited $100.00", 12345L);
 		
 		Mockito.when(transactionDao.findTransactionById(1L)).thenReturn(Optional.of(txn));
 		
@@ -60,10 +55,10 @@ class TransactionServiceTest {
 
 	@Test
 	void testGetAllTransactionsByAcctNo() {
-		Account mockAccount = new Account(12345L, BankappConstants.CHECKING_ACCOUNT, 100.00, 1L);
+		Account mockAccount = new Account(12345L, CHECKING_ACCOUNT, 100.00, 1L);
 		List<Transaction> txnList = List.of(
-				new Transaction(BankappConstants.ACCOUNT_DEPOSIT, 100.00, "Deposited $100.00", 12345L),
-				new Transaction(BankappConstants.ACCOUNT_WITHDRAW, 50.00, "Withdrawed $50.00", 12345L));
+				new Transaction(ACCOUNT_DEPOSIT, 100.00, "Deposited $100.00", 12345L),
+				new Transaction(ACCOUNT_WITHDRAW, 50.00, "Withdrawed $50.00", 12345L));
 		
 		Mockito.when(accountDao.findAccountByAcctNo(12345L)).thenReturn(Optional.of(mockAccount));
 		
@@ -84,7 +79,7 @@ class TransactionServiceTest {
 
 	@Test
 	void testSaveTransaction() {
-		Transaction txn = new Transaction(BankappConstants.ACCOUNT_DEPOSIT, 100.00, "Deposited $100.00", 12345L);
+		Transaction txn = new Transaction(ACCOUNT_DEPOSIT, 100.00, "Deposited $100.00", 12345L);
 		
 		Mockito.when(transactionDao.saveTransaction(txn)).thenReturn(txn);
 		
@@ -95,8 +90,8 @@ class TransactionServiceTest {
 
 	@Test
 	void testUpdateTransactionDetails() {
-		Transaction txn = new Transaction(BankappConstants.ACCOUNT_DEPOSIT, 100.00, "Deposited $100.00", 12345L);
-		Transaction txnUpdate = new Transaction(BankappConstants.ACCOUNT_DEPOSIT, 75.00, "TEST", 12345L);
+		Transaction txn = new Transaction(ACCOUNT_DEPOSIT, 100.00, "Deposited $100.00", 12345L);
+		Transaction txnUpdate = new Transaction(ACCOUNT_DEPOSIT, 75.00, "TEST", 12345L);
 		
 		Mockito.when(transactionDao.updateTransaction(txn)).thenReturn(txnUpdate);
 		
@@ -131,6 +126,15 @@ class TransactionServiceTest {
 		boolean result = transactionService.deleteTransactionById(1L);
 		
 		assertFalse(result);
+	}
+
+	@Test
+	void testTransactionToString() {
+		Transaction txn = new Transaction(ACCOUNT_DEPOSIT, 100.00, "Deposited $100.00", 12345L);
+
+		String result = String.valueOf(txn);
+
+		assertEquals(txn.toString(), result);
 	}
 
 }

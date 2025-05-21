@@ -17,18 +17,27 @@ public class Transaction {
 	private String transactionType;
 	private double transactionAmount;
 	private String transactionNotes;
-	private LocalDateTime transactionDate;
+	private LocalDateTime createdAt;
 	private Long accountNumber;
 
 	public Transaction() {
 		
 	}
-	
+
 	public Transaction(String type, double amount, String notes, Long accountNumber) {
 		this.transactionType = type;
 		this.transactionAmount = amount;
 		this.transactionNotes = notes;
-		this.transactionDate = LocalDateTime.now();
+		this.createdAt = LocalDateTime.now();
+		this.accountNumber = accountNumber;
+	}
+	
+	public Transaction(Long id, String type, double amount, String notes, Long accountNumber) {
+		this.transactionId = id;
+		this.transactionType = type;
+		this.transactionAmount = amount;
+		this.transactionNotes = notes;
+		this.createdAt = LocalDateTime.now();
 		this.accountNumber = accountNumber;
 	}
 
@@ -72,19 +81,19 @@ public class Transaction {
 		this.transactionNotes = transactionNotes;
 	}
 
-	public LocalDateTime getTransactionDate() {
-		return transactionDate;
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
 	}
 
-	public void setTransactionDate(LocalDateTime transactionDate) {
-		this.transactionDate = transactionDate;
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
 	}
 
 	@Override
 	public String toString() {
 		return "Transaction [transactionId=" + transactionId + ", transactionType=" + transactionType
 				+ ", transactionAmount=" + transactionAmount + ", transactionNotes=" + transactionNotes
-				+ ", transactionDate=" + transactionDate + "]";
+				+ ", createdAt=" + createdAt + "]";
 	}
 
 }

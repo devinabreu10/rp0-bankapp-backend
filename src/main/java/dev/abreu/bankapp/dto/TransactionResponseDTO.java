@@ -12,5 +12,5 @@ public record TransactionResponseDTO(
         String transactionType,
         double transactionAmount,
         String transactionNotes,
-        LocalDateTime transactionDate) {
+        LocalDateTime createdAt) {
 }
