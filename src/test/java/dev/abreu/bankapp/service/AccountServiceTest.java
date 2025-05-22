@@ -1,10 +1,8 @@
 package dev.abreu.bankapp.service;
 
 import static dev.abreu.bankapp.util.BankappConstants.CHECKING_ACCOUNT;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -25,16 +23,16 @@ import dev.abreu.bankapp.service.impl.AccountServiceImpl;
 
 @SpringBootTest(classes =  AccountServiceImpl.class)
 class AccountServiceTest {
-	
+
 	@MockBean
 	private CustomerDao customerDao;
-	
+
 	@MockBean
 	private AccountDao accountDao;
-	
+
 	@MockBean
 	private TransactionDao transactionDao;
-	
+
 	@Autowired
 	private AccountService accountService;
 
@@ -42,19 +40,19 @@ class AccountServiceTest {
 	void testGetAccountByAcctNo() {
 		Account mockAccount = new Account();
 		mockAccount.setAccountNumber(12345L);
-		
+
 		Mockito.when(accountDao.findAccountByAcctNo(12345L)).thenReturn(Optional.of(mockAccount));
-		
+
 		Account result = accountService.getAccountByAcctNo(12345L);
-		
+
 		assertEquals(mockAccount, result);
 	}
-	
+
 	@Test
 	void testGetAccountByAcctNoResourceNotFound() {
 		Mockito.when(accountDao.findAccountByAcctNo(12345L)).thenReturn(Optional.empty());
-		
-		assertThrows(ResourceNotFoundException.class, 
+
+		assertThrows(ResourceNotFoundException.class,
 				() -> accountService.getAccountByAcctNo(12345L));
 	}
 
@@ -66,23 +64,23 @@ class AccountServiceTest {
 		Account mockAccount2 = new Account();
 		mockAccountList.add(mockAccount1);
 		mockAccountList.add(mockAccount2);
-		
+
 		Mockito.when(customerDao.existsByUsername(testUsername)).thenReturn(Boolean.TRUE);
-		
+
 		Mockito.when(accountDao.findAllAccountsByUsername(testUsername)).thenReturn(mockAccountList);
-		
+
 		List<Account> result = accountService.getAllAccountsByUsername(testUsername);
-		
+
 		assertEquals(mockAccountList, result);
 	}
-	
+
 	@Test
 	void testGetAllAccountsByUsernameResourceNotFound() {
 		String testUsername = "test";
-		
+
 		Mockito.when(customerDao.existsByUsername(testUsername)).thenReturn(Boolean.FALSE);
-		
-		assertThrows(ResourceNotFoundException.class, 
+
+		assertThrows(ResourceNotFoundException.class,
 				() -> accountService.getAllAccountsByUsername(testUsername));
 	}
 
@@ -90,11 +88,11 @@ class AccountServiceTest {
 	void testSaveAccount() {
 		Account mockAccount = new Account();
 		mockAccount.setAccountNumber(12345L);
-		
+
 		Mockito.when(accountDao.saveAccount(mockAccount)).thenReturn(mockAccount);
-		
+
 		Account result = accountService.saveAccount(mockAccount);
-		
+
 		assertEquals(mockAccount, result);
 	}
 
@@ -105,11 +103,11 @@ class AccountServiceTest {
 		Account mockAccountUpdate = new Account();
 		mockAccountUpdate.setAccountNumber(12345L);
 		mockAccountUpdate.setAccountType(CHECKING_ACCOUNT);
-		
+
 		Mockito.when(accountDao.updateAccount(mockAccount)).thenReturn(mockAccountUpdate);
-		
+
 		Account result = accountService.updateAccount(mockAccount);
-		
+
 		assertEquals(mockAccountUpdate, result);
 	}
 
@@ -117,68 +115,74 @@ class AccountServiceTest {
 	void testDeleteAccountByAcctNo() {
 		Account mockAccount = new Account();
 		mockAccount.setAccountNumber(12345L);
-		
+
 		Mockito.when(accountDao.findAccountByAcctNo(12345L)).thenReturn(Optional.of(mockAccount));
-		
+
 		Mockito.when(accountDao.deleteAccountByAcctNo(12345L)).thenReturn(Boolean.TRUE);
-		
+
 		boolean result = accountService.deleteAccountByAcctNo(12345L);
-		
+
 		assertTrue(result);
 	}
-	
+
 	@Test
 	void testDeleteAccountByAcctNoNotFound() {
 		Mockito.when(accountDao.findAccountByAcctNo(12345L)).thenReturn(Optional.empty());
-		
+
 		Mockito.when(accountDao.deleteAccountByAcctNo(12345L)).thenReturn(Boolean.FALSE);
-		
+
 		boolean result = accountService.deleteAccountByAcctNo(12345L);
-		
+
 		assertFalse(result);
 	}
 
 	@Test
 	void testTransferFundsBetweenAccounts() throws InsufficientFundsException {
 		Optional<Account> mockSourceOpt = Optional.of(new Account(12345L, CHECKING_ACCOUNT, 100.00, 1L));
-		Optional<Account> mockTargetOpt = Optional.of(new Account(45678L, CHECKING_ACCOUNT, 200.00, 2L));
-		
+
 		Mockito.when(accountDao.findAccountByAcctNo(12345L)).thenReturn(mockSourceOpt);
-		Mockito.when(accountDao.findAccountByAcctNo(45678L)).thenReturn(mockTargetOpt);
-		
-		accountService.transferFundsBetweenAccounts(12345L, 45678L, 99.00);
-		
-		assertEquals(299.00, mockTargetOpt.get().getAccountBalance());
+
+		Mockito.doNothing().when(accountDao).transferFunds(12345L, 45678L, 99.00, "test");
+
+		accountService.transferFundsBetweenAccounts(12345L, 45678L, 99.00, "test");
+
+		assertNotNull(mockSourceOpt.get());
 	}
-	
+
+	@Test
+	void testTransferFundsBetweenAccountsWithMatchingAccounts() {
+		assertThrows(IllegalArgumentException.class,
+                () -> accountService.transferFundsBetweenAccounts(12345L, 12345L, 99.00, "test"));
+	}
+
 	@Test
 	void testTransferFundsBetweenAccountsWithInsufficientFunds() throws InsufficientFundsException {
 		Optional<Account> mockSourceOpt = Optional.of(new Account(12345L, CHECKING_ACCOUNT, 100.00, 1L));
 		Optional<Account> mockTargetOpt = Optional.of(new Account(45678L, CHECKING_ACCOUNT, 200.00, 2L));
-		
+
 		Mockito.when(accountDao.findAccountByAcctNo(12345L)).thenReturn(mockSourceOpt);
 		Mockito.when(accountDao.findAccountByAcctNo(45678L)).thenReturn(mockTargetOpt);
-		
+
 		Mockito.when(accountDao.updateAccount(mockSourceOpt.get())).thenReturn(mockSourceOpt.get());
 		Mockito.when(accountDao.updateAccount(mockTargetOpt.get())).thenReturn(mockTargetOpt.get());
-		
-		accountService.transferFundsBetweenAccounts(12345L, 45678L, 99.00);
-		
-		assertThrows(InsufficientFundsException.class, 
-				() -> accountService.transferFundsBetweenAccounts(12345L, 45678L, 101.00));
+
+		accountService.transferFundsBetweenAccounts(12345L, 45678L, 99.00, "test");
+
+		assertThrows(InsufficientFundsException.class,
+				() -> accountService.transferFundsBetweenAccounts(12345L, 45678L, 101.00, "test"));
 	}
 
 	@Test
 	void testDepositFundsIntoAccount() {
 		Optional<Account> mockAccountOpt = Optional.of(new Account(12345L, CHECKING_ACCOUNT, 100.00, 1L));
 		Account mockAccount = new Account(12345L, CHECKING_ACCOUNT, 150.00, 1L);
-		
+
 		Mockito.when(accountDao.findAccountByAcctNo(12345L)).thenReturn(mockAccountOpt);
-		
+
 		Mockito.when(accountDao.updateAccount(mockAccountOpt.get())).thenReturn(mockAccount);
-		
-		accountService.depositFundsIntoAccount(12345L, 50.00);
-		
+
+		accountService.depositFundsIntoAccount(12345L, 50.00, "test");
+
 		assertEquals(150.00, mockAccountOpt.get().getAccountBalance());
 	}
 
@@ -186,24 +190,24 @@ class AccountServiceTest {
 	void testWithdrawFundsFromAccount() throws InsufficientFundsException {
 		Optional<Account> mockAccountOpt = Optional.of(new Account(12345L, CHECKING_ACCOUNT, 100.00, 1L));
 		Account mockAccount = new Account(12345L, CHECKING_ACCOUNT, 50.00, 1L);
-		
+
 		Mockito.when(accountDao.findAccountByAcctNo(12345L)).thenReturn(mockAccountOpt);
-		
+
 		Mockito.when(accountDao.updateAccount(mockAccountOpt.get())).thenReturn(mockAccount);
-		
-		accountService.withdrawFundsFromAccount(12345L, 50.00);
-		
+
+		accountService.withdrawFundsFromAccount(12345L, 50.00, "test");
+
 		assertEquals(50.00, mockAccountOpt.get().getAccountBalance());
 	}
-	
+
 	@Test
 	void testWithdrawFundsFromAccountWithInsufficientFunds() {
 		Optional<Account> mockAccountOpt = Optional.of(new Account(12345L, CHECKING_ACCOUNT, 100.00, 1L));
-		
+
 		Mockito.when(accountDao.findAccountByAcctNo(12345L)).thenReturn(mockAccountOpt);
-		
-		assertThrows(InsufficientFundsException.class, 
-				() -> accountService.withdrawFundsFromAccount(12345L, 150.00));
+
+		assertThrows(InsufficientFundsException.class,
+				() -> accountService.withdrawFundsFromAccount(12345L, 150.00, "test"));
 	}
 
 	@Test

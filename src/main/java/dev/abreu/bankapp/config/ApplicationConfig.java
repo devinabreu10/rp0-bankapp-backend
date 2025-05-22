@@ -1,8 +1,6 @@
 package dev.abreu.bankapp.config;
 
 import dev.abreu.bankapp.dao.CustomerDao;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,8 +12,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import javax.sql.DataSource;
-
 @Configuration
 public class ApplicationConfig {
 
@@ -24,21 +20,6 @@ public class ApplicationConfig {
 	public ApplicationConfig(CustomerDao customerDao) {
 		this.customerDao = customerDao;
 	}
-
-    @Bean
-    public DataSource dataSource(
-            @Value("${spring.datasource.url}") String dbUrl,
-            @Value("${spring.datasource.username}") String dbUser,
-            @Value("${spring.datasource.password}") String dbPassword,
-			@Value("${spring.datasource.driver-class-name}") String driverClassName
-	) {
-        return DataSourceBuilder.create()
-                .url(dbUrl)
-                .username(dbUser)
-                .password(dbPassword)
-                .driverClassName(driverClassName)
-                .build();
-    }
 
 	@Bean
 	public UserDetailsService userDetailsService() {

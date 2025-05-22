@@ -14,7 +14,6 @@ public class BankappConstants {
 	public static final String SAVINGS_ACCOUNT = "Savings";
 	public static final String ACCOUNT_DEPOSIT = "Account Deposit";
 	public static final String ACCOUNT_WITHDRAW = "Account Withdraw";
-	public static final String ACCOUNT_TRANSFER = "Account Transfer";
 	
 	public static final String JWT_RP0_BANKAPP_ISSUER = "rp0-bankapp";
 	

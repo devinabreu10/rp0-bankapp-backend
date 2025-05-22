@@ -61,7 +61,7 @@ public class ConnectionUtil {
 		try {
 			conn = DriverManager.getConnection(dbUrl, dbUser, dbPass);
 		} catch (SQLException e) {
-			log.error(SQL_EXCEPTION_CAUGHT, e.getMessage());
+			log.error(SQL_EXCEPTION_CAUGHT + "ConnectionUtil.getConnection: {}", e.getMessage());
 		}
 
 		return conn;

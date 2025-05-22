@@ -1,25 +1,23 @@
 package dev.abreu.bankapp.service.impl;
 
-import static dev.abreu.bankapp.util.BankappConstants.ACCOUNT_DEPOSIT;
-import static dev.abreu.bankapp.util.BankappConstants.ACCOUNT_TRANSFER;
-import static dev.abreu.bankapp.util.BankappConstants.ACCOUNT_WITHDRAW;
+import dev.abreu.bankapp.dao.AccountDao;
+import dev.abreu.bankapp.dao.CustomerDao;
+import dev.abreu.bankapp.dao.TransactionDao;
+import dev.abreu.bankapp.entity.Account;
+import dev.abreu.bankapp.entity.Transaction;
+import dev.abreu.bankapp.exception.InsufficientFundsException;
+import dev.abreu.bankapp.exception.ResourceNotFoundException;
+import dev.abreu.bankapp.service.AccountService;
+import dev.abreu.bankapp.util.ResourceType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.stereotype.Service;
-
-import dev.abreu.bankapp.dao.AccountDao;
-import dev.abreu.bankapp.dao.CustomerDao;
-import dev.abreu.bankapp.dao.TransactionDao;
-import dev.abreu.bankapp.exception.InsufficientFundsException;
-import dev.abreu.bankapp.exception.ResourceNotFoundException;
-import dev.abreu.bankapp.entity.Account;
-import dev.abreu.bankapp.entity.Transaction;
-import dev.abreu.bankapp.service.AccountService;
-import dev.abreu.bankapp.util.ResourceType;
+import static dev.abreu.bankapp.util.BankappConstants.*;
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -73,39 +71,29 @@ public class AccountServiceImpl implements AccountService {
 				.map(a -> accountDao.deleteAccountByAcctNo(acctNo))
 				.orElse(false);
 	}
-	
+
 	@Override
-	public void transferFundsBetweenAccounts(Long sourceAcctNo, Long targetAcctNo, double amount) throws InsufficientFundsException {
+	public void transferFundsBetweenAccounts(Long sourceAcctNo, Long targetAcctNo, double amount, String notes) throws InsufficientFundsException {
 		Optional<Account> source = accountDao.findAccountByAcctNo(sourceAcctNo);
-		Optional<Account> target = accountDao.findAccountByAcctNo(targetAcctNo);
-		String notes = "Funds were transferred from account number " + sourceAcctNo + " to account number "
-						+ targetAcctNo + " to the amount of $"+ amount;
-		
+
+		if (sourceAcctNo.equals(targetAcctNo)) {
+			throw new IllegalArgumentException("Source and target accounts cannot be the same. Please try again.");
+		}
+
 		if(Double.compare(source.orElseThrow().getAccountBalance(), amount) < 0) {
 			throw new InsufficientFundsException(
 					"Account transfer could not be completed due to insufficient funds");
 		}
-		
-		// consider making the Account update and Transaction save in a single Transaction
-		// This ensures atomicity and consistency in case of any failures.
-		// Created a new transfers table in the database for this purpose
-		// Need to call transferDao.saveTransfer()
-		
-		source.orElseThrow().decrementBalance(amount);
-		target.orElseThrow().incrementBalance(amount);
-		accountDao.updateAccount(source.orElseThrow());
-		accountDao.updateAccount(target.orElseThrow());
-		
-		transactionDao.saveTransaction(new Transaction(ACCOUNT_TRANSFER, amount, 
-				notes, source.orElseThrow().getAccountNumber()));
+
+		accountDao.transferFunds(sourceAcctNo, targetAcctNo, amount, notes);
 		
 		log.info("Transfer successfully completed!");
 	}
-	
+
+	@Transactional
 	@Override
-	public void depositFundsIntoAccount(Long acctNo, double amount) {
+	public void depositFundsIntoAccount(Long acctNo, double amount, String notes) {
 		Optional<Account> account = accountDao.findAccountByAcctNo(acctNo);
-		String notes = "$" + amount +" deposited into account with account number " + acctNo;
 		
 		account.orElseThrow().incrementBalance(amount);
 		accountDao.updateAccount(account.orElseThrow());
@@ -115,11 +103,11 @@ public class AccountServiceImpl implements AccountService {
 		
 		log.info("Successfully deposited ${} into account with acctNo {}", amount, acctNo);
 	}
-	
+
+	@Transactional
 	@Override
-	public void withdrawFundsFromAccount(Long acctNo, double amount) throws InsufficientFundsException {
+	public void withdrawFundsFromAccount(Long acctNo, double amount, String notes) throws InsufficientFundsException {
 		Optional<Account> account = accountDao.findAccountByAcctNo(acctNo);
-		String notes = "$" + amount +" withdrawn from account with account number " + acctNo;
 		
 		if(Double.compare(account.orElseThrow().getAccountBalance(), amount) < 0) {
 			throw new InsufficientFundsException(

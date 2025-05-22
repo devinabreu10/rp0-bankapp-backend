@@ -2,11 +2,11 @@ package dev.abreu.bankapp.dao.impl;
 
 import dev.abreu.bankapp.dao.TransactionDao;
 import dev.abreu.bankapp.entity.Transaction;
-import dev.abreu.bankapp.util.ConnectionUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,30 +27,25 @@ public class TransactionDaoImpl implements TransactionDao {
 	private static final String ACCT_NO = "account_number";
 	private static final String CREATED_AT = "created_at";
 
-	private final ConnectionUtil connUtil;
+	private final DataSource dataSource;
 
-	public TransactionDaoImpl(ConnectionUtil connUtil) {
-		this.connUtil = connUtil;
+	public TransactionDaoImpl(DataSource dataSource) {
+		this.dataSource = dataSource;
 	}
 
 	@Override
 	public Optional<Transaction> findTransactionById(Long txnId) {
 		Transaction transaction = new Transaction();
 		
-		try(Connection conn = connUtil.getConnection(); 
+		try(Connection conn = dataSource.getConnection();
 				PreparedStatement prepStmt = conn.prepareStatement(SELECT_TRANSACTIONS_BY_ID_QUERY)) {
 			
 			prepStmt.setLong(1, txnId);
 			
-			ResultSet rs = prepStmt.executeQuery();
+			ResultSet resultSet = prepStmt.executeQuery();
 			
-			if(rs.next()) {
-				transaction.setTransactionId(rs.getLong(TRANSACTION_ID));
-				transaction.setTransactionType(rs.getString(TYPE));
-				transaction.setTransactionAmount(rs.getDouble(AMOUNT));
-				transaction.setTransactionNotes(rs.getString(NOTES));
-				transaction.setAccountNumber(rs.getLong(ACCT_NO));
-				transaction.setCreatedAt(rs.getTimestamp(CREATED_AT).toLocalDateTime());
+			if(resultSet.next()) {
+				setTransactionFromResultSet(transaction, resultSet);
 			} else {
 				return Optional.empty();
 			}
@@ -67,7 +62,7 @@ public class TransactionDaoImpl implements TransactionDao {
 		List<Transaction> transactionsList = new ArrayList<>();
 		Transaction transaction;
 		
-		try(Connection conn = connUtil.getConnection(); 
+		try(Connection conn = dataSource.getConnection();
 				PreparedStatement prepStmt = conn.prepareStatement(SELECT_ALL_TRANSACTIONS_BY_ACCTNO_QUERY)) {
 			
 			prepStmt.setLong(1, acctNo);
@@ -76,13 +71,7 @@ public class TransactionDaoImpl implements TransactionDao {
 			
 			while (rs.next()) {
 				transaction = new Transaction();
-				transaction.setTransactionId(rs.getLong(TRANSACTION_ID));
-				transaction.setTransactionType(rs.getString(TYPE));
-				transaction.setTransactionAmount(rs.getDouble(AMOUNT));
-				transaction.setTransactionNotes(rs.getString(NOTES));
-				transaction.setAccountNumber(rs.getLong(ACCT_NO));
-				transaction.setCreatedAt(rs.getTimestamp(CREATED_AT).toLocalDateTime());
-				
+				setTransactionFromResultSet(transaction, rs);
 				transactionsList.add(transaction);
 			}
 			
@@ -97,7 +86,7 @@ public class TransactionDaoImpl implements TransactionDao {
 	public Transaction saveTransaction(Transaction txn) {
 		log.info("Entering saveTransaction method...");
 		
-		try(Connection conn = connUtil.getConnection(); 
+		try(Connection conn = dataSource.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(CREATE_NEW_TRANSACTION_QUERY)) {
 			
 			stmt.setString(1, txn.getTransactionType());
@@ -121,7 +110,7 @@ public class TransactionDaoImpl implements TransactionDao {
 	public Transaction updateTransaction(Transaction txn) {
 		log.info("Entering updateTransaction method...");
 		
-		try(Connection conn = connUtil.getConnection(); 
+		try(Connection conn = dataSource.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(UPDATE_TRANSACTION_QUERY)) {
 			
 			stmt.setString(1, txn.getTransactionType());
@@ -146,7 +135,7 @@ public class TransactionDaoImpl implements TransactionDao {
 		
 		boolean success = false;
 		
-		try(Connection conn = connUtil.getConnection(); 
+		try(Connection conn = dataSource.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(DELETE_TRANSACTION_BY_ID_QUERY)) {
 			conn.setAutoCommit(false);
 			
@@ -169,6 +158,15 @@ public class TransactionDaoImpl implements TransactionDao {
 		}
 		
 		return success;
+	}
+
+	private void setTransactionFromResultSet(Transaction transaction, ResultSet rs) throws SQLException {
+		transaction.setTransactionId(rs.getLong(TRANSACTION_ID));
+		transaction.setTransactionType(rs.getString(TYPE));
+		transaction.setTransactionAmount(rs.getDouble(AMOUNT));
+		transaction.setTransactionNotes(rs.getString(NOTES));
+		transaction.setAccountNumber(rs.getLong(ACCT_NO));
+		transaction.setCreatedAt(rs.getTimestamp(CREATED_AT).toLocalDateTime());
 	}
 
 }

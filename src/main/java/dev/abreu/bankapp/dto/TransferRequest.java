@@ -10,5 +10,6 @@ package dev.abreu.bankapp.dto;
 public record TransferRequest(
         Long sourceAccountNumber,
         Long targetAccountNumber,
-        double amount) {
+        double amount,
+        String notes) {
 }
