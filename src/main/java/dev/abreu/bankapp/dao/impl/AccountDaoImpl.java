@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -178,6 +179,28 @@ public class AccountDaoImpl implements AccountDao {
 		}
 
 		return success;
+	}
+
+	@Override
+	public void transferFunds(Long sourceAcctNo, Long targetAcctNo, Double amount, String notes) {
+		log.info("Entering transferFunds method...");
+
+		try (Connection conn = dataSource.getConnection();
+				CallableStatement stmt = conn.prepareCall(TRANSFER_ACCOUNT_FUNDS_STORED_PROC)) {
+
+			stmt.setLong(1, sourceAcctNo);
+			stmt.setLong(2, targetAcctNo);
+			stmt.setBigDecimal(3, BigDecimal.valueOf(amount));
+			stmt.setString(4, notes);
+
+			log.info("Transfer Funds Stored Procedure Query: {}", TRANSFER_ACCOUNT_FUNDS_STORED_PROC);
+
+			stmt.execute();
+
+		} catch (SQLException e) {
+			log.error(SQL_EXCEPTION_CAUGHT + "transferFunds: {}", e.getMessage());
+		}
+
 	}
 
 	private void setAccountFromResultSet(Account account, ResultSet rs) throws SQLException {

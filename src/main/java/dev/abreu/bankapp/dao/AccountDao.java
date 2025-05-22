@@ -54,4 +54,15 @@ public interface AccountDao {
 	 * @return true if the Account was deleted, false otherwise
 	 */
 	boolean deleteAccountByAcctNo(Long acctNo);
+
+	/**
+	 * Calls the stored procedure to transfer funds between two accounts
+	 * and records the transfer in the database.
+	 *
+	 * @param sourceAcctNo the account number of the source account
+	 * @param targetAcctNo the account number of the target account
+	 * @param amount the amount to transfer
+	 * @param notes the notes associated with the transfer
+	 */
+	void transferFunds(Long sourceAcctNo, Long targetAcctNo, Double amount, String notes);
 }

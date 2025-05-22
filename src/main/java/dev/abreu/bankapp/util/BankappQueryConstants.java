@@ -7,10 +7,10 @@ package dev.abreu.bankapp.util;
  */
 public class BankappQueryConstants {
 
-    private static final String RP0_BANK_SCHEMA = "\"rp0-bankapp\".";
-    private static final String CUSTOMERS_TABLE = RP0_BANK_SCHEMA + "customers";
-    private static final String ACCOUNTS_TABLE = RP0_BANK_SCHEMA + "accounts";
-    private static final String TRANSACTIONS_TABLE = RP0_BANK_SCHEMA + "transactions";
+    private static final String RP0_BANK_SCHEMA = "\"rp0-bankapp\"";
+    private static final String CUSTOMERS_TABLE = RP0_BANK_SCHEMA + ".customers";
+    private static final String ACCOUNTS_TABLE = RP0_BANK_SCHEMA + ".accounts";
+    private static final String TRANSACTIONS_TABLE = RP0_BANK_SCHEMA + ".transactions";
 
     private static final String SELECT_ALL_FROM = "SELECT * FROM ";
     private static final String INSERT_INTO = "INSERT into ";
@@ -55,4 +55,6 @@ public class BankappQueryConstants {
     public static final String UPDATE_TRANSACTION_QUERY = UPDATE + TRANSACTIONS_TABLE + " SET transaction_type=?,transaction_amount=?,transaction_notes=? WHERE transaction_id=?";
 
     public static final String DELETE_TRANSACTION_BY_ID_QUERY = DELETE_FROM + TRANSACTIONS_TABLE + " WHERE transaction_id=?";
+
+    public static final String TRANSFER_ACCOUNT_FUNDS_STORED_PROC = "CALL " + RP0_BANK_SCHEMA + ".transfer_account_funds(?, ?, ?, ?)";
 }

@@ -59,25 +59,28 @@ public interface AccountService {
 	 * @param sourceAcctNo the account number to transfer funds from
 	 * @param targetAcctNo the account number to transfer funds to
 	 * @param amount the amount to transfer
+	 * @param notes the notes associated with the transfer
 	 * @throws InsufficientFundsException if the source account does not have sufficient funds for transfer
 	 */
-	void transferFundsBetweenAccounts(Long sourceAcctNo, Long targetAcctNo, double amount) throws InsufficientFundsException;
+	void transferFundsBetweenAccounts(Long sourceAcctNo, Long targetAcctNo, double amount, String notes) throws InsufficientFundsException;
 
 	/**
 	 * Deposits funds into an account.
 	 *
 	 * @param acctNo the account number to deposit funds into
 	 * @param amount the amount to deposit
+	 * @param notes the notes associated with the deposit
 	 */
-	void depositFundsIntoAccount(Long acctNo, double amount);
+	void depositFundsIntoAccount(Long acctNo, double amount, String notes);
 
 	/**
 	 * Withdraws funds from an account.
 	 *
 	 * @param acctNo the account number to withdraw funds from
 	 * @param amount the amount to withdraw
+	 * @param notes the notes associated with the withdrawal
 	 * @throws InsufficientFundsException if the account does not have sufficient funds for the withdrawal
 	 */
-	void withdrawFundsFromAccount(Long acctNo, double amount) throws InsufficientFundsException;
+	void withdrawFundsFromAccount(Long acctNo, double amount, String notes) throws InsufficientFundsException;
 
 }

@@ -2,6 +2,7 @@ package dev.abreu.bankapp.controller;
 
 import dev.abreu.bankapp.dto.AccountDTO;
 import dev.abreu.bankapp.dto.AccountResponseDTO;
+import dev.abreu.bankapp.dto.AccountTxnRequest;
 import dev.abreu.bankapp.dto.TransferRequest;
 import dev.abreu.bankapp.dto.mapper.DtoMapper;
 import dev.abreu.bankapp.entity.Account;
@@ -136,7 +137,7 @@ public class AccountController {
 					transferRequest.sourceAccountNumber(), transferRequest.targetAccountNumber());
 
         accountService.transferFundsBetweenAccounts(transferRequest.sourceAccountNumber(),
-        		transferRequest.targetAccountNumber(), transferRequest.amount());
+        		transferRequest.targetAccountNumber(), transferRequest.amount(), transferRequest.notes());
 
         return new ResponseEntity<>("{\"success\": \"Successfully transferred funds between accounts...\"}", HttpStatus.OK);
 	}
@@ -144,14 +145,14 @@ public class AccountController {
 	/**
      * Deposits funds into an account.
      *
-     * @param acctNo the account number
-     * @param amount the amount to deposit
+     * @param accountTxnRequest account deposit details
      * @return a response entity indicating the result of the operation
      */
-	@PutMapping(path = "/{acctNo}/deposit/{amount}")
-	public ResponseEntity<String> depositFundsIntoAccount(@PathVariable("acctNo") Long acctNo, @PathVariable("amount") double amount) {
-		log.info("Performing PUT method to deposit funds into Account with acctNo: {}", acctNo);
-		accountService.depositFundsIntoAccount(acctNo, amount);
+	@PutMapping(path = "/deposit")
+	public ResponseEntity<String> depositFundsIntoAccount(@RequestBody AccountTxnRequest accountTxnRequest) {
+		log.info("Performing PUT method to deposit funds into Account with acctNo: {}", accountTxnRequest.accountNumber());
+		accountService.depositFundsIntoAccount(accountTxnRequest.accountNumber(),
+				accountTxnRequest.amount(), accountTxnRequest.notes());
 
 		return new ResponseEntity<>("{\"success\": \"Successfully deposited funds into account...\"}", HttpStatus.OK);
 	}
@@ -159,15 +160,15 @@ public class AccountController {
 	/**
      * Withdraws funds from an account.
      *
-     * @param acctNo the account number
-     * @param amount the amount to withdraw
+	 * @param accountTxnRequest account withdraw details
      * @return a response entity indicating the result of the operation
      * @throws InsufficientFundsException if there are insufficient funds in the account
      */
-	@PutMapping(path = "/{acctNo}/withdraw/{amount}")
-	public ResponseEntity<String> withdrawFundsFromAccount(@PathVariable("acctNo") Long acctNo, @PathVariable("amount") double amount) throws InsufficientFundsException {
-		log.info("Performing PUT method to withdraw funds from Account with acctNo: {}", acctNo);
-		accountService.withdrawFundsFromAccount(acctNo, amount);
+	@PutMapping(path = "/withdraw")
+	public ResponseEntity<String> withdrawFundsFromAccount(@RequestBody AccountTxnRequest accountTxnRequest) throws InsufficientFundsException {
+		log.info("Performing PUT method to withdraw funds from Account with acctNo: {}", accountTxnRequest.accountNumber());
+		accountService.withdrawFundsFromAccount(accountTxnRequest.accountNumber(),
+				accountTxnRequest.amount(), accountTxnRequest.notes());
 
 		return new ResponseEntity<>("{\"success\": \"Successfully withdrew funds from account...\"}", HttpStatus.OK);
 	}
