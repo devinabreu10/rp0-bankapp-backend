@@ -14,6 +14,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -60,6 +61,7 @@ public class AccountServiceImpl implements AccountService {
 	@Override
 	public Account updateAccount(Account account) {
 		log.info("Updating account details...");
+		account.setUpdatedAt(LocalDateTime.now());
 		return accountDao.updateAccount(account);
 	}
 
@@ -96,6 +98,7 @@ public class AccountServiceImpl implements AccountService {
 		Optional<Account> account = accountDao.findAccountByAcctNo(acctNo);
 		
 		account.orElseThrow().incrementBalance(amount);
+		account.orElseThrow().setUpdatedAt(LocalDateTime.now());
 		accountDao.updateAccount(account.orElseThrow());
 		
 		transactionDao.saveTransaction(new Transaction(ACCOUNT_DEPOSIT, amount, 
@@ -115,6 +118,7 @@ public class AccountServiceImpl implements AccountService {
 		}
 		
 		account.orElseThrow().decrementBalance(amount);
+		account.orElseThrow().setUpdatedAt(LocalDateTime.now());
 		accountDao.updateAccount(account.orElseThrow());
 		
 		transactionDao.saveTransaction(new Transaction(ACCOUNT_WITHDRAW, amount, 
