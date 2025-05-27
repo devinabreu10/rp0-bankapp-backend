@@ -13,7 +13,7 @@ else
 fi
 
 # Path to your JAR file
-JAR_PATH="./target/p0-bankapp-remake-0.0.1-SNAPSHOT.jar"
+JAR_PATH="./target/rp0-bankapp-backend-1.0.0.jar"
 
 # Check if the JAR file exists
 if [ ! -f "$JAR_PATH" ]; then

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -176,6 +177,34 @@ public class AccountDaoImpl implements AccountDao {
 
 		} catch (SQLException e) {
 			log.error(SQL_EXCEPTION_CAUGHT + "deleteAccountByAcctNo: {}", e.getMessage());
+		}
+
+		return success;
+	}
+
+	@Override
+	public boolean softDeleteAccountByAcctNo(Long acctNo) {
+		log.info("Entering softDeleteAccountByAcctNo method...");
+
+		boolean success = false;
+
+		try(Connection conn = dataSource.getConnection();
+				PreparedStatement stmt = conn.prepareStatement(SOFT_DELETE_ACCOUNT_BY_ACCTNO_QUERY)) {
+
+			stmt.setBoolean(1, false);
+			stmt.setTimestamp(2, Timestamp.valueOf(LocalDateTime.now()));
+			stmt.setLong(3, acctNo);
+
+			log.info("Soft Delete Account Query String: {}", SOFT_DELETE_ACCOUNT_BY_ACCTNO_QUERY);
+			int softDeleteStatus = stmt.executeUpdate();
+			log.info("{} Row(s) Soft Deleted", softDeleteStatus);
+
+			if(softDeleteStatus <= 1) {
+				success = true;
+			}
+
+		} catch (SQLException e) {
+			log.error(SQL_EXCEPTION_CAUGHT + "softDeleteAccountByAcctNo: {}", e.getMessage());
 		}
 
 		return success;

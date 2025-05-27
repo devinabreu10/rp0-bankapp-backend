@@ -70,7 +70,7 @@ public class AccountServiceImpl implements AccountService {
 		log.info("Deleting account with account number: {}", acctNo);
 
 		return accountDao.findAccountByAcctNo(acctNo)
-				.map(a -> accountDao.deleteAccountByAcctNo(acctNo))
+				.map(a -> accountDao.softDeleteAccountByAcctNo(acctNo))
 				.orElse(false);
 	}
 

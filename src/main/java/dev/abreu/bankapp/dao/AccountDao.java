@@ -56,6 +56,14 @@ public interface AccountDao {
 	boolean deleteAccountByAcctNo(Long acctNo);
 
 	/**
+	 * Soft deletes, by setting is_active to false, an Account from the database by account number.
+	 *
+	 * @param acctNo the account number of the Account to soft delete
+	 * @return true if the Account was soft deleted, false otherwise
+	 */
+	boolean softDeleteAccountByAcctNo(Long acctNo);
+
+	/**
 	 * Calls the stored procedure to transfer funds between two accounts
 	 * and records the transfer in the database.
 	 *

@@ -35,16 +35,18 @@ public class BankappQueryConstants {
 
     public static final String DELETE_CUSTOMER_BY_ID_QUERY = DELETE_FROM + CUSTOMERS_TABLE + " WHERE customer_id=?";
 
-    public static final String SELECT_ACCOUNTS_BY_ACCTNO_QUERY = SELECT_ALL_FROM + ACCOUNTS_TABLE + WHERE_ACCOUNT_NUMBER;
+    public static final String SELECT_ACCOUNTS_BY_ACCTNO_QUERY = SELECT_ALL_FROM + ACCOUNTS_TABLE + WHERE_ACCOUNT_NUMBER + " AND is_active=true";
 
     public static final String SELECT_ALL_ACCOUNTS_BY_USERNAME_QUERY = "SELECT b.username,a.customer_id,a.account_number,a.nickname,a.account_type,a.account_balance,a.created_at,a.updated_at "
-            + "FROM " + ACCOUNTS_TABLE + " a JOIN " + CUSTOMERS_TABLE + " b ON a.customer_id = b.customer_id WHERE b.username=? ORDER BY a.created_at DESC";
+            + "FROM " + ACCOUNTS_TABLE + " a JOIN " + CUSTOMERS_TABLE + " b ON a.customer_id = b.customer_id WHERE b.username=? AND a.is_active=true ORDER BY a.created_at DESC";
 
     public static final String CREATE_NEW_ACCOUNT_QUERY = INSERT_INTO + ACCOUNTS_TABLE + " (account_number,nickname,account_type,account_balance,created_at,updated_at,customer_id) VALUES (?,?,?,?,?,?,?)";
 
     public static final String UPDATE_ACCOUNT_QUERY = UPDATE + ACCOUNTS_TABLE + " SET account_type=?,nickname=?,account_balance=?,updated_at=?" + WHERE_ACCOUNT_NUMBER;
 
     public static final String DELETE_ACCOUNT_BY_ACCTNO_QUERY = DELETE_FROM + ACCOUNTS_TABLE + WHERE_ACCOUNT_NUMBER;
+
+    public static final String SOFT_DELETE_ACCOUNT_BY_ACCTNO_QUERY = UPDATE + ACCOUNTS_TABLE + " SET is_active=?, updated_at=?" + WHERE_ACCOUNT_NUMBER;
 
     public static final String SELECT_TRANSACTIONS_BY_ID_QUERY = SELECT_ALL_FROM + TRANSACTIONS_TABLE + " WHERE transaction_id=?";
 

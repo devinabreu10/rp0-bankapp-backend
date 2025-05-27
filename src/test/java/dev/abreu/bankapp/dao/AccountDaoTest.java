@@ -253,6 +253,37 @@ class AccountDaoTest {
 	}
 
 	@Test
+	void testSoftDeleteAccountByAcctNo() throws SQLException {
+		long acctNo = 12345L;
+		when(connectionMock.prepareStatement(anyString())).thenReturn(preparedStatementMock);
+		when(preparedStatementMock.executeUpdate()).thenReturn(1);
+		boolean success = accountDao.softDeleteAccountByAcctNo(acctNo);
+		assertTrue(success);
+		verify(preparedStatementMock, Mockito.times(1)).setBoolean(1, false);
+		verify(preparedStatementMock, Mockito.times(1)).setLong(3, acctNo);
+		verify(connectionMock, Mockito.times(1)).close();
+		verify(preparedStatementMock, Mockito.times(1)).close();
+	}
+
+	@Test
+	void testSoftDeleteAccountByAcctNoInvalidUpdate() throws SQLException {
+		long acctNo = 12345L;
+		when(connectionMock.prepareStatement(anyString())).thenReturn(preparedStatementMock);
+		when(preparedStatementMock.executeUpdate()).thenReturn(2);
+		boolean success = accountDao.softDeleteAccountByAcctNo(acctNo);
+		assertFalse(success);
+	}
+
+	@Test
+	void testSoftDeleteAccountByAcctNoSQLException() throws SQLException {
+		Long acctNo = 12345L;
+		when(connectionMock.prepareStatement(anyString())).thenReturn(preparedStatementMock);
+		when(preparedStatementMock.executeUpdate()).thenThrow(SQLException.class);
+		boolean success = accountDao.softDeleteAccountByAcctNo(acctNo);
+		assertFalse(success);
+	}
+
+	@Test
 	void testTransferFunds() throws SQLException {
 		long sourceAcctNo = 123L;
 		long targetAcctNo = 456L;
