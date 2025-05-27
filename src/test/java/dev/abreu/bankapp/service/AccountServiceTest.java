@@ -118,7 +118,7 @@ class AccountServiceTest {
 
 		Mockito.when(accountDao.findAccountByAcctNo(12345L)).thenReturn(Optional.of(mockAccount));
 
-		Mockito.when(accountDao.deleteAccountByAcctNo(12345L)).thenReturn(Boolean.TRUE);
+		Mockito.when(accountDao.softDeleteAccountByAcctNo(12345L)).thenReturn(Boolean.TRUE);
 
 		boolean result = accountService.deleteAccountByAcctNo(12345L);
 
