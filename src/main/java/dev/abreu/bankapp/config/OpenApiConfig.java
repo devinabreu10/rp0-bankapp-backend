@@ -32,6 +32,10 @@ import io.swagger.v3.oas.annotations.servers.Server;
 						url = "http://localhost:8080"
 				),
 				@Server(
+						description = "Local Docker ENV",
+						url = "http://localhost:8088"
+				),
+				@Server(
 						description = "Prod ENV",
 						url = "https://rp0-bankapp-api-v1.onrender.com"
 				)
