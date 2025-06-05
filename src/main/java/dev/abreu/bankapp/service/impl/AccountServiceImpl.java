@@ -11,6 +11,9 @@ import dev.abreu.bankapp.service.AccountService;
 import dev.abreu.bankapp.util.ResourceType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +39,7 @@ public class AccountServiceImpl implements AccountService {
 	}
 
 	@Override
+	@Cacheable(value = "account", key = "#acctNo")
 	public Account getAccountByAcctNo(Long acctNo) {
 		log.info("Fetching Account with AcctNo: {}", acctNo);
 		return accountDao.findAccountByAcctNo(acctNo)
@@ -53,12 +57,14 @@ public class AccountServiceImpl implements AccountService {
 	}
 
 	@Override
+	@CachePut(value = "account", key = "#account.accountNumber")
 	public Account saveAccount(Account account) {
 		log.info("Saving new account...");
 		return accountDao.saveAccount(account);
 	}
 
 	@Override
+	@CachePut(value = "account", key = "#account.accountNumber")
 	public Account updateAccount(Account account) {
 		log.info("Updating account details...");
 		account.setUpdatedAt(LocalDateTime.now());
@@ -66,6 +72,7 @@ public class AccountServiceImpl implements AccountService {
 	}
 
 	@Override
+	@CacheEvict(value = "account", key = "#acctNo")
 	public boolean deleteAccountByAcctNo(Long acctNo) {
 		log.info("Deleting account with account number: {}", acctNo);
 
@@ -92,8 +99,8 @@ public class AccountServiceImpl implements AccountService {
 		log.info("Transfer successfully completed!");
 	}
 
-	@Transactional
 	@Override
+	@Transactional
 	public void depositFundsIntoAccount(Long acctNo, double amount, String notes) {
 		Optional<Account> account = accountDao.findAccountByAcctNo(acctNo);
 		
@@ -107,8 +114,8 @@ public class AccountServiceImpl implements AccountService {
 		log.info("Successfully deposited ${} into account with acctNo {}", amount, acctNo);
 	}
 
-	@Transactional
 	@Override
+	@Transactional
 	public void withdrawFundsFromAccount(Long acctNo, double amount, String notes) throws InsufficientFundsException {
 		Optional<Account> account = accountDao.findAccountByAcctNo(acctNo);
 		

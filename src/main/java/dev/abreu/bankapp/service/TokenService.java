@@ -12,7 +12,7 @@ public interface TokenService {
 	 * @param customer
 	 * @return
 	 */
-	public String generateToken(Customer customer);
+    String generateToken(Customer customer);
 	
 	/**
 	 * Creates a new jwt token based on customers
@@ -22,7 +22,7 @@ public interface TokenService {
 	 * @param customer
 	 * @return
 	 */
-	public String generateToken(Map<String, Object> extraClaims, Customer customer);
+    String generateToken(Map<String, Object> extraClaims, Customer customer);
 	
 	/**
 	 * Extracts username from jwt token
@@ -30,5 +30,5 @@ public interface TokenService {
 	 * @param token
 	 * @return
 	 */
-	public String extractUsername(String token);
+    String extractUsername(String token);
 }
