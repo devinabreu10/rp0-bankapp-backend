@@ -18,6 +18,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -72,7 +74,17 @@ public class AuthController {
 	@PostMapping(path = "/login")
 	public ResponseEntity<CustomerResponseDTO> customerLogin(@Valid @RequestBody LoginRequest loginRequest) {
 		log.info("Performing POST method to login Customer and generate JWT token");
-		
+
+		// Check cache for existing valid token
+		Optional<String> cachedToken = tokenService.getCachedToken(loginRequest.username());
+		if (cachedToken.isPresent() && tokenService.isTokenValid(cachedToken.orElseThrow())) {
+			log.info("Using valid cached token for customer");
+			var customer = customerService.getCustomerByUsername(loginRequest.username());
+			return ResponseEntity.status(HttpStatus.OK)
+					.header(HttpHeaders.AUTHORIZATION, cachedToken.orElseThrow())
+					.body(dtoMapper.toCustomerResponseDto(customer, cachedToken.orElseThrow()));
+		}
+
 		authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(
 						loginRequest.username(), 
