@@ -1,16 +1,22 @@
 package dev.abreu.bankapp;
 
+import com.github.benmanes.caffeine.cache.Caffeine;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.jdbc.DataSourceBuilder;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.context.annotation.Bean;
 
 import javax.sql.DataSource;
+import java.util.concurrent.TimeUnit;
 
 @SpringBootApplication
+@EnableCaching
 public class RP0BankApplication {
 
     private static final Logger log = LogManager.getLogger(RP0BankApplication.class);
@@ -33,5 +39,18 @@ public class RP0BankApplication {
                 .password(dbPassword)
                 .driverClassName(driverClassName)
                 .build();
+    }
+
+    @Bean
+    public CacheManager cacheManager() {
+        CaffeineCacheManager cacheManager = new CaffeineCacheManager(
+                "customer", "account", "transaction", "auth-token"
+        );
+        cacheManager.setCaffeine(
+                Caffeine.newBuilder()
+                        .expireAfterWrite(60, TimeUnit.MINUTES) // TTL
+                        .maximumSize(500) // limit entries
+        );
+        return cacheManager;
     }
 }

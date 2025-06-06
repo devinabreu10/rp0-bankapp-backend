@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import dev.abreu.bankapp.entity.Customer;
@@ -27,6 +28,7 @@ public class TokenServiceImpl implements TokenService {
 	}
 	
 	@Override
+	@Cacheable(value = "auth-token", key = "#customer.username")
 	public String generateToken(Customer customer) {
 		return generateToken(new HashMap<>(), customer);
 	}

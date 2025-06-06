@@ -2,6 +2,7 @@
 
 # Set environment variables
 ENV_FILE="./.env/local.env"
+GC_LOG_OPTS=-Xlog:gc*:file\=logs/gc.log:time,uptime,level,tags
 
 # Check if the .env file exists
 if [ -f "$ENV_FILE" ]; then
@@ -24,4 +25,4 @@ fi
 echo "Executing rp0-bankapp..."
 
 # Run the Java application
-java -jar "$JAR_PATH"
+java -jar "$GC_LOG_OPTS" "$JAR_PATH"
