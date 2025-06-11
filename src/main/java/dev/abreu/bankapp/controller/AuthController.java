@@ -9,6 +9,7 @@ import dev.abreu.bankapp.exception.UsernameTakenException;
 import dev.abreu.bankapp.service.CustomerService;
 import dev.abreu.bankapp.service.TokenService;
 import jakarta.validation.Valid;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpHeaders;
@@ -51,7 +52,7 @@ public class AuthController {
 		log.info("Performing GET method for current authenticated Customer");
 
 		String jwt = null;
-		if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+		if (StringUtils.isNotBlank(authorizationHeader) && authorizationHeader.startsWith("Bearer ")) {
 			jwt = authorizationHeader.substring(7);
 		}
 
