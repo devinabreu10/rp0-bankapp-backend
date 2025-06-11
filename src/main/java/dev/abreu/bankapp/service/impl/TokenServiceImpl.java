@@ -5,8 +5,11 @@ import static dev.abreu.bankapp.util.BankappConstants.JWT_RP0_BANKAPP_ISSUER;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +31,7 @@ public class TokenServiceImpl implements TokenService {
 	}
 	
 	@Override
-	@Cacheable(value = "auth-token", key = "#customer.username")
+	@CachePut(value = "auth-token", key = "#customer.username")
 	public String generateToken(Customer customer) {
 		return generateToken(new HashMap<>(), customer);
 	}
@@ -49,6 +52,17 @@ public class TokenServiceImpl implements TokenService {
 	@Override
 	public String extractUsername(String token) {
 		return jwtConfig.extractUsername(token);
+	}
+
+	@Override
+	@Cacheable(value = "auth-token", key = "#username")
+	public Optional<String> getCachedToken(String username) {
+		return Optional.empty();
+	}
+
+	@Override
+	public boolean isTokenValid(String token) {
+		return jwtConfig.isTokenValidPastOneHour(token);
 	}
 
 }

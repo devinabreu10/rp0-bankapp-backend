@@ -42,7 +42,7 @@ class JwtConfigTest {
         Key key = jwtConfig.getSigningKey();
         sampleToken = Jwts.builder()
                 .setSubject("testuser")
-                .setExpiration(new Date(System.currentTimeMillis() + 100000))
+                .setExpiration(new Date(System.currentTimeMillis() + 3700000))
                 .signWith(key)
                 .compact();
     }
@@ -79,7 +79,7 @@ class JwtConfigTest {
     @Test
     void testIsTokenValid_Valid() {
         when(customer.getUsername()).thenReturn("testuser");
-        boolean valid = jwtConfig.isTokenValid(sampleToken, customer);
+        boolean valid = jwtConfig.isTokenValid(sampleToken, customer) && jwtConfig.isTokenValidPastOneHour(sampleToken);
         assertTrue(valid);
     }
 

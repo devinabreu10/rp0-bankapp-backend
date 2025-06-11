@@ -50,10 +50,20 @@ public class JwtConfig {
 	}
 
 	/**
+	 * Check if token is valid for at least 1 hour
+	 *
+	 * @param token - jwt token
+	 * @return boolean - true if token is valid for at least 1 hour
+	 */
+	public boolean isTokenValidPastOneHour(String token) {
+		return extractExpiration(token).after(new Date(System.currentTimeMillis() + 3600000));
+	}
+
+	/**
 	 * @param token
 	 * @return
 	 */
-	private boolean isTokenExpired(String token) {
+    private boolean isTokenExpired(String token) {
 		return extractExpiration(token).before(new Date(System.currentTimeMillis()));
 	}
 
