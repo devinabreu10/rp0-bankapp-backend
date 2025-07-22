@@ -101,7 +101,7 @@ class TransactionControllerTest {
 		Mockito.when(dtoMapper.toTransactionResponseDto(txnList.get(0))).thenReturn(mockDtoList.get(0));
 		Mockito.when(dtoMapper.toTransactionResponseDto(txnList.get(1))).thenReturn(mockDtoList.get(1));
 		
-		mockMvc.perform(get("/transaction/get/list/12345"))
+		mockMvc.perform(get("/transaction/list/account/12345"))
 				.andExpect(status().isOk())
 				.andExpect(content().json(jsonMapper.writeValueAsString(mockDtoList)));
 	}
@@ -193,5 +193,27 @@ class TransactionControllerTest {
 				.andExpect(status().isConflict())
 				.andDo(print());
 	}
+
+	@Test
+	void testGetAllTransactionsAndTransfersByCustomerId() throws Exception {
+        Long customerId = 1L;
+        List<Transaction> transactions = new ArrayList<>();
+        transactions.add(new Transaction());
+        transactions.add(new Transaction());
+        List<TransactionResponseDTO> responseDTOs = new ArrayList<>();
+        responseDTOs.add(Mockito.mock(TransactionResponseDTO.class));
+        responseDTOs.add(Mockito.mock(TransactionResponseDTO.class));
+
+        Mockito.when(transactionService.getAllTransactionsAndTransfersByCustomerId(customerId)).thenReturn(transactions);
+        Mockito.when(dtoMapper.toTransactionResponseDto(any(Transaction.class)))
+                .thenReturn(responseDTOs.get(0), responseDTOs.get(1));
+
+        mockMvc.perform(get("/transaction/list/customer/{customerId}", customerId)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print());
+
+        verify(transactionService, times(1)).getAllTransactionsAndTransfersByCustomerId(customerId);
+    }
 
 }

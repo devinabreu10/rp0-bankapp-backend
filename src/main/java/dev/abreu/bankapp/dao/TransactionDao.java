@@ -54,4 +54,12 @@ public interface TransactionDao {
 	 * @return true if the Transaction was deleted, false otherwise
 	 */
 	boolean deleteTransactionById(Long txnId);
+
+	/**
+	 * Finds all Transactions and Transfers associated with a given customer ID.
+	 *
+	 * @param customerId the customer ID to search for
+	 * @return a List of Transaction objects and transfers associated with the customer ID
+	 */
+	List<Transaction> findAllTransactionsAndTransfersByCustomerId(Long customerId);
 }

@@ -52,6 +52,28 @@ public class BankappQueryConstants {
 
     public static final String SELECT_ALL_TRANSACTIONS_BY_ACCTNO_QUERY = SELECT_ALL_FROM + TRANSACTIONS_TABLE + WHERE_ACCOUNT_NUMBER;
 
+    public static final String SELECT_ALL_TRANSACTIONS_AND_TRANSFERS_BY_CUSTOMER_ID_QUERY =
+        "SELECT t.transaction_id AS id, " +
+        "t.transaction_type AS type, " +
+        "t.transaction_amount AS amount, " +
+        "t.transaction_notes AS notes, " +
+        "t.created_at, " +
+        "t.account_number " +
+        "FROM " + TRANSACTIONS_TABLE + " t " +
+        "JOIN " + ACCOUNTS_TABLE + " a ON t.account_number = a.account_number " +
+        "WHERE a.customer_id=? " +
+        "UNION ALL " +
+        "SELECT tr.transfer_id AS id, " +
+        "'Account Transfer' AS type, " +
+        "tr.transfer_amount AS amount, " +
+        "tr.transfer_notes AS notes, " +
+        "tr.created_at, " +
+        "tr.source_acct_num AS account_number " +
+        "FROM " + RP0_BANK_SCHEMA + ".transfers tr " +
+        "JOIN " + ACCOUNTS_TABLE + " a ON tr.source_acct_num = a.account_number " +
+        "WHERE a.customer_id=? " +
+        "ORDER BY created_at DESC";
+
     public static final String CREATE_NEW_TRANSACTION_QUERY = INSERT_INTO + TRANSACTIONS_TABLE + " (transaction_id,transaction_type,transaction_amount,transaction_notes,created_at,account_number) VALUES (default,?,?,?,?,?)";
 
     public static final String UPDATE_TRANSACTION_QUERY = UPDATE + TRANSACTIONS_TABLE + " SET transaction_type=?,transaction_amount=?,transaction_notes=? WHERE transaction_id=?";

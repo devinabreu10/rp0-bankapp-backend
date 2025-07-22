@@ -137,4 +137,17 @@ class TransactionServiceTest {
 		assertEquals(txn.toString(), result);
 	}
 
+	@Test
+	void testGetAllTransactionsAndTransfersByCustomerId() {
+		Long customerId = 1L;
+		List<Transaction> mockTransactions = List.of(
+			new Transaction(ACCOUNT_DEPOSIT, 100.00, "Deposit", 12345L),
+			new Transaction(ACCOUNT_DEPOSIT, 200.00, "Deposit", 12346L)
+		);
+		Mockito.when(transactionDao.findAllTransactionsAndTransfersByCustomerId(customerId)).thenReturn(mockTransactions);
+		List<Transaction> result = transactionService.getAllTransactionsAndTransfersByCustomerId(customerId);
+		assertEquals(mockTransactions, result);
+		Mockito.verify(transactionDao, Mockito.times(1)).findAllTransactionsAndTransfersByCustomerId(customerId);
+	}
+
 }
