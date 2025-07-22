@@ -160,6 +160,30 @@ public class TransactionDaoImpl implements TransactionDao {
 		return success;
 	}
 
+	@Override
+	public List<Transaction> findAllTransactionsAndTransfersByCustomerId(Long customerId) {
+        List<Transaction> transactions = new ArrayList<>();
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement prepStmt = conn.prepareStatement(SELECT_ALL_TRANSACTIONS_AND_TRANSFERS_BY_CUSTOMER_ID_QUERY)) {
+            prepStmt.setLong(1, customerId);
+            prepStmt.setLong(2, customerId);
+            ResultSet resultSet = prepStmt.executeQuery();
+            while (resultSet.next()) {
+                Transaction transaction = new Transaction();
+                transaction.setTransactionId(resultSet.getLong("id"));
+                transaction.setTransactionType(resultSet.getString("type"));
+                transaction.setTransactionAmount(resultSet.getDouble("amount"));
+                transaction.setTransactionNotes(resultSet.getString("notes"));
+                transaction.setCreatedAt(resultSet.getTimestamp(CREATED_AT).toLocalDateTime());
+                transaction.setAccountNumber(resultSet.getLong(ACCT_NO));
+                transactions.add(transaction);
+            }
+        } catch (SQLException e) {
+            log.error(SQL_EXCEPTION_CAUGHT, e);
+        }
+        return transactions;
+    }
+
 	private void setTransactionFromResultSet(Transaction transaction, ResultSet rs) throws SQLException {
 		transaction.setTransactionId(rs.getLong(TRANSACTION_ID));
 		transaction.setTransactionType(rs.getString(TYPE));

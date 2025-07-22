@@ -11,7 +11,6 @@ public interface TransactionService {
 	 * 
 	 * @param txnId
 	 * @return Transaction
-	 * @throws ResourceNotFoundException if Transaction with transaction id is not found
 	 */
 	Transaction getTransactionById(Long txnId);
 	
@@ -47,5 +46,13 @@ public interface TransactionService {
 	 * @return boolean
 	 */
 	boolean deleteTransactionById(Long txnId);
+
+	/**
+	 * Retrieves all transactions and transfers associated with a customer ID.
+	 *
+	 * @param customerId
+	 * @return list of Transaction
+	 */
+	List<Transaction> getAllTransactionsAndTransfersByCustomerId(Long customerId);
 
 }

@@ -75,4 +75,10 @@ public class TransactionServiceImpl implements TransactionService {
 		return success;
 	}
 
+	@Override
+	public List<Transaction> getAllTransactionsAndTransfersByCustomerId(Long customerId) {
+        log.info("Fetching all transactions and transfers for customer id: {}", customerId);
+        return transactionDao.findAllTransactionsAndTransfersByCustomerId(customerId);
+    }
+
 }

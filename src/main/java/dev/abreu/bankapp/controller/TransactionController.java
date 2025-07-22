@@ -50,7 +50,7 @@ public class TransactionController {
      * @param acctNo the account number
      * @return a list of transactions associated with the account number
      */
-    @GetMapping(path = "/get/list/{acctNo}")
+    @GetMapping(path = "/list/account/{acctNo}")
     public ResponseEntity<List<TransactionResponseDTO>> getAllTransactionsByAcctNo(@PathVariable("acctNo") Long acctNo) {
         log.info("Performing GET method to retrieve all transaction by account number");
         List<Transaction> transactions = transactionService.getAllTransactionsByAcctNo(acctNo);
@@ -111,11 +111,26 @@ public class TransactionController {
 
         boolean success = transactionService.deleteTransactionById(txnId);
 
-        if (Boolean.TRUE.equals(success)) {
+        if (success) {
             return new ResponseEntity<>("{\"success\": \"Transaction successfully deleted...\"}", HttpStatus.OK);
         } else {
             return new ResponseEntity<>("{\"error\": \"Transaction could not be deleted...\"}", HttpStatus.CONFLICT);
         }
     }
 
+    /**
+     * Retrieves all transactions and transfers associated with a customer ID.
+     *
+     * @param customerId the customer ID
+     * @return list of transactions and transfers
+     */
+    @GetMapping(path = "/list/customer/{customerId}")
+    public ResponseEntity<List<TransactionResponseDTO>> getAllTransactionsAndTransfersByCustomerId(@PathVariable("customerId") Long customerId) {
+        log.info("Performing GET method to retrieve all transactions and transfers for customer id {}", customerId);
+        List<Transaction> transactions = transactionService.getAllTransactionsAndTransfersByCustomerId(customerId);
+        List<TransactionResponseDTO> dtos = transactions.stream()
+                .map(dtoMapper::toTransactionResponseDto)
+                .toList();
+        return ResponseEntity.ok(dtos);
+    }
 }

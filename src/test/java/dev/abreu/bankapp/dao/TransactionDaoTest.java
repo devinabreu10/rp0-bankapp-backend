@@ -212,4 +212,37 @@ class TransactionDaoTest {
         assertFalse(success);
     }
 
+    @Test
+    void testFindAllTransactionsAndTransfersByCustomerId() throws Exception {
+        long customerId = 1L;
+        Mockito.when(connectionMock.prepareStatement(anyString())).thenReturn(preparedStatementMock);
+        Mockito.when(preparedStatementMock.executeQuery()).thenReturn(resultSetMock);
+        Mockito.when(resultSetMock.next()).thenReturn(true, true, false);
+        Mockito.when(resultSetMock.getLong("id")).thenReturn(101L, 102L);
+        Mockito.when(resultSetMock.getString("type")).thenReturn(ACCOUNT_DEPOSIT, ACCOUNT_DEPOSIT);
+        Mockito.when(resultSetMock.getDouble("amount")).thenReturn(100.00, 200.00);
+        Mockito.when(resultSetMock.getString("notes")).thenReturn("Deposit", "Deposit");
+        Mockito.when(resultSetMock.getTimestamp("created_at")).thenReturn(Timestamp.valueOf(LocalDateTime.now()), Timestamp.valueOf(LocalDateTime.now()));
+        Mockito.when(resultSetMock.getLong("account_number")).thenReturn(12345L, 12346L);
+
+        List<Transaction> result = transactionDao.findAllTransactionsAndTransfersByCustomerId(customerId);
+        assertEquals(2, result.size());
+        assertEquals(101L, result.get(0).getTransactionId());
+        assertEquals(102L, result.get(1).getTransactionId());
+        verify(connectionMock).prepareStatement(anyString());
+        verify(preparedStatementMock).executeQuery();
+    }
+
+    @Test
+    void testFindAllTransactionsAndTransfersByCustomerIdSQLException() throws Exception {
+        long customerId = 1L;
+        Mockito.when(connectionMock.prepareStatement(anyString())).thenReturn(preparedStatementMock);
+        Mockito.when(preparedStatementMock.executeQuery()).thenThrow(new SQLException("Test SQL Exception"));
+        List<Transaction> result = transactionDao.findAllTransactionsAndTransfersByCustomerId(customerId);
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+        verify(connectionMock).prepareStatement(anyString());
+        verify(preparedStatementMock).executeQuery();
+    }
+
 }
