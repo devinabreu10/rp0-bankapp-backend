@@ -144,7 +144,7 @@ public class DtoMapper {
     public TransactionResponseDTO toTransactionResponseDto(@NonNull Transaction transaction) {
         return new TransactionResponseDTO(transaction.getTransactionId(),
                 transaction.getTransactionType(), transaction.getTransactionAmount(),
-                transaction.getTransactionNotes(), transaction.getCreatedAt());
+                transaction.getTransactionNotes(), transaction.getCreatedAt(), transaction.getAccountNumber());
     }
 
     /**

@@ -174,7 +174,7 @@ class DtoMapperTest {
 		transaction.setCreatedAt(LocalDateTime.parse("2022-01-01T00:00:00"));
 		transaction.setAccountNumber(123L);
 
-		TransactionResponseDTO expectedDTO = new TransactionResponseDTO(1L, "deposit", 100.00, "initial deposit", LocalDateTime.parse("2022-01-01T00:00:00"));
+		TransactionResponseDTO expectedDTO = new TransactionResponseDTO(1L, "deposit", 100.00, "initial deposit", LocalDateTime.parse("2022-01-01T00:00:00"), 123L);
 		assertEquals(expectedDTO, dtoMapper.toTransactionResponseDto(transaction));
 	}
 }
