@@ -77,7 +77,7 @@ class TransactionControllerTest {
 	@Test
 	void testGetTransactionById() throws Exception {
 		Transaction mockTxn = new Transaction(BankappConstants.ACCOUNT_DEPOSIT, 100.00, "Deposited $100.00", 12345L);
-		TransactionResponseDTO mockDto = new TransactionResponseDTO(1L, BankappConstants.ACCOUNT_DEPOSIT, 100.00, "Deposited $100.00", mockTxn.getCreatedAt());
+		TransactionResponseDTO mockDto = new TransactionResponseDTO(1L, BankappConstants.ACCOUNT_DEPOSIT, 100.00, "Deposited $100.00", mockTxn.getCreatedAt(), 12345L);
 		
 		Mockito.when(transactionService.getTransactionById(1L)).thenReturn(mockTxn);
 		Mockito.when(dtoMapper.toTransactionResponseDto(mockTxn)).thenReturn(mockDto);
@@ -95,7 +95,7 @@ class TransactionControllerTest {
 
 		List<TransactionResponseDTO> mockDtoList = new ArrayList<>();
 		txnList.forEach(t -> mockDtoList
-				.add(new TransactionResponseDTO(1L, t.getTransactionType(), t.getTransactionAmount(), t.getTransactionNotes(), t.getCreatedAt())));
+				.add(new TransactionResponseDTO(1L, t.getTransactionType(), t.getTransactionAmount(), t.getTransactionNotes(), t.getCreatedAt(), 12345L)));
 		
 		Mockito.when(transactionService.getAllTransactionsByAcctNo(12345L)).thenReturn(txnList);
 		Mockito.when(dtoMapper.toTransactionResponseDto(txnList.get(0))).thenReturn(mockDtoList.get(0));
@@ -109,7 +109,7 @@ class TransactionControllerTest {
 	@Test
 	void testSaveTransaction() throws Exception {
 		Transaction mockTxn = new Transaction(BankappConstants.ACCOUNT_DEPOSIT, 100.00, "Deposited $100.00", 12345L);
-		TransactionResponseDTO mockDto = new TransactionResponseDTO(1L, BankappConstants.ACCOUNT_DEPOSIT, 100.00, "Deposited $100.00", mockTxn.getCreatedAt());
+		TransactionResponseDTO mockDto = new TransactionResponseDTO(1L, BankappConstants.ACCOUNT_DEPOSIT, 100.00, "Deposited $100.00", mockTxn.getCreatedAt(), mockTxn.getAccountNumber());
 		
 		Mockito.when(transactionService.saveTransaction(mockTxn)).thenReturn(mockTxn);
 		Mockito.when(dtoMapper.toTransactionResponseDto(mockTxn)).thenReturn(mockDto);
