@@ -89,6 +89,17 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 				new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
 	}
 	
+	@ExceptionHandler(value = { RuntimeException.class })
+	protected ResponseEntity<Object> handleRuntimeException(RuntimeException ex, WebRequest request) {
+
+		log.error("RuntimeException: {}", ex.getMessage());
+
+		String bodyOfResponse = "Internal server error: " + ex.getMessage();
+
+		return handleExceptionInternal(ex, bodyOfResponse,
+				new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
+	}
+	
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(@NonNull MethodArgumentNotValidException ex, @NonNull HttpHeaders headers, 
 			@NonNull HttpStatusCode status, @NonNull WebRequest request) {
