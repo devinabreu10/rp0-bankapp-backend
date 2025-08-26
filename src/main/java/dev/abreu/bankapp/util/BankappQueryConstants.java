@@ -11,6 +11,7 @@ public class BankappQueryConstants {
     private static final String CUSTOMERS_TABLE = RP0_BANK_SCHEMA + ".customers";
     private static final String ACCOUNTS_TABLE = RP0_BANK_SCHEMA + ".accounts";
     private static final String TRANSACTIONS_TABLE = RP0_BANK_SCHEMA + ".transactions";
+    private static final String TRANSFERS_TABLE = RP0_BANK_SCHEMA + ".transfers";
 
     private static final String SELECT_ALL_FROM = "SELECT * FROM ";
     private static final String INSERT_INTO = "INSERT into ";
@@ -81,4 +82,6 @@ public class BankappQueryConstants {
     public static final String DELETE_TRANSACTION_BY_ID_QUERY = DELETE_FROM + TRANSACTIONS_TABLE + " WHERE transaction_id=?";
 
     public static final String TRANSFER_ACCOUNT_FUNDS_STORED_PROC = "CALL " + RP0_BANK_SCHEMA + ".transfer_account_funds(?, ?, ?, ?)";
+
+    public static final String SELECT_TRANSFERS_BY_ID_QUERY = SELECT_ALL_FROM + TRANSFERS_TABLE + " WHERE transfer_id=?";
 }

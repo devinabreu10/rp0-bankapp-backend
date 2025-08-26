@@ -8,13 +8,17 @@ import dev.abreu.bankapp.dao.CustomerDao;
 import dev.abreu.bankapp.dao.TransactionDao;
 import dev.abreu.bankapp.dto.TransactionDTO;
 import dev.abreu.bankapp.dto.TransactionResponseDTO;
+import dev.abreu.bankapp.dto.UnifiedTransactionDetailDTO;
 import dev.abreu.bankapp.dto.mapper.DtoMapper;
 import dev.abreu.bankapp.entity.Transaction;
+import dev.abreu.bankapp.exception.ResourceNotFoundException;
 import dev.abreu.bankapp.security.JwtConfig;
 import dev.abreu.bankapp.security.SecurityConfig;
 import dev.abreu.bankapp.service.CustomerService;
 import dev.abreu.bankapp.service.TransactionService;
+import dev.abreu.bankapp.service.UnifiedTransactionDetailService;
 import dev.abreu.bankapp.util.BankappConstants;
+import dev.abreu.bankapp.util.ResourceType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -26,12 +30,14 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -44,6 +50,9 @@ class TransactionControllerTest {
 	
 	@MockBean
 	TransactionService transactionService;
+	
+	@MockBean
+	UnifiedTransactionDetailService unifiedTransactionDetailService;
 	
 	@MockBean
 	private CustomerService customerService;
@@ -75,16 +84,82 @@ class TransactionControllerTest {
 	}
 
 	@Test
-	void testGetTransactionById() throws Exception {
-		Transaction mockTxn = new Transaction(BankappConstants.ACCOUNT_DEPOSIT, 100.00, "Deposited $100.00", 12345L);
-		TransactionResponseDTO mockDto = new TransactionResponseDTO(1L, BankappConstants.ACCOUNT_DEPOSIT, 100.00, "Deposited $100.00", mockTxn.getCreatedAt(), 12345L);
+	void testGetTransactionById_WithTransaction() throws Exception {
+		Long transactionId = 1L;
+		String type = "TRANSACTION";
+		Map<String, Object> additionalDetails = new HashMap<>();
+		UnifiedTransactionDetailDTO mockDto = new UnifiedTransactionDetailDTO(
+			transactionId, 
+			BankappConstants.ACCOUNT_DEPOSIT, 
+			100.00, 
+			"Deposited $100.00", 
+			LocalDateTime.now(), 
+			12345L, 
+			"TRANSACTION", 
+			additionalDetails
+		);
 		
-		Mockito.when(transactionService.getTransactionById(1L)).thenReturn(mockTxn);
-		Mockito.when(dtoMapper.toTransactionResponseDto(mockTxn)).thenReturn(mockDto);
+		when(unifiedTransactionDetailService.getUnifiedTransactionDetailById(transactionId, type)).thenReturn(mockDto);
 
-		mockMvc.perform(get("/transaction/get/1"))
+		mockMvc.perform(get("/transaction/get/TRANSACTION/1"))
 				.andExpect(status().isOk())
 				.andExpect(content().json(jsonMapper.writeValueAsString(mockDto)));
+		
+		verify(unifiedTransactionDetailService, times(1)).getUnifiedTransactionDetailById(transactionId, type);
+	}
+
+	@Test
+	void testGetTransactionById_WithTransfer() throws Exception {
+		Long transferId = 2L;
+		String type = "TRANSFER";
+		Map<String, Object> additionalDetails = new HashMap<>();
+		additionalDetails.put("targetAccountNumber", 67890L);
+		UnifiedTransactionDetailDTO mockDto = new UnifiedTransactionDetailDTO(
+			transferId, 
+			"Account Transfer", 
+			250.00, 
+			"Transfer to savings", 
+			LocalDateTime.now(), 
+			12345L, 
+			"TRANSFER", 
+			additionalDetails
+		);
+		
+		when(unifiedTransactionDetailService.getUnifiedTransactionDetailById(transferId, type)).thenReturn(mockDto);
+
+		mockMvc.perform(get("/transaction/get/TRANSFER/2"))
+				.andExpect(status().isOk())
+				.andExpect(content().json(jsonMapper.writeValueAsString(mockDto)));
+		
+		verify(unifiedTransactionDetailService, times(1)).getUnifiedTransactionDetailById(transferId, type);
+	}
+
+	@Test
+	void testGetTransactionById_NotFound() throws Exception {
+		Long nonExistentId = 999L;
+		String type = "TRANSACTION";
+		
+		when(unifiedTransactionDetailService.getUnifiedTransactionDetailById(nonExistentId, type))
+			.thenThrow(new ResourceNotFoundException(ResourceType.TRANSACTION, nonExistentId));
+
+		mockMvc.perform(get("/transaction/get/TRANSACTION/999"))
+				.andExpect(status().isNotFound());
+		
+		verify(unifiedTransactionDetailService, times(1)).getUnifiedTransactionDetailById(nonExistentId, type);
+	}
+
+	@Test
+	void testGetTransactionById_InternalServerError() throws Exception {
+		Long transactionId = 1L;
+		String type = "TRANSACTION";
+		
+		when(unifiedTransactionDetailService.getUnifiedTransactionDetailById(transactionId, type))
+			.thenThrow(new RuntimeException("Database connection failed"));
+
+		mockMvc.perform(get("/transaction/get/TRANSACTION/1"))
+				.andExpect(status().isInternalServerError());
+		
+		verify(unifiedTransactionDetailService, times(1)).getUnifiedTransactionDetailById(transactionId, type);
 	}
 
 	@Test
