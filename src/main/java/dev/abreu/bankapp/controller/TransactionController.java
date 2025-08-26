@@ -2,9 +2,11 @@ package dev.abreu.bankapp.controller;
 
 import dev.abreu.bankapp.dto.TransactionDTO;
 import dev.abreu.bankapp.dto.TransactionResponseDTO;
+import dev.abreu.bankapp.dto.UnifiedTransactionDetailDTO;
 import dev.abreu.bankapp.dto.mapper.DtoMapper;
 import dev.abreu.bankapp.entity.Transaction;
 import dev.abreu.bankapp.service.TransactionService;
+import dev.abreu.bankapp.service.UnifiedTransactionDetailService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
@@ -23,24 +25,29 @@ public class TransactionController {
     private static final Logger log = LogManager.getLogger(TransactionController.class);
 
     private final TransactionService transactionService;
+    private final UnifiedTransactionDetailService unifiedTransactionDetailService;
     private final DtoMapper dtoMapper;
 
-    public TransactionController(TransactionService transactionService, DtoMapper dtoMapper) {
+    public TransactionController(TransactionService transactionService, 
+                               UnifiedTransactionDetailService unifiedTransactionDetailService,
+                               DtoMapper dtoMapper) {
         this.transactionService = transactionService;
+        this.unifiedTransactionDetailService = unifiedTransactionDetailService;
         this.dtoMapper = dtoMapper;
     }
 
     /**
-     * Retrieves a transaction by its ID.
+     * Retrieves a transaction or transfer by its ID and type using unified service.
+     * The frontend must specify the type (TRANSACTION or TRANSFER) to fetch the correct data.
      *
-     * @param txnId the transaction ID
-     * @return the transaction with the specified ID
+     * @param type the type of item to retrieve (TRANSACTION or TRANSFER)
+     * @param id the transaction or transfer ID
+     * @return the transaction or transfer details with the specified ID
      */
-    @GetMapping(path = "/get/{id}")
-    public ResponseEntity<TransactionResponseDTO> getTransactionById(@PathVariable("id") Long txnId) {
-        log.info("Performing GET method to retrieve Transaction by id {}", txnId);
-        Transaction transaction = transactionService.getTransactionById(txnId);
-        TransactionResponseDTO dto = dtoMapper.toTransactionResponseDto(transaction);
+    @GetMapping(path = "/get/{type}/{id}")
+    public ResponseEntity<UnifiedTransactionDetailDTO> getTransactionById(@PathVariable String type, @PathVariable Long id) {
+        log.info("Performing GET method to retrieve {} by id {}", type, id);
+        UnifiedTransactionDetailDTO dto = unifiedTransactionDetailService.getUnifiedTransactionDetailById(id, type);
         return ResponseEntity.ok(dto);
     }
 

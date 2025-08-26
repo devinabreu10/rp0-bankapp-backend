@@ -8,7 +8,8 @@ package dev.abreu.bankapp.util;
 public enum ResourceType {
 	CUSTOMER("Customer"),
 	ACCOUNT("Account"),
-	TRANSACTION("Transaction");
+	TRANSACTION("Transaction"),
+	TRANSFER("Transfer");
 	
 	private final String resourceName;
 	

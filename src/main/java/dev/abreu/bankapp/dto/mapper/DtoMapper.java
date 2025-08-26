@@ -2,12 +2,15 @@ package dev.abreu.bankapp.dto.mapper;
 
 import dev.abreu.bankapp.dto.*;
 import dev.abreu.bankapp.entity.Account;
+import dev.abreu.bankapp.entity.Customer;
 import dev.abreu.bankapp.entity.Transaction;
+import dev.abreu.bankapp.entity.Transfer;
 import org.springframework.lang.NonNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import dev.abreu.bankapp.entity.Customer;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This class provides methods to map between different DTOs and the corresponding model classes.
@@ -155,5 +158,49 @@ public class DtoMapper {
      */
     public Transaction toTransaction(@NonNull TransactionDTO transactionDto) {
         return new Transaction(transactionDto.transactionId(), transactionDto.transactionType(), transactionDto.transactionAmount(), transactionDto.transactionNotes(), transactionDto.accountNumber());
+    }
+
+    /**
+     * Maps a Transaction object to a UnifiedTransactionDetailDTO object.
+     *
+     * @param transaction The transaction object to be mapped.
+     * @return The mapped UnifiedTransactionDetailDTO object.
+     */
+    public UnifiedTransactionDetailDTO toUnifiedTransactionDetailDto(@NonNull Transaction transaction) {
+        Map<String, Object> additionalDetails = new HashMap<>();
+        // No additional details needed for transactions
+        
+        return new UnifiedTransactionDetailDTO(
+                transaction.getTransactionId(),
+                transaction.getTransactionType(),
+                transaction.getTransactionAmount(),
+                transaction.getTransactionNotes(),
+                transaction.getCreatedAt(),
+                transaction.getAccountNumber(),
+                "TRANSACTION",
+                additionalDetails
+        );
+    }
+
+    /**
+     * Maps a Transfer object to a UnifiedTransactionDetailDTO object.
+     *
+     * @param transfer The transfer object to be mapped.
+     * @return The mapped UnifiedTransactionDetailDTO object.
+     */
+    public UnifiedTransactionDetailDTO toUnifiedTransactionDetailDto(@NonNull Transfer transfer) {
+        Map<String, Object> additionalDetails = new HashMap<>();
+        additionalDetails.put("targetAccountNumber", transfer.getTargetAccountNumber());
+        
+        return new UnifiedTransactionDetailDTO(
+                transfer.getTransferId(),
+                "Account Transfer",
+                transfer.getTransferAmount(),
+                transfer.getTransferNotes(),
+                transfer.getCreatedAt(),
+                transfer.getSourceAccountNumber(),
+                "TRANSFER",
+                additionalDetails
+        );
     }
 }

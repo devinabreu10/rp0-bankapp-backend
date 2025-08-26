@@ -44,7 +44,7 @@ public class RP0BankApplication {
     @Bean
     public CacheManager cacheManager() {
         CaffeineCacheManager cacheManager = new CaffeineCacheManager(
-                "customer", "account", "transaction", "auth-token"
+                "customer", "account", "transaction", "transfer", "auth-token", "unified-transaction-detail"
         );
         cacheManager.setCaffeine(
                 Caffeine.newBuilder()
