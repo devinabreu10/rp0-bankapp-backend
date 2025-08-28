@@ -48,7 +48,7 @@ public class UnifiedTransactionDetailServiceImpl implements UnifiedTransactionDe
     @Override
     @Cacheable(value = "unified-transaction-detail", key = "#id + '_' + #idType")
     public UnifiedTransactionDetailDTO getUnifiedTransactionDetailById(Long id, String idType) {
-        log.info("Retrieving unified transaction detail for ID: {} with type: {}", id, idType);
+        log.info("Retrieving unified transaction detail for ID with type: {}", idType);
         
         if (id == null) {
             log.warn("Null ID provided to getUnifiedTransactionDetailById");
