@@ -64,7 +64,7 @@ public class UnifiedTransactionDetailServiceImpl implements UnifiedTransactionDe
             case "DEPOSIT", "WITHDRAW" -> handleTransactionDetail(id);
             case "TRANSFER" -> handleTransferDetail(id);
             default -> {
-                log.warn("Invalid type '{}' provided", idType);
+                log.warn("Invalid type provided");
                 throw new IllegalArgumentException("Invalid type: " + idType + ". Must be 'DEPOSIT', 'WITHDRAW' or 'TRANSFER'");
             }
         };

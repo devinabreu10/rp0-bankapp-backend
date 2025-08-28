@@ -23,9 +23,6 @@
             **/config/*,**/util/ConnectionUtil.*,**/exception/RestResponseEntityExceptionHandler.*,**/entity/Credit.*,**/entity/Loan.*
         </sonar.coverage.exclusions>
         <!-- Override vulnerable versions -->
-<!--        <tomcat.version>10.1.44</tomcat.version> &lt;!&ndash; override vulnerable version 10.1.40 &ndash;&gt;-->
-<!--        <spring-security.version>6.3.9</spring-security.version> &lt;!&ndash; override vulnerable version 6.3.8 &ndash;&gt;-->
-<!--        <spring-context.version>6.2.7</spring-context.version> &lt;!&ndash; override vulnerable version 6.1.16 &ndash;&gt;-->
         <commons-lang3.version>3.18.0</commons-lang3.version> <!-- override vulnerable version 3.14.0 -->
     </properties>
 
