@@ -46,7 +46,7 @@ public class TransactionController {
      */
     @GetMapping(path = "/get/{type}/{id}")
     public ResponseEntity<UnifiedTransactionDetailDTO> getTransactionById(@PathVariable String type, @PathVariable Long id) {
-        log.info("Performing GET method to retrieve {} by id", type);
+        log.info("Performing GET method to retrieve by id and type");
         UnifiedTransactionDetailDTO dto = unifiedTransactionDetailService.getUnifiedTransactionDetailById(id, type);
         return ResponseEntity.ok(dto);
     }
