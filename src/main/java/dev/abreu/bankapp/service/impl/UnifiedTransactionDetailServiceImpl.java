@@ -48,7 +48,7 @@ public class UnifiedTransactionDetailServiceImpl implements UnifiedTransactionDe
     @Override
     @Cacheable(value = "unified-transaction-detail", key = "#id + '_' + #idType")
     public UnifiedTransactionDetailDTO getUnifiedTransactionDetailById(Long id, String idType) {
-        log.info("Retrieving unified transaction detail for ID with type: {}", idType);
+        log.info("Retrieving unified transaction detail by id");
         
         if (id == null) {
             log.warn("Null ID provided to getUnifiedTransactionDetailById");
@@ -64,7 +64,7 @@ public class UnifiedTransactionDetailServiceImpl implements UnifiedTransactionDe
             case "DEPOSIT", "WITHDRAW" -> handleTransactionDetail(id);
             case "TRANSFER" -> handleTransferDetail(id);
             default -> {
-                log.warn("Invalid type '{}' provided for ID: {}", idType, id);
+                log.warn("Invalid type '{}' provided", idType);
                 throw new IllegalArgumentException("Invalid type: " + idType + ". Must be 'DEPOSIT', 'WITHDRAW' or 'TRANSFER'");
             }
         };
