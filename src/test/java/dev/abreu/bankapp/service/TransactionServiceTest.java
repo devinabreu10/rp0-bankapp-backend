@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,14 +21,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(classes =  TransactionServiceImpl.class)
 class TransactionServiceTest {
-	
-	@MockBean
+
+	@MockitoBean
 	private CustomerDao customerDao;
-	
-	@MockBean
+
+	@MockitoBean
 	private AccountDao accountDao;
-	
-	@MockBean
+
+	@MockitoBean
 	private TransactionDao transactionDao;
 	
 	@Autowired

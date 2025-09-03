@@ -1,35 +1,30 @@
 package dev.abreu.bankapp.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import dev.abreu.bankapp.dao.AccountDao;
+import dev.abreu.bankapp.dao.CustomerDao;
+import dev.abreu.bankapp.entity.Customer;
+import dev.abreu.bankapp.exception.ResourceNotFoundException;
+import dev.abreu.bankapp.exception.UsernameTakenException;
+import dev.abreu.bankapp.service.impl.CustomerServiceImpl;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-
-import dev.abreu.bankapp.dao.AccountDao;
-import dev.abreu.bankapp.dao.CustomerDao;
-import dev.abreu.bankapp.exception.ResourceNotFoundException;
-import dev.abreu.bankapp.exception.UsernameTakenException;
-import dev.abreu.bankapp.entity.Customer;
-import dev.abreu.bankapp.service.impl.CustomerServiceImpl;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(classes = CustomerServiceImpl.class)
 class CustomerServiceTest {
-	
-	@MockBean
+
+	@MockitoBean
 	private CustomerDao customerDao;
-	
-	@MockBean
+
+	@MockitoBean
 	private AccountDao accountDao;
 	
 	@Autowired

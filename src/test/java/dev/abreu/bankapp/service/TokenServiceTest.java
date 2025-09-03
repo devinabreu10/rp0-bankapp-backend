@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.util.Random;
 
@@ -16,8 +16,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(classes = TokenServiceImpl.class)
 class TokenServiceTest {
-	
-	@MockBean
+
+	@MockitoBean
 	private JwtConfig jwtConfig;
 	
 	@Autowired

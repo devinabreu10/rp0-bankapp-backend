@@ -1,36 +1,35 @@
 package dev.abreu.bankapp.service;
 
-import static dev.abreu.bankapp.util.BankappConstants.CHECKING_ACCOUNT;
-import static org.junit.jupiter.api.Assertions.*;
+import dev.abreu.bankapp.dao.AccountDao;
+import dev.abreu.bankapp.dao.CustomerDao;
+import dev.abreu.bankapp.dao.TransactionDao;
+import dev.abreu.bankapp.entity.Account;
+import dev.abreu.bankapp.exception.InsufficientFundsException;
+import dev.abreu.bankapp.exception.ResourceNotFoundException;
+import dev.abreu.bankapp.service.impl.AccountServiceImpl;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-
-import dev.abreu.bankapp.dao.AccountDao;
-import dev.abreu.bankapp.dao.CustomerDao;
-import dev.abreu.bankapp.dao.TransactionDao;
-import dev.abreu.bankapp.exception.InsufficientFundsException;
-import dev.abreu.bankapp.exception.ResourceNotFoundException;
-import dev.abreu.bankapp.entity.Account;
-import dev.abreu.bankapp.service.impl.AccountServiceImpl;
+import static dev.abreu.bankapp.util.BankappConstants.CHECKING_ACCOUNT;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(classes =  AccountServiceImpl.class)
 class AccountServiceTest {
 
-	@MockBean
+	@MockitoBean
 	private CustomerDao customerDao;
 
-	@MockBean
+	@MockitoBean
 	private AccountDao accountDao;
 
-	@MockBean
+	@MockitoBean
 	private TransactionDao transactionDao;
 
 	@Autowired
