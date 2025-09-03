@@ -21,9 +21,9 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
@@ -43,22 +43,22 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import({SecurityConfig.class, ApplicationConfig.class})
 class AccountControllerTest {
 
-	@MockBean
+	@MockitoBean
 	AccountService accountService;
 
-	@MockBean
+	@MockitoBean
 	private CustomerService customerService;
 
-	@MockBean
+	@MockitoBean
 	private CustomerDao customerDao;
 
-	@MockBean
+	@MockitoBean
 	private AccountDao accountDao;
 
-	@MockBean
+	@MockitoBean
 	JwtConfig jwtConfig;
 
-	@MockBean
+	@MockitoBean
 	DtoMapper dtoMapper;
 
 	@Autowired
