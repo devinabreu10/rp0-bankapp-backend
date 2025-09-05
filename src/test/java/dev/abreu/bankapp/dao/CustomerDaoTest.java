@@ -195,26 +195,44 @@ class CustomerDaoTest {
 	}
 
 	@Test
-	void testSaveCustomer() throws SQLException {
+	void testSaveCustomerSetsGeneratedKey() throws SQLException {
 		Customer newCustomer = new Customer("Alice", "Johnson", "789 Street", "alice123", "password123");
-		newCustomer.setId(1L);
 
-		when(connectionMock.prepareStatement(anyString())).thenReturn(preparedStatementMock);
+		when(connectionMock.prepareStatement(anyString(), Mockito.eq(Statement.RETURN_GENERATED_KEYS))).thenReturn(preparedStatementMock);
 		when(preparedStatementMock.executeUpdate()).thenReturn(1);
+		ResultSet generatedKeysMock = Mockito.mock(ResultSet.class);
+		when(preparedStatementMock.getGeneratedKeys()).thenReturn(generatedKeysMock);
+		when(generatedKeysMock.next()).thenReturn(true);
+		when(generatedKeysMock.getLong(1)).thenReturn(42L);
 
 		Customer result = customerDao.saveCustomer(newCustomer);
-
-		assertEquals(newCustomer, result);
+		assertEquals(42L, result.getId());
 	}
 
 	@Test
-	void testSaveCustomerSQLException() throws SQLException {
-		Customer newCustomer = new Customer("Alice", "Johnson", "789 Street", "alice123", "password123");
-		when(connectionMock.prepareStatement(anyString())).thenReturn(preparedStatementMock);
-		when(preparedStatementMock.executeUpdate()).thenThrow(SQLException.class);
+	void testSaveCustomerNoGeneratedKey() throws SQLException {
+		Customer newCustomer = new Customer("Bob", "Smith", "101 Main St", "bobsmith", "pass");
+
+		when(connectionMock.prepareStatement(anyString(), Mockito.eq(Statement.RETURN_GENERATED_KEYS))).thenReturn(preparedStatementMock);
+		when(preparedStatementMock.executeUpdate()).thenReturn(1);
+		ResultSet generatedKeysMock = Mockito.mock(ResultSet.class);
+		when(preparedStatementMock.getGeneratedKeys()).thenReturn(generatedKeysMock);
+		when(generatedKeysMock.next()).thenReturn(false);
+
 		Customer result = customerDao.saveCustomer(newCustomer);
-		assertNotNull(result);
+		assertEquals(newCustomer.getId(), result.getId()); // id should remain unchanged
 	}
+
+    @Test
+    void testSaveCustomerSQLExceptionReturnsCustomer() throws SQLException {
+        Customer newCustomer = new Customer("Bob", "Smith", "101 Main St", "bobsmith", "pass");
+
+        when(connectionMock.prepareStatement(anyString(), Mockito.eq(Statement.RETURN_GENERATED_KEYS))).thenReturn(preparedStatementMock);
+        when(preparedStatementMock.executeUpdate()).thenThrow(SQLException.class);
+
+        Customer result = customerDao.saveCustomer(newCustomer);
+        assertNotNull(result);
+    }
 
 	@Test
 	void testUpdateCustomer() throws SQLException {

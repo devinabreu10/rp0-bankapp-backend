@@ -126,26 +126,27 @@ public class CustomerDaoImpl implements CustomerDao {
 
 	@Override
 	public Customer saveCustomer(Customer customer) {
-		
 		log.info("Entering saveCustomer method...");
-		
 		try(Connection conn = dataSource.getConnection();
-				PreparedStatement stmt = conn.prepareStatement(CREATE_CUSTOMER_QUERY)) {
-			
+			PreparedStatement stmt = conn.prepareStatement(CREATE_CUSTOMER_QUERY, Statement.RETURN_GENERATED_KEYS)) {
 			stmt.setString(1, customer.getFirstName());
 			stmt.setString(2, customer.getLastName());
 			stmt.setString(3, customer.getAddress());
 			stmt.setString(4, customer.getUsername());
 			stmt.setString(5, customer.getPassword());
-			
 			log.info("Create Customer Query String: {}", CREATE_CUSTOMER_QUERY);
 			int rowsAffected = stmt.executeUpdate();
 			log.info("{} Row(s) Affected", rowsAffected);
-			
+			if (rowsAffected > 0) {
+				try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+					if (generatedKeys.next()) {
+						customer.setId(generatedKeys.getLong(1));
+					}
+				}
+			}
 		} catch (SQLException e) {
 			log.error(SQL_EXCEPTION_CAUGHT + "saveCustomer: {}", e.getMessage());
 		}
-		
 		return customer;
 	}
 
